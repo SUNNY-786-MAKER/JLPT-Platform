@@ -30,32 +30,45 @@ You are robust to informal greeting variations (like "hlo", "hlw", "hy", "hye", 
 Never break character. You are KAKASHI Sensei."""
 
 # Keep a simple memory in memory (for a single user for now)
+client = None
+chat_session = None
+init_error = None
+
 if api_key:
-    client = genai.Client(api_key=api_key)
-    # Initialize the chat session with the system prompt
-    chat_session = client.chats.create(
-        model='gemini-2.5-flash',
-        config=types.GenerateContentConfig(
-            system_instruction=KAKASHI_PROMPT,
+    try:
+        client = genai.Client(api_key=api_key)
+        # Initialize the chat session with the system prompt
+        chat_session = client.chats.create(
+            model='gemini-2.5-flash',
+            config=types.GenerateContentConfig(
+                system_instruction=KAKASHI_PROMPT,
+            )
         )
-    )
+    except Exception as e:
+        init_error = str(e)
+        print(f"Error initializing Gemini client: {e}")
 else:
-    client = None
-    chat_session = None
+    init_error = "GEMINI_API_KEY environment variable is missing."
 
 @app.post("/chat")
 async def chat(request: Request):
+    global client, chat_session, init_error
     data = await request.json()
     user_message = data.get("message", "")
     
     if not client or not chat_session:
+        error_details = init_error if init_error else "API key is not configured."
         return {
-            "response": "Oh no! 😢 I can't connect to my AI brain right now because the `GEMINI_API_KEY` isn't set. \n\n"
-                        "To bring me fully to life:\n"
+            "response": "Oh no! 😢 I can't connect to my AI brain right now because of an API key or quota issue. \n\n"
+                        f"**Details:** `{error_details}`\n\n"
+                        "But don't worry! You can still use my offline features:\n"
+                        "* Type **`quiz`** to test your knowledge.\n"
+                        "* Ask about grammar particles like **`wa vs ga`** or **`ni vs de`**.\n"
+                        "* Type **`correct: [your sentence]`** to practice writing.\n\n"
+                        "To restore my AI brain:\n"
                         "1. Get a free API key from Google AI Studio.\n"
-                        "2. Set it in your terminal: `$env:GEMINI_API_KEY='your_key'`\n"
-                        "3. Restart this server!\n\n"
-                        "I can't wait to chat with you for real! 🥷"
+                        "2. Set it in your environment: `GEMINI_API_KEY='your_key'`\n"
+                        "3. Restart the server!"
         }
     
     try:
@@ -63,7 +76,10 @@ async def chat(request: Request):
         response = chat_session.send_message(user_message)
         return {"response": response.text}
     except Exception as e:
-        return {"response": f"Oops! My brain had a little hiccup. 🤕 (Error: {str(e)})"}
+        return {
+            "response": f"Oops! My brain had a little hiccup. 🤕 (Error: {str(e)})\n\n"
+                        "If you've hit your free quota limit, you can wait a minute or set a new API key in the environment."
+        }
 
 # Serve static assets and files (mounted after the chat route)
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
