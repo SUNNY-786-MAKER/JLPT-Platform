@@ -310,7 +310,6 @@ class NihongoApp {
         throw new Error("No paths found");
       }
 
-      // Create an offscreen SVG to calculate lengths
       const svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svgContainer.style.position = "absolute";
       svgContainer.style.width = "0";
@@ -323,30 +322,15 @@ class NihongoApp {
         const d = pathEl.getAttribute("d");
         if (!d) return;
 
-        // Create a path element in our container
         const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
         tempPath.setAttribute("d", d);
         svgContainer.appendChild(tempPath);
 
-        const totalLength = tempPath.getTotalLength();
-        const points = [];
-        const numPoints = 4; // Number of segments per stroke (fewer points = straighter lines, snappier animation)
-
-        for (let i = 0; i <= numPoints; i++) {
-          const dist = (i / numPoints) * totalLength;
-          const pt = tempPath.getPointAtLength(dist);
-          // Scale from 109x109 to 100x100
-          points.push([
-            (pt.x / 109) * 100,
-            (pt.y / 109) * 100
-          ]);
-        }
-        parsedPaths.push(points);
+        const length = tempPath.getTotalLength();
+        parsedPaths.push({ d, length });
       });
 
-      // Cleanup offscreen container
       document.body.removeChild(svgContainer);
-
       kanji.strokePaths = parsedPaths;
     } catch (err) {
       console.error(`Error loading stroke paths for ${kanji.character}:`, err);
@@ -1301,6 +1285,14 @@ class NihongoApp {
 
       // Drawing Event listeners
       const startDrawing = (e) => {
+        if (this._animationFrameId) {
+          cancelAnimationFrame(this._animationFrameId);
+          this._animationFrameId = null;
+        }
+        if (this._animationTimeoutId) {
+          clearTimeout(this._animationTimeoutId);
+          this._animationTimeoutId = null;
+        }
         this.isDrawing = true;
         this.draw(e);
       };
@@ -1357,6 +1349,14 @@ class NihongoApp {
     };
 
     this.clearCanvas = () => {
+      if (this._animationFrameId) {
+        cancelAnimationFrame(this._animationFrameId);
+        this._animationFrameId = null;
+      }
+      if (this._animationTimeoutId) {
+        clearTimeout(this._animationTimeoutId);
+        this._animationTimeoutId = null;
+      }
       if (!this.canvas || !this.ctx) return;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.drawKanjiGuidelines();
@@ -1377,10 +1377,9 @@ class NihongoApp {
 
     this.animateStrokeOrder = async () => {
       if (!this.canvas || !this.ctx || !this.activeKanji) return;
-      this.clearCanvas();
 
-      let paths = this.activeKanji.strokePaths;
-      if (!paths || paths.length === 0) {
+      let rawPaths = this.activeKanji.strokePaths;
+      if (!rawPaths || rawPaths.length === 0) {
         const btn = document.getElementById("canvas-animate-btn");
         const originalText = btn ? btn.innerHTML : "▶️ Stroke Order";
         if (btn) {
@@ -1394,51 +1393,109 @@ class NihongoApp {
           btn.innerHTML = originalText;
           btn.disabled = false;
         }
-        paths = this.activeKanji.strokePaths;
+        rawPaths = this.activeKanji.strokePaths;
       }
 
-      if (!paths || paths.length === 0) {
+      if (!rawPaths || rawPaths.length === 0) {
         this.showNotification("⚠️ Stroke order unavailable", "Could not load stroke order guidelines.", "error");
         return;
       }
 
+      // Convert database coordinate points to Path2D d structure if needed
+      const preparedStrokes = rawPaths.map(stroke => {
+        if (stroke.d && stroke.length !== undefined) {
+          return stroke;
+        }
+        // Convert point array to SVG path
+        const d = "M " + stroke.map(p => `${p[0]} ${p[1]}`).join(" L ");
+        
+        const tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        tempPath.setAttribute("d", d);
+        tempSvg.appendChild(tempPath);
+        document.body.appendChild(tempSvg);
+        const length = tempPath.getTotalLength();
+        document.body.removeChild(tempSvg);
+        
+        return { d, length, isDbPoints: true };
+      });
+
+      // Reset any running animation frames or timers
+      if (this._animationFrameId) {
+        cancelAnimationFrame(this._animationFrameId);
+      }
+      if (this._animationTimeoutId) {
+        clearTimeout(this._animationTimeoutId);
+      }
+
+      this.clearCanvas();
+
       let currentStrokeIdx = 0;
-      const drawStrokeStep = () => {
-        if (currentStrokeIdx >= paths.length) return;
 
-        const pathPoints = paths[currentStrokeIdx];
+      const drawStroke = (stroke, offset = 0) => {
         this.ctx.save();
-        this.ctx.strokeStyle = "#4f46e5"; // Animate guidelines in beautiful indigo
-        this.ctx.lineWidth = 14; // Thicker lines to fill the empty space of the character
+        
+        if (stroke.isDbPoints) {
+          // Scale 100x100 database points to 250x250 canvas
+          this.ctx.scale(250 / 100, 250 / 100);
+          this.ctx.lineWidth = 14 * (100 / 250); // ~5.6px thickness in 100x100 grid space
+        } else {
+          // Scale 109x109 KanjiVG points to 250x250 canvas
+          this.ctx.scale(250 / 109, 250 / 109);
+          this.ctx.lineWidth = 14 * (109 / 250); // ~6.1px thickness in 109x109 grid space
+        }
+        
+        this.ctx.strokeStyle = "#4f46e5"; // Indigo guideline trace
         this.ctx.lineCap = "round";
-        this.ctx.beginPath();
-
-        const scale = 250 / 100; // Database scale coordinates out of 100
-        const startX = pathPoints[0][0] * scale;
-        const startY = pathPoints[0][1] * scale;
-        this.ctx.moveTo(startX, startY);
-
-        let ptIdx = 1;
-        const drawSegment = () => {
-          if (ptIdx >= pathPoints.length) {
-            this.ctx.stroke();
-            this.ctx.restore();
-            currentStrokeIdx++;
-            setTimeout(drawStrokeStep, 250); // Pause between strokes
-            return;
-          }
-          const nextX = pathPoints[ptIdx][0] * scale;
-          const nextY = pathPoints[ptIdx][1] * scale;
-          this.ctx.lineTo(nextX, nextY);
-          this.ctx.stroke();
-          ptIdx++;
-          setTimeout(drawSegment, 25); // Faster trace to look like instant filling
-        };
-
-        drawSegment();
+        this.ctx.lineJoin = "round";
+        
+        const path = new Path2D(stroke.d);
+        if (offset > 0) {
+          this.ctx.setLineDash([stroke.length, stroke.length]);
+          this.ctx.lineDashOffset = offset;
+        } else {
+          this.ctx.setLineDash([]);
+        }
+        
+        this.ctx.stroke(path);
+        this.ctx.restore();
       };
 
-      drawStrokeStep();
+      const animateNextStroke = () => {
+        if (currentStrokeIdx >= preparedStrokes.length) return;
+
+        const stroke = preparedStrokes[currentStrokeIdx];
+        const length = stroke.length;
+        let offset = length;
+        const speed = length / 8; // snappier writing speed (~8 frames per stroke)
+
+        const drawFrame = () => {
+          offset -= speed;
+          if (offset < 0) offset = 0;
+
+          // Clear canvas
+          this.clearCanvas();
+
+          // Redraw all previous strokes fully
+          for (let i = 0; i < currentStrokeIdx; i++) {
+            drawStroke(preparedStrokes[i], 0);
+          }
+
+          // Draw current stroke partially
+          drawStroke(stroke, offset);
+
+          if (offset > 0) {
+            this._animationFrameId = requestAnimationFrame(drawFrame);
+          } else {
+            currentStrokeIdx++;
+            this._animationTimeoutId = setTimeout(animateNextStroke, 250); // Snug pause between strokes
+          }
+        };
+
+        drawFrame();
+      };
+
+      animateNextStroke();
     };
 
     // Sidebar listeners
