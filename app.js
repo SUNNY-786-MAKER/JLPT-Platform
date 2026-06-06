@@ -288,6 +288,74 @@ class NihongoApp {
     }, 4000);
   }
 
+  async fetchStrokePaths(kanji) {
+    if (kanji.strokePaths && kanji.strokePaths.length > 0) return;
+    if (kanji._fetchingPaths) return;
+    kanji._fetchingPaths = true;
+
+    try {
+      const codePoint = kanji.character.codePointAt(0);
+      const hex = codePoint.toString(16).padStart(5, '0');
+      const url = `https://cdn.jsdelivr.net/gh/kanjivg/kanjivg@master/kanji/${hex}.svg`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to fetch SVG`);
+      
+      const svgText = await response.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
+      const pathElements = xmlDoc.querySelectorAll("path");
+      
+      if (pathElements.length === 0) {
+        throw new Error("No paths found");
+      }
+
+      // Create an offscreen SVG to calculate lengths
+      const svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svgContainer.style.position = "absolute";
+      svgContainer.style.width = "0";
+      svgContainer.style.height = "0";
+      svgContainer.style.pointerEvents = "none";
+      document.body.appendChild(svgContainer);
+
+      const parsedPaths = [];
+      pathElements.forEach(pathEl => {
+        const d = pathEl.getAttribute("d");
+        if (!d) return;
+
+        // Create a path element in our container
+        const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        tempPath.setAttribute("d", d);
+        svgContainer.appendChild(tempPath);
+
+        const totalLength = tempPath.getTotalLength();
+        const points = [];
+        const numPoints = 15; // Number of segments per stroke
+
+        for (let i = 0; i <= numPoints; i++) {
+          const dist = (i / numPoints) * totalLength;
+          const pt = tempPath.getPointAtLength(dist);
+          // Scale from 109x109 to 100x100
+          points.push([
+            (pt.x / 109) * 100,
+            (pt.y / 109) * 100
+          ]);
+        }
+        parsedPaths.push(points);
+      });
+
+      // Cleanup offscreen container
+      document.body.removeChild(svgContainer);
+
+      kanji.strokePaths = parsedPaths;
+    } catch (err) {
+      console.error(`Error loading stroke paths for ${kanji.character}:`, err);
+      kanji.strokePaths = [];
+    } finally {
+      kanji._fetchingPaths = false;
+    }
+  }
+
   setupRouter() {
     document.querySelectorAll("[data-page]").forEach(link => {
       link.addEventListener("click", (e) => {
@@ -1129,6 +1197,7 @@ class NihongoApp {
 
     const selectKanji = (kanji) => {
       this.activeKanji = kanji;
+      this.fetchStrokePaths(kanji);
       const pane = document.getElementById("kanji-details-pane");
       const isBookmarked = this.state.user.bookmarks.kanji.includes(kanji.id);
       
@@ -1306,12 +1375,32 @@ class NihongoApp {
       this.ctx.restore();
     };
 
-    this.animateStrokeOrder = () => {
+    this.animateStrokeOrder = async () => {
       if (!this.canvas || !this.ctx || !this.activeKanji) return;
       this.clearCanvas();
 
-      const paths = this.activeKanji.strokePaths;
-      if (!paths || paths.length === 0) return;
+      let paths = this.activeKanji.strokePaths;
+      if (!paths || paths.length === 0) {
+        const btn = document.getElementById("canvas-animate-btn");
+        const originalText = btn ? btn.innerHTML : "▶️ Stroke Order";
+        if (btn) {
+          btn.innerHTML = "⏳ Loading...";
+          btn.disabled = true;
+        }
+
+        await this.fetchStrokePaths(this.activeKanji);
+
+        if (btn) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+        paths = this.activeKanji.strokePaths;
+      }
+
+      if (!paths || paths.length === 0) {
+        this.showNotification("⚠️ Stroke order unavailable", "Could not load stroke order guidelines.", "error");
+        return;
+      }
 
       let currentStrokeIdx = 0;
       const drawStrokeStep = () => {

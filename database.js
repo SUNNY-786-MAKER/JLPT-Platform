@@ -22,7 +22,7 @@ const vocabDatabase = [
     "meaning": "to eat",
     "category": "verbs",
     "example": "朝ご飯を食べましたか。",
-    "exampleFurigana": "朝<rt>あさ</rt>飯<rt>はん</rt>を食<rt>た</rt>べましたか。",
+    "exampleFurigana": "朝<rt>あさ</rt>ご飯<rt>はん</rt>を食<rt>た</rt>べましたか。",
     "exampleMeaning": "Did you eat breakfast?"
   },
   {
