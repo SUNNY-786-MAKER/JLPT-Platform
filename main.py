@@ -17,8 +17,19 @@ app.add_middleware(
 )
 
 # Configure Gemini
-# The API key has been injected!
-api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyAX6hu3MFKw6R_1l05pupt7CNxep1teu0s")
+# Load environment variables from .env if present
+if os.path.exists(".env"):
+    try:
+        with open(".env", "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ[k.strip()] = v.strip()
+    except Exception as e:
+        print(f"Warning: Could not read .env file: {e}")
+
+api_key = os.environ.get("GEMINI_API_KEY")
 
 # System prompt to give KAKASHI its personality
 KAKASHI_PROMPT = """You are KAKASHI, a friendly, supportive, and highly knowledgeable Japanese Sensei (tutor) and mentor. 
@@ -37,9 +48,11 @@ init_error = None
 if api_key:
     try:
         client = genai.Client(api_key=api_key)
+        # Allow choosing the model via GEMINI_MODEL env var (e.g., 'gemini-2.5-pro')
+        model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-pro")
         # Initialize the chat session with the system prompt
         chat_session = client.chats.create(
-            model='gemini-2.5-flash',
+            model=model_name,
             config=types.GenerateContentConfig(
                 system_instruction=KAKASHI_PROMPT,
             )
