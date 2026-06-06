@@ -106710,6 +106710,44 @@ const readingDatabase = [
         "explanation": "The passage explains the '三分の一ルール' as: '最初の三分の一を過ぎたら店に納品できないというものです'."
       }
     ]
+  },
+  {
+    "id": "r_n2_1",
+    "level": "N2",
+    "title": "地球温暖化と桜の開花 (Global Warming & Cherry Blossoms)",
+    "content": "近年<rt>きんねん</rt>、地球<rt>ちきゅう</rt>温暖化<rt>おんだんか</rt>の影響<rt>えいきょう</rt>によって、日本<rt>にほん</rt>各地<rt>かくち</rt>で桜<rt>さくら</rt>の開花<rt>かいか</rt>時期<rt>じき</rt>が早<rt>はや</rt>まっています。気象庁<rt>きしょうちょう</rt>の観測<rt>かんそく</rt>によると、桜<rt>さくら</rt>の開花<rt>かいか</rt>は春<rt>はる</rt>の気温<rt>きおん</rt>上昇<rt>じょうしょう</rt>と密接<rt>みっせつ</rt>に関連<rt>かんれん</rt>しています。冬<rt>ふゆ</rt>の寒<rt>さむ</rt>さが不十分<rt>ふじゅうぶん</rt>だと、桜<rt>さくら</rt>の芽<rt>め</rt>が目覚<rt>めざ</rt>める「休眠<rt>きゅうみん</rt>打破<rt>だは</rt>」が遅<rt>おく</rt>れる反面<rt>はんめん</rt>、春<rt>はる</rt>の気温<rt>きおん</rt>が高<rt>たか</rt>すぎると開花<rt>かいか</rt>が一気<rt>いっき</rt>に進行<rt>しんこう</rt>します。このまま温暖化<rt>おんだんか</rt>が進<rt>すす</rt>めば、将来<rt>しょうらい</rt>的<rt>てき</rt>に伝統<rt>でんとう</rt>的<rt>てき</rt>な「お花見<rt>はなみ</rt>」の時期<rt>じき</rt>や文化<rt>ぶんか</rt>そのものが変化<rt>へんか</rt>してしまう恐<rt>おそ</rt>れがあります。これにどう対処<rt>たいしょ</rt>すべきか、地域<rt>ちいき</rt>社会<rt>しゃかい</rt>全体<rt>ぜんたい</rt>で見直<rt>みなお</rt>す動<rt>うご</rt>きが求<rt>もと</rt>められています。",
+    "hints": {
+      "近年": "recent years",
+      "地球温暖化": "global warming",
+      "休眠打破": "breaking dormancy (of buds)",
+      "反面": "on the other hand (contrasting aspects)",
+      "恐れがあります": "there is a risk/fear of",
+      "対処": "dealing with, coping with"
+    },
+    "questions": [
+      {
+        "question": "桜の開花時期が早まっている主な原因は何ですか。",
+        "options": [
+          "日本の伝統的なお花見文化の広がり",
+          "地球温暖化による気温の上昇",
+          "冬の寒さが厳しくなりすぎたこと",
+          "気象庁による新しい観測技術の導入"
+        ],
+        "answerIndex": 1,
+        "explanation": "The text states: '地球温暖化の影響によって、日本各地で桜の開花時期が早まっています' (Due to the effects of global warming, the cherry blossom blooming season is getting earlier across Japan)."
+      },
+      {
+        "question": "温暖化が進んだ場合、どのような懸念が述べられていますか。",
+        "options": [
+          "冬が来なくなってしまうこと",
+          "桜の木が日本全国からすべて枯れてしまうこと",
+          "伝統的な「お花見」の時期や文化が変わってしまう恐れ",
+          "お花見をする人がいなくなること"
+        ],
+        "answerIndex": 2,
+        "explanation": "The text warns: '将来的に伝統的な「お花見」の時期や文化そのものが変化してしまう恐れがあります' (There is a risk that the timing and culture of traditional cherry blossom viewing itself will change in the future)."
+      }
+    ]
   }
 ];
 

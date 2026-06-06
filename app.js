@@ -1938,6 +1938,7 @@ class NihongoApp {
           <button class="tab-btn active" data-lvl="N5">N5</button>
           <button class="tab-btn" data-lvl="N4">N4</button>
           <button class="tab-btn" data-lvl="N3">N3</button>
+          <button class="tab-btn" data-lvl="N2">N2</button>
         </div>
       </div>
 
