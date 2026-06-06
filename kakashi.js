@@ -13,7 +13,7 @@ class KakashiAssistant {
     return [
       {
         sender: "bot",
-        text: "Hi! I am here to help you. I am **Kakashi**, your personal Japanese tutor. 🥷✨\n\nI can help you with anything related to Japanese learning:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
+        text: "Yo! I am **Kakashi**, the famous Copy Ninja of the Leaf, and your personal Japanese tutor. 🥷✨ I am here to help you master Japanese from JLPT N5 to N2!\n\nHere is how I can assist you:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isSystem: true
       }
@@ -28,7 +28,7 @@ class KakashiAssistant {
     this.chatHistory = [
       {
         sender: "bot",
-        text: "Hi! I am here to help you. I am **Kakashi**, your personal Japanese tutor. 🥷✨\n\nI can help you with anything related to Japanese learning:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
+        text: "Yo! I am **Kakashi**, the famous Copy Ninja of the Leaf, and your personal Japanese tutor. 🥷✨ I am here to help you master Japanese from JLPT N5 to N2!\n\nHere is how I can assist you:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isSystem: true
       }
@@ -112,7 +112,7 @@ class KakashiAssistant {
     const isGreeting = greetings.some(g => cleanInput === g || cleanInput.startsWith(g + " ") || cleanInput.endsWith(" " + g));
     if (isGreeting || cleanInput.includes("hello kakashi") || cleanInput.includes("hi kakashi") || cleanInput.includes("hlo kakashi") || cleanInput.includes("hy kakashi")) {
       return {
-        text: "こんにちは！ (Konnichiwa!) Great to see you! I am **Kakashi**, your personal Japanese tutor and AI companion. 🥷✨\n\nI'm here to help you master Japanese from N5 to N2 level!\n\nHere is what we can do together:\n* 📘 **Explain Grammar:** Ask me about any pattern (e.g. `want to`, `たい form`, `ので vs から`).\n* 📍 **Compare Particles:** Ask me to compare particles (e.g. `は vs が`, `に vs で`, `ので vs から`).\n* 🔍 **Analyze Sentences:** Type `breakdown: [Japanese sentence]` to get a detailed grammatical analysis.\n* 📝 **Correct Writing:** Type `correct: [Japanese sentence]` to get my feedback on your composition.\n* 🎯 **Interactive Quizzes:** Just type `quiz` or click the chip to test your knowledge!\n\nWhat would you like to practice today? がんばりましょう！ (Let's do our best!)"
+        text: "こんにちは！ (Konnichiwa!) Great to see you! I am **Kakashi**, the famous Copy Ninja of the Leaf, and your personal Japanese tutor. 🥷✨ I am here to help you master Japanese from N5 to N2 level!\n\nHere is what we can do together:\n* 📘 **Explain Grammar:** Ask me about any pattern (e.g. `want to`, `たい form`, `ので vs から`).\n* 📍 **Compare Particles:** Ask me to compare particles (e.g. `は vs が`, `に vs で`, `ので vs から`).\n* 🔍 **Analyze Sentences:** Type `breakdown: [Japanese sentence]` to get a detailed grammatical analysis.\n* 📝 **Correct Writing:** Type `correct: [Japanese sentence]` to get my feedback on your composition.\n* 🎯 **Interactive Quizzes:** Just type `quiz` or click the chip to test your knowledge!\n\nWhat would you like to practice today? がんばりましょう！ (Let's do our best!)"
       };
     }
 
