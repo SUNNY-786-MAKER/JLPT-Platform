@@ -1264,6 +1264,89 @@ class NihongoApp {
       document.getElementById("canvas-clear-btn").onclick = () => this.clearCanvas();
       document.getElementById("canvas-animate-btn").onclick = () => this.animateStrokeOrder();
       document.getElementById("canvas-verify-btn").onclick = () => {
+        if (!this.activeKanji) return;
+        
+        const requiredStrokes = this.activeKanji.strokePaths;
+        if (!requiredStrokes || requiredStrokes.length === 0) {
+          // Fallback if no stroke guidelines exist (should be rare)
+          this.addXP(10);
+          this.unlockBadge("b2");
+          this.showNotification("🎯 Verified!", "Strokes matching guidelines (fallback). +10 XP", "success");
+          this.clearCanvas();
+          return;
+        }
+
+        if (!this.userStrokes || this.userStrokes.length === 0) {
+          this.showNotification("⚠️ Verification failed", "Please draw the character before verifying.", "error");
+          return;
+        }
+
+        if (this.userStrokes.length < requiredStrokes.length) {
+          this.showNotification("⚠️ Verification failed", `Incomplete: You drew ${this.userStrokes.length} of ${requiredStrokes.length} required strokes.`, "error");
+          return;
+        }
+
+        if (this.userStrokes.length > requiredStrokes.length) {
+          this.showNotification("⚠️ Verification failed", `Too many strokes: You drew ${this.userStrokes.length} strokes, but this Kanji only has ${requiredStrokes.length}.`, "error");
+          return;
+        }
+
+        const getDistance = (p1, p2) => {
+          return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+        };
+
+        const getStrokeStartAndEnd = (stroke) => {
+          if (Array.isArray(stroke)) {
+            const start = stroke[0];
+            const end = stroke[stroke.length - 1];
+            return {
+              start: { x: start[0], y: start[1] },
+              end: { x: end[0], y: end[1] }
+            };
+          }
+          if (stroke && stroke.d) {
+            const tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            tempPath.setAttribute("d", stroke.d);
+            tempSvg.appendChild(tempPath);
+            document.body.appendChild(tempSvg);
+            const length = tempPath.getTotalLength();
+            const startPt = tempPath.getPointAtLength(0);
+            const endPt = tempPath.getPointAtLength(length);
+            document.body.removeChild(tempSvg);
+            return {
+              start: { x: (startPt.x / 109) * 100, y: (startPt.y / 109) * 100 },
+              end: { x: (endPt.x / 109) * 100, y: (endPt.y / 109) * 100 }
+            };
+          }
+          return null;
+        };
+
+        const THRESHOLD = 30; // Max distance allowed (on 100x100 grid)
+        for (let i = 0; i < requiredStrokes.length; i++) {
+          const guide = requiredStrokes[i];
+          const user = this.userStrokes[i];
+          
+          if (!user || user.length < 2) {
+            this.showNotification("⚠️ Verification failed", `Stroke ${i + 1} is too short or invalid.`, "error");
+            return;
+          }
+
+          const guidePoints = getStrokeStartAndEnd(guide);
+          if (!guidePoints) continue;
+
+          const userStart = user[0];
+          const userEnd = user[user.length - 1];
+
+          const startDiff = getDistance(userStart, guidePoints.start);
+          const endDiff = getDistance(userEnd, guidePoints.end);
+
+          if (startDiff > THRESHOLD || endDiff > THRESHOLD) {
+            this.showNotification("⚠️ Verification failed", `Stroke ${i + 1} does not match the guideline. Make sure you draw in the correct direction and location.`, "error");
+            return;
+          }
+        }
+
         this.addXP(10);
         this.unlockBadge("b2"); // Kanji Artist badge
         this.showNotification("🎯 Canvas Cleared & Verified!", "Excellent practice! Your strokes matched the character guidelines! +10 XP", "success");
@@ -1280,6 +1363,9 @@ class NihongoApp {
       this.ctx.lineCap = "round";
       this.ctx.lineJoin = "round";
 
+      this.userStrokes = [];
+      this.currentStroke = null;
+
       // Draw background guidelines of Kanji character
       this.drawKanjiGuidelines();
 
@@ -1294,10 +1380,15 @@ class NihongoApp {
           this._animationTimeoutId = null;
         }
         this.isDrawing = true;
+        this.currentStroke = [];
         this.draw(e);
       };
 
       const stopDrawing = () => {
+        if (this.isDrawing && this.currentStroke && this.currentStroke.length > 0) {
+          this.userStrokes.push(this.currentStroke);
+        }
+        this.currentStroke = null;
         this.isDrawing = false;
         this.ctx.beginPath();
       };
@@ -1346,6 +1437,12 @@ class NihongoApp {
       this.ctx.stroke();
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
+
+      const x_scaled = (x / this.canvas.width) * 100;
+      const y_scaled = (y / this.canvas.height) * 100;
+      if (this.currentStroke) {
+        this.currentStroke.push({ x: x_scaled, y: y_scaled });
+      }
     };
 
     this.clearCanvas = () => {
@@ -1360,6 +1457,8 @@ class NihongoApp {
       if (!this.canvas || !this.ctx) return;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.drawKanjiGuidelines();
+      this.userStrokes = [];
+      this.currentStroke = null;
     };
 
     this.drawKanjiGuidelines = () => {
