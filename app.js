@@ -330,7 +330,7 @@ class NihongoApp {
 
         const totalLength = tempPath.getTotalLength();
         const points = [];
-        const numPoints = 15; // Number of segments per stroke
+        const numPoints = 4; // Number of segments per stroke (fewer points = straighter lines, snappier animation)
 
         for (let i = 0; i <= numPoints; i++) {
           const dist = (i / numPoints) * totalLength;
@@ -1409,7 +1409,7 @@ class NihongoApp {
         const pathPoints = paths[currentStrokeIdx];
         this.ctx.save();
         this.ctx.strokeStyle = "#4f46e5"; // Animate guidelines in beautiful indigo
-        this.ctx.lineWidth = 6;
+        this.ctx.lineWidth = 14; // Thicker lines to fill the empty space of the character
         this.ctx.lineCap = "round";
         this.ctx.beginPath();
 
@@ -1424,7 +1424,7 @@ class NihongoApp {
             this.ctx.stroke();
             this.ctx.restore();
             currentStrokeIdx++;
-            setTimeout(drawStrokeStep, 350); // Pause between strokes
+            setTimeout(drawStrokeStep, 250); // Pause between strokes
             return;
           }
           const nextX = pathPoints[ptIdx][0] * scale;
@@ -1432,7 +1432,7 @@ class NihongoApp {
           this.ctx.lineTo(nextX, nextY);
           this.ctx.stroke();
           ptIdx++;
-          setTimeout(drawSegment, 80); // Speed of tracing line
+          setTimeout(drawSegment, 25); // Faster trace to look like instant filling
         };
 
         drawSegment();
