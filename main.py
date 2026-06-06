@@ -70,4 +70,11 @@ app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    # Get port from Render environment, default to 8000 locally
+    port = int(os.environ.get("PORT", 8000))
+    # Render sets PORT automatically. Bind to 0.0.0.0 in production/container env.
+    host = "0.0.0.0" if (os.environ.get("PORT") or os.environ.get("RENDER")) else "127.0.0.1"
+    # Turn off reload on production server to optimize performance
+    reload_mode = False if (os.environ.get("PORT") or os.environ.get("RENDER")) else True
+    
+    uvicorn.run("main:app", host=host, port=port, reload=reload_mode)
