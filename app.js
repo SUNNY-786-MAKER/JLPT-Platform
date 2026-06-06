@@ -197,10 +197,23 @@ class NihongoApp {
           { id: "b5", title: "Exam Ace", description: "Pass any JLPT mock test", icon: "🏆", unlocked: false }
         ],
         recentLessons: [
-          { type: "Vocab", name: "日本語 (Japanese)", date: "Today" },
-          { type: "Grammar", name: "～たい (Desire)", date: "Yesterday" }
+          { type: "vocab", name: "Vocabulary Lists (N5-N2)", date: "Today" },
+          { type: "grammar", name: "Grammar Rules Library", date: "Yesterday" }
         ],
-        completedTests: []
+        completedTests: [],
+        masteredKanji: ["k_n5_1", "k_n5_2", "k_n5_3"],
+        chapters: {
+          1: true,
+          2: true,
+          3: false,
+          4: false,
+          5: false,
+          6: false,
+          7: false,
+          8: false
+        },
+        xpFromQuizzes: 45,
+        xpFromStrokes: 20
       }
     };
   }
@@ -232,8 +245,13 @@ class NihongoApp {
     }
   }
 
-  addXP(amount) {
+  addXP(amount, source = null) {
     this.state.user.xp += amount;
+    if (source === "quiz") {
+      this.state.user.xpFromQuizzes = (this.state.user.xpFromQuizzes || 0) + amount;
+    } else if (source === "stroke") {
+      this.state.user.xpFromStrokes = (this.state.user.xpFromStrokes || 0) + amount;
+    }
     
     // Level up check
     let leveledUp = false;
@@ -1037,7 +1055,7 @@ class NihongoApp {
         if (selectedIdx === q.correctIndex) {
           score++;
           feedback.innerHTML = `<span class="correct-text">🎉 Correct!</span><p>${q.explanation}</p>`;
-          this.addXP(5);
+          this.addXP(5, "quiz");
         } else {
           feedback.innerHTML = `<span class="incorrect-text">❌ Incorrect.</span><p>${q.explanation}</p>`;
         }
@@ -1062,7 +1080,7 @@ class NihongoApp {
           document.getElementById("vocab-quiz-feedback").style.display = "none";
           document.getElementById("vocab-quiz-next-btn").style.display = "none";
           
-          this.addXP(score * 10);
+          this.addXP(score * 10, "quiz");
           this.unlockBadge("b5"); // Unlocks a badge
 
           document.getElementById("vocab-quiz-finish-close-btn").onclick = () => {
@@ -1347,8 +1365,13 @@ class NihongoApp {
           }
         }
 
-        this.addXP(10);
+        this.addXP(10, "stroke");
         this.unlockBadge("b2"); // Kanji Artist badge
+        if (!this.state.user.masteredKanji) this.state.user.masteredKanji = [];
+        if (!this.state.user.masteredKanji.includes(this.activeKanji.id)) {
+          this.state.user.masteredKanji.push(this.activeKanji.id);
+        }
+        this.saveState();
         this.showNotification("🎯 Canvas Cleared & Verified!", "Excellent practice! Your strokes matched the character guidelines! +10 XP", "success");
         this.clearCanvas();
       };
@@ -1679,7 +1702,7 @@ class NihongoApp {
         if (idx === q.correctIndex) {
           score++;
           feedback.innerHTML = `<span class="correct-text">🎉 Correct!</span><p>${q.explanation}</p>`;
-          this.addXP(6);
+          this.addXP(6, "quiz");
         } else {
           feedback.innerHTML = `<span class="incorrect-text">❌ Incorrect.</span><p>${q.explanation}</p>`;
         }
@@ -1702,7 +1725,7 @@ class NihongoApp {
           `;
           document.getElementById("kanji-quiz-feedback").style.display = "none";
           document.getElementById("kanji-quiz-next-btn").style.display = "none";
-          this.addXP(score * 10);
+          this.addXP(score * 10, "quiz");
 
           document.getElementById("k-quiz-finish-close").onclick = () => {
             kQuizModal.style.display = "none";
@@ -2308,7 +2331,7 @@ class NihongoApp {
               e.target.classList.add("correct");
               feedback.className = "passage-q-feedback success";
               feedback.innerHTML = `🎉 <strong>Correct!</strong> <br>${q.explanation}`;
-              this.addXP(15);
+              this.addXP(15, "quiz");
             } else {
               e.target.classList.add("incorrect");
               qBlock.querySelector(`[data-opt="${q.answerIndex}"]`).classList.add("correct");
@@ -2485,7 +2508,7 @@ class NihongoApp {
       const passed = scorePct >= 60;
       const xpWon = passed ? 30 : 10;
 
-      this.addXP(xpWon);
+      this.addXP(xpWon, "quiz");
       if (passed) {
         this.unlockBadge("b5"); // Exam Ace badge
         this.state.user.completedTests.push(activeLvl);
@@ -2571,6 +2594,13 @@ class NihongoApp {
 
   // USER DASHBOARD PAGE RENDER
   renderDashboard(container) {
+    if (!this.state.user.masteredKanji) {
+      this.state.user.masteredKanji = [];
+    }
+    if (!this.state.user.chapters) {
+      this.state.user.chapters = {};
+    }
+
     // Generate recent activity logs HTML
     const recentActHTML = this.state.user.recentLessons.map(log => `
       <div class="activity-row-item">
@@ -2604,18 +2634,26 @@ class NihongoApp {
       </div>
     `;
 
+    // Dynamic calculations for N5 Kanji progress
+    const totalN5Kanji = window.kanjiDatabase ? window.kanjiDatabase.filter(k => k.level === 'N5').length : 75;
+    const masteredN5Count = window.kanjiDatabase ? this.state.user.masteredKanji.filter(id => {
+      const k = window.kanjiDatabase.find(x => x.id === id);
+      return k && k.level === 'N5';
+    }).length : this.state.user.masteredKanji.length;
+    const kanjiMasteryPercent = totalN5Kanji > 0 ? Math.round((masteredN5Count / totalN5Kanji) * 100) : 0;
+
     container.innerHTML = `
       <div class="page-header">
         <div>
-          <h1>Student Dashboard</h1>
-          <p>Track your XP points, levels, continuous study streaks, and unlock achievement badges.</p>
+          <h1 id="dashboard-welcome-heading">Welcome back, ${this.state.user.username || 'Shinobi'}!</h1>
+          <p>Track your XP points, levels, continuous study streaks, and manage your profile settings.</p>
         </div>
       </div>
 
       <div class="dashboard-grid">
         <!-- Top Stats row -->
         <div class="dash-stat-row">
-          <div class="dash-stat-card streak">
+          <div class="dash-stat-card streak" onclick="window.scrollTo(0, 0)" style="cursor:pointer;" title="Click for profile settings">
             <div class="icon">🔥</div>
             <div class="stats">
               <span class="value">${this.state.user.streak} Days</span>
@@ -2638,8 +2676,65 @@ class NihongoApp {
           </div>
         </div>
 
+        <!-- Profile Settings Block (Dedicated user data management) -->
+        <div class="dash-block profile-settings-block" style="grid-column: 1 / -1;">
+          <h3>👤 Shinobi Profile Settings</h3>
+          <div class="profile-settings-content" style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+            <div style="flex: 1; min-width:260px;">
+              <p style="margin-bottom: 8px; font-size:14px; color:#94a3b8;">Modify your username/nickname on the platform:</p>
+              <div style="display:flex; gap:10px;">
+                <input type="text" id="dashboard-username-input" class="control-btn" style="flex:1; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:10px;" value="${this.state.user.username}">
+                <button class="btn btn-primary btn-sm" id="dashboard-save-username-btn" style="padding:10px 20px;">Save Nickname</button>
+              </div>
+            </div>
+            <div style="border-left:1px solid rgba(255,255,255,0.1); height:60px; display:none; min-width:1px;" class="profile-settings-divider"></div>
+            <div style="min-width:200px;">
+              <p style="margin-bottom:8px; font-size:14px; color:#94a3b8;">Reset all state, EXP, and chapter history:</p>
+              <button class="btn btn-secondary btn-sm" id="dashboard-reset-state-btn" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ef4444;">⚠️ Reset All Progress</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Left Column: XP Progress and Charts -->
         <div class="dash-left">
+          <!-- Kanji Mastery progress bar card -->
+          <div class="dash-block">
+            <h3>✍️ Kanji Mastery (N5 Goal)</h3>
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">Verify characters in the Kanji Lab to master them.</p>
+            <div class="kanji-mastery-status" style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:700;">
+              <span>N5 Kanji Mastered</span>
+              <span id="kanji-progress-pct-label" style="color:#3b82f6;">${masteredN5Count} / ${totalN5Kanji} (${kanjiMasteryPercent}%)</span>
+            </div>
+            <div class="progress-bar-container" style="background:rgba(255,255,255,0.08); border-radius:8px; height:12px; overflow:hidden; margin-bottom:10px;">
+              <div class="progress-bar-fill" id="kanji-mastery-bar-fill" style="width:${kanjiMasteryPercent}%; height:100%; background:linear-gradient(90deg, #3b82f6, #06b6d4); transition:width 0.3s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Chapter Progress Checklist (Chapters 1-8) -->
+          <div class="dash-block">
+            <h3>📚 Chapter Progress Checklist</h3>
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">Tick chapters as you complete their lessons and grammar structures.</p>
+            <div class="chapter-progress-status" style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:700;">
+              <span>Chapters 1-8</span>
+              <span id="chapter-progress-pct-label" style="color:#10b981;">0 of 8 (0%)</span>
+            </div>
+            <div class="progress-bar-container" style="background:rgba(255,255,255,0.08); border-radius:8px; height:12px; overflow:hidden; margin-bottom:20px;">
+              <div class="progress-bar-fill" id="chapter-progress-bar-fill" style="width:0%; height:100%; background:linear-gradient(90deg, #10b981, #34d399); transition:width 0.3s ease;"></div>
+            </div>
+            <div class="chapters-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              ${Array.from({ length: 8 }, (_, i) => {
+                const chNum = i + 1;
+                const isChecked = this.state.user.chapters && this.state.user.chapters[chNum];
+                return `
+                  <label style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); cursor:pointer; user-select:none; font-size:13px;">
+                    <input type="checkbox" id="chapter-checkbox-${chNum}" ${isChecked ? 'checked' : ''} style="cursor:pointer; width:16px; height:16px;">
+                    <span>Chapter ${chNum}</span>
+                  </label>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
           <div class="dash-block">
             <h3>XP Progress Ring</h3>
             <div style="display:flex; justify-content:center; align-items:center; padding:30px 0;">
@@ -2653,68 +2748,134 @@ class NihongoApp {
               </svg>
             </div>
           </div>
-
-          <div class="dash-block">
-            <h3>Weekly Study Summary</h3>
-            <div class="weekly-chart-container">
-              <div class="bar-col">
-                <div class="bar" style="height: 40%"></div>
-                <div class="day-lbl">Mon</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 70%"></div>
-                <div class="day-lbl">Tue</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 10%"></div>
-                <div class="day-lbl">Wed</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 90%"></div>
-                <div class="day-lbl">Thu</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 55%"></div>
-                <div class="day-lbl">Fri</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 0%"></div>
-                <div class="day-lbl">Sat</div>
-              </div>
-              <div class="bar-col">
-                <div class="bar" style="height: 0%"></div>
-                <div class="day-lbl">Sun</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Right Column: Recent activity and achievements -->
         <div class="dash-right">
+          <!-- EXP & Study History Log (Quizzes vs Strokes breakdown) -->
+          <div class="dash-block">
+            <h3>📈 EXP breakdown & Study History</h3>
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">Earn XP by answering quizzes and tracing stroke guidelines in Kanji Lab.</p>
+            <div class="exp-breakdown" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+              <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:12px; padding:12px; text-align:center;">
+                <div style="font-size:24px; font-weight:800; color:#f59e0b;" id="dashboard-xp-quizzes">${this.state.user.xpFromQuizzes || 0}</div>
+                <div style="font-size:11px; color:#94a3b8; font-weight:600; margin-top:2px;">Quiz & Test XP</div>
+              </div>
+              <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); border-radius:12px; padding:12px; text-align:center;">
+                <div style="font-size:24px; font-weight:800; color:#3b82f6;" id="dashboard-xp-strokes">${this.state.user.xpFromStrokes || 0}</div>
+                <div style="font-size:11px; color:#94a3b8; font-weight:600; margin-top:2px;">Kanji Stroke XP</div>
+              </div>
+            </div>
+            <h4 style="font-size:14px; margin-bottom:10px;">Recently Studied Lessons</h4>
+            <div class="activity-list">
+              ${recentActHTML || '<div class="empty-state">No recent study sessions logged.</div>'}
+            </div>
+          </div>
+
           <div class="dash-block">
             <h3>Personalized Recommendations</h3>
             <div class="recs-stack">
               ${recHTML}
             </div>
           </div>
-
-          <div class="dash-block">
-            <h3>Recently Studied Lessons</h3>
-            <div class="activity-list">
-              ${recentActHTML || '<div class="empty-state">No recent study sessions logged.</div>'}
-            </div>
-          </div>
         </div>
 
         <!-- Badges Area bottom -->
         <div class="dash-bottom-badges dash-block" style="grid-column: 1 / -1;">
-          <h3>Ninja Achievements & Badges</h3>
+          <h3>🏆 Achievement Badges & Medals</h3>
+          <p style="font-size:13px; color:#94a3b8; margin-bottom:20px;">Pass mock tests and complete tasks to unlock badges.</p>
           <div class="badges-flex">
             ${badgesHTML}
           </div>
         </div>
       </div>
     `;
+
+    // Hook up Username Saver
+    const saveNameBtn = document.getElementById("dashboard-save-username-btn");
+    const nameInput = document.getElementById("dashboard-username-input");
+    if (saveNameBtn && nameInput) {
+      saveNameBtn.onclick = () => {
+        const newName = nameInput.value.trim();
+        if (newName) {
+          this.state.user.username = newName;
+          this.saveState();
+          
+          // Update the welcome message in DOM
+          const welcomeHeading = document.getElementById("dashboard-welcome-heading");
+          if (welcomeHeading) {
+            welcomeHeading.textContent = `Welcome back, ${newName}!`;
+          }
+          // Update header
+          this.updateUserSessionUI();
+          this.showNotification("👤 Profile Updated", `Your nickname has been updated to "${newName}"!`, "success");
+        }
+      };
+    }
+
+    // Hook up Reset Progress Button
+    const resetBtn = document.getElementById("dashboard-reset-state-btn");
+    if (resetBtn) {
+      resetBtn.onclick = () => {
+        if (confirm("Are you sure you want to reset all your progress, XP, study history, chapters, and badges? This cannot be undone.")) {
+          this.state = this.getInitialState();
+          this.state.user.username = "Guest Shinobi"; // Fallback
+          this.state.user.xp = 10;
+          this.state.user.xpFromQuizzes = 0;
+          this.state.user.xpFromStrokes = 0;
+          this.state.user.masteredKanji = [];
+          this.state.user.chapters = {
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false,
+            7: false,
+            8: false
+          };
+          this.saveState();
+          this.updateUserSessionUI();
+          this.renderDashboard(container); // Re-render instantly
+          this.showNotification("🔄 Progress Reset", "Your Shinobi progress has been reset to level 1.", "warning");
+        }
+      };
+    }
+
+    // Hook up Chapter checklists checkboxes
+    const updateChapterProgressUI = () => {
+      let completedCount = 0;
+      for (let i = 1; i <= 8; i++) {
+        if (this.state.user.chapters && this.state.user.chapters[i]) {
+          completedCount++;
+        }
+      }
+      const percent = Math.round((completedCount / 8) * 100);
+      const label = document.getElementById("chapter-progress-pct-label");
+      const fillBar = document.getElementById("chapter-progress-bar-fill");
+      if (label) {
+        label.textContent = `${completedCount} of 8 (${percent}%)`;
+      }
+      if (fillBar) {
+        fillBar.style.width = `${percent}%`;
+      }
+    };
+
+    // Attach listeners & run initial progress bar render
+    for (let i = 1; i <= 8; i++) {
+      const chBox = document.getElementById(`chapter-checkbox-${i}`);
+      if (chBox) {
+        chBox.onchange = (e) => {
+          this.state.user.chapters = this.state.user.chapters || {};
+          this.state.user.chapters[i] = e.target.checked;
+          this.saveState();
+          updateChapterProgressUI();
+        };
+      }
+    }
+
+    // Initial render of chapter progress
+    updateChapterProgressUI();
   }
 
   // LOGIN / SIGNUP PAGE RENDER
@@ -2796,6 +2957,19 @@ class NihongoApp {
       if (email && pass) {
         this.state.user.username = email.split("@")[0]; // Simple mockup username
         this.state.user.xp = 35; // Preset values
+        this.state.user.xpFromQuizzes = 45;
+        this.state.user.xpFromStrokes = 20;
+        this.state.user.masteredKanji = ["k_n5_1", "k_n5_2", "k_n5_3"];
+        this.state.user.chapters = {
+          1: true,
+          2: true,
+          3: false,
+          4: false,
+          5: false,
+          6: false,
+          7: false,
+          8: false
+        };
         this.saveState();
         this.updateUserSessionUI();
         this.updateDashboardStats();
@@ -2815,6 +2989,19 @@ class NihongoApp {
         this.state = this.getInitialState();
         this.state.user.username = user;
         this.state.user.xp = 10;
+        this.state.user.xpFromQuizzes = 0;
+        this.state.user.xpFromStrokes = 0;
+        this.state.user.masteredKanji = [];
+        this.state.user.chapters = {
+          1: false,
+          2: false,
+          3: false,
+          4: false,
+          5: false,
+          6: false,
+          7: false,
+          8: false
+        };
         this.saveState();
         this.updateUserSessionUI();
         this.updateDashboardStats();
