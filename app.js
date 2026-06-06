@@ -3118,7 +3118,24 @@ class NihongoApp {
 
         chatBin.appendChild(item);
       });
-      chatBin.scrollTop = chatBin.scrollHeight;
+      
+      const lastMsg = this.kakashi.chatHistory[this.kakashi.chatHistory.length - 1];
+      const prevMsg = this.kakashi.chatHistory[this.kakashi.chatHistory.length - 2];
+      if (lastMsg && lastMsg.sender === 'bot' && !lastMsg.isSystem && prevMsg && prevMsg.sender === 'user') {
+        const userSideElements = chatBin.querySelectorAll(".chat-bubble-row.user-side");
+        if (userSideElements.length > 0) {
+          const lastUserEl = userSideElements[userSideElements.length - 1];
+          chatBin.style.position = "relative";
+          chatBin.scrollTo({
+            top: Math.max(0, lastUserEl.offsetTop - 10),
+            behavior: "smooth"
+          });
+        } else {
+          chatBin.scrollTop = chatBin.scrollHeight;
+        }
+      } else {
+        chatBin.scrollTop = chatBin.scrollHeight;
+      }
     };
 
     const submitUserMessage = (textVal) => {
