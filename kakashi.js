@@ -8,15 +8,12 @@ class KakashiAssistant {
   }
 
   loadChatHistory() {
-    const saved = localStorage.getItem("kakashi_chat_history");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    // Default greeting
+    // Clear chat history on page reload/refresh
+    localStorage.removeItem("kakashi_chat_history");
     return [
       {
         sender: "bot",
-        text: "ようこそ！ (Welcome!) I am **Kakashi**, your personal Japanese tutor. 🥷✨\n\nI can help you with anything related to Japanese learning:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
+        text: "Hi! I am here to help you. I am **Kakashi**, your personal Japanese tutor. 🥷✨\n\nI can help you with anything related to Japanese learning:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isSystem: true
       }
@@ -31,7 +28,7 @@ class KakashiAssistant {
     this.chatHistory = [
       {
         sender: "bot",
-        text: "History cleared! Let's start fresh. What would you like to learn next?",
+        text: "Hi! I am here to help you. I am **Kakashi**, your personal Japanese tutor. 🥷✨\n\nI can help you with anything related to Japanese learning:\n* Explain complex grammar rules simply\n* Compare particles like **は vs が** or **に vs で**\n* Break down sentence structures\n* Correct your Japanese writing\n* Generate quick practice quizzes\n* Recommend a study plan for your JLPT goals\n\nHow can I help you today? Try typing a question below or selecting a quick option!",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isSystem: true
       }
