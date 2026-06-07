@@ -107176,3 +107176,286 @@ const grammarDatabase = [
     }
   }
 ];
+
+const readingDatabase = [
+  {
+    "id": "r_n5_1",
+    "level": "N5",
+    "title": "私の週末 (My Weekend)",
+    "content": "私<rt>わたし</rt>は先<rt>せん</rt>週<rt>しゅう</rt>の土<rt>ど</rt>曜<rt>よう</rt>日<rt>び</rt>に友<rt>とも</rt>達<rt>だち</rt>と図<rt>と</rt>書<rt>しょ</rt>館<rt>かん</rt>へ行<rt>い</rt>きました。図<rt>と</rt>書<rt>しょ</rt>館<rt>かん</rt>で二<rt>に</rt>時<rt>じ</rt>間<rt>かん</rt>日本<rt>にほん</rt>語<rt>ご</rt>を勉<rt>べん</rt>強<rt>きょう</rt>しました。それから、デパートで買<rt>か</rt>い物<rt>もの</rt>をしました。夜<rt>よる</rt>はレストランで美<rt>おい</rt>味<rt>し</rt>しい寿司<rt>すし</rt>を食<rt>た</rt>べました。とても楽<rt>たの</rt>しかったです。日<rt>にち</rt>曜<rt>よう</rt>日<rt>び</rt>はどこへも行<rt>い</rt>きませんでした。家<rt>うち</rt>で本<rt>ほん</rt>を読<rt>よ</rt>んで、ゆっくり休<rt>やす</rt>みました。",
+    "hints": {
+      "先週": "last week",
+      "図書館": "library",
+      "デパート": "department store",
+      "買い物": "shopping",
+      "ゆっくり": "slowly, at ease",
+      "休みました": "rested (past tense of やすむ)"
+    },
+    "questions": [
+      {
+        "question": "土曜日にどこへ行きましたか。",
+        "options": [
+          "図書館とデパートとレストラン",
+          "図書館と家とレストラン",
+          "デパートと学校と家",
+          "どこへも行きませんでした"
+        ],
+        "answerIndex": 0,
+        "explanation": "The text says the speaker went to the library (図書館), then shopped at the department store (デパート), and ate sushi at a restaurant (レストラン) in the evening."
+      },
+      {
+        "question": "日曜日に何をしましたか。",
+        "options": [
+          "友達と勉強しました",
+          "寿司を食べました",
+          "デパートで買い物をしました",
+          "家で本を読んで休みました"
+        ],
+        "answerIndex": 3,
+        "explanation": "The passage states: '日曜日...家で本を読んで、ゆっくり休ました' (Sunday... read a book at home and rested)."
+      }
+    ]
+  },
+  {
+    "id": "r_n4_1",
+    "level": "N4",
+    "title": "日本の引っ越し (Moving in Japan)",
+    "content": "日本<rt>にほん</rt>では、引<rt>ひ</rt>っ越<rt>こ</rt>しをするときに隣<rt>となり</rt>の家<rt>うち</rt>の人<rt>ひと</rt>に挨拶<rt>あいさつ</rt>をする習<rt>しゅう</rt>慣<rt>かん</rt>があります。「これからお世話<rt>せわ</rt>になります」と言<rt>い</rt>って、タオルや石鹸<rt>せっけん</rt>などの小<rt>ちい</rt>さなプレゼントを渡<rt>わた</rt>します。最近<rt>さいきん</rt>はアパートに住<rt>す</rt>む人<rt>ひと</rt>の中<rt>なか</rt>で、挨拶<rt>あいさつ</rt>をしない人<rt>ひと</rt>が増<rt>ふ</rt>えていますが、近所<rt>きんじょ</rt>の人<rt>ひと</rt>と良<rt>よ</rt>い関係<rt>かんけい</rt>を作<rt>つく</rt>るために、挨拶<rt>あいさつ</rt>は今<rt>いま</rt>でも大切<rt>たいせつ</rt>だと考<rt>かんが</rt>えられています。",
+    "hints": {
+      "引っ越し": "moving (house)",
+      "挨拶": "greeting",
+      "習慣": "custom, habit",
+      "お世話になります": "thank you in advance for your care/help",
+      "石鹸": "soap",
+      "近所": "neighborhood"
+    },
+    "questions": [
+      {
+        "question": "引っ越しをするとき、何を渡す習慣がありますか。",
+        "options": [
+          "高いお金",
+          "タオルや石鹸などの小さなプレゼント",
+          "美味しい手作り料理",
+          "アパートの鍵"
+        ],
+        "answerIndex": 1,
+        "explanation": "The text states: 'タオルや石鹸などの小さなプレゼントを渡します' (hand over small presents like towels or soap)."
+      },
+      {
+        "question": "最近のアパートではどうですか。",
+        "options": [
+          "全員が近所の人と毎日会います",
+          "引っ越しをする人が全くいません",
+          "挨拶をしない人が増えています",
+          "プレゼントが豪華になっています"
+        ],
+        "answerIndex": 2,
+        "explanation": "The text says: '最近はアパートに住む人の中で、挨拶をしない人が増えています' (Recently, the number of people living in apartments who do not greet neighbors is increasing)."
+      }
+    ]
+  },
+  {
+    "id": "r_n3_1",
+    "level": "N3",
+    "title": "食品ロス問題 (Food Waste Problem)",
+    "content": "まだ食<rt>た</rt>べられるのに捨<rt>す</rt>てられてしまう「食品<rt>しょくひん</rt>ロス」が世界<rt>せかい</rt>中<rt>ちゅう</rt>で問題<rt>もんだい</rt>になっています。日本<rt>にほん</rt>でも毎年<rt>まいとし</rt>何百万<rt>なんびゃくまん</rt>トンもの食料<rt>しょくりょう</rt>が廃棄<rt>はいき</rt>されています。この原因<rt>げんいん</rt>の１つは、スーパーやコンビニの「三<rt>さん</rt>分<rt>ぶん</rt>の１ルール」という商習慣<rt>しょうしゅうかん</rt>です。これは、製造<rt>せいぞう</rt>日から賞味<rt>しょうみ</rt>期限<rt>きげん</rt>までの期間<rt>きかん</rt>を３等分<rt>とうぶん</rt>し、最初の３分の１を過ぎたら店に納品<rt>のうひん</rt>できないというものです。この厳しいルールを見直<rt>みなお</rt>す動きが広<rt>ひろ</rt>がりつつあります。",
+    "hints": {
+      "食品ロス": "food loss/waste",
+      "廃棄": "disposal, discarding",
+      "商習慣": "business custom/practice",
+      "賞味期限": "best-before date",
+      "納品": "delivery of goods",
+      "見直す": "to review, reconsider"
+    },
+    "questions": [
+      {
+        "question": "「三分の一ルール」とはどのようなルールですか。",
+        "options": [
+          "食べ物の3分の1を必ず捨てるルール",
+          "賞味期限 of 最初の3分の1を過ぎたら店に納品できないルール",
+          "客が食べ残した料理の3分の1を店が回収するルール",
+          "値段を3分の1に割引して販売するルール"
+        ],
+        "answerIndex": 1,
+        "explanation": "The passage explains the '三分の一ルール' as: '最初の三分の一を過ぎたら店に納品できないというものです'."
+      }
+    ]
+  },
+  {
+    "id": "r_n2_1",
+    "level": "N2",
+    "title": "地球温暖化と桜の開花 (Global Warming & Cherry Blossoms)",
+    "content": "近年<rt>きんねん</rt>、地球<rt>ちきゅう</rt>温暖化<rt>おんだんか</rt>の影響<rt>えいきょう</rt>によって、日本<rt>にほん</rt>各地<rt>かくち</rt>で桜<rt>さくら</rt>の開花<rt>かいか</rt>時期<rt>じき</rt>が早<rt>はや</rt>まっています。気象庁<rt>きしょうちょう</rt>の観測<rt>かんそく</rt>によると、桜<rt>さくら</rt>の開花<rt>かいか</rt>は春<rt>はる</rt>の気温<rt>きおん</rt>上昇<rt>じょうしょう</rt>と密接<rt>みっせつ</rt>に関連<rt>かんれん</rt>しています。冬<rt>ふゆ</rt>の寒<rt>さむ</rt>さが不十分<rt>ふじゅうぶん</rt>だと、桜<rt>さくら</rt>の芽<rt>め</rt>が目覚<rt>めざ</rt>める「休眠<rt>きゅうみん</rt>打破<rt>だは</rt>」が遅<rt>おく</rt>れる反面<rt>はんめん</rt>、春<rt>はる</rt>の気温<rt>きおん</rt>が高<rt>たか</rt>すぎると開花<rt>かいか</rt>が一気<rt>いっき</rt>に進行<rt>しんこう</rt>します。このまま温暖化<rt>おんだんか</rt>が進<rt>すす</rt>めば、将来<rt>しょうらい</rt>的<rt>てき</rt>に伝統<rt>でんとう</rt>的<rt>てき</rt>な「お花見<rt>はなみ</rt>」の時期<rt>じき</rt>や文化<rt>ぶんか</rt>そのものが変化<rt>へんか</rt>してしまう恐<rt>おそ</rt>れがあります。これにどう対処<rt>たいしょ</rt>すべきか、地域<rt>ちいき</rt>社会<rt>しゃかい</rt>全体<rt>ぜんたい</rt>で見直<rt>みなお</rt>す動<rt>うご</rt>きが求<rt>もと</rt>められています。",
+    "hints": {
+      "近年": "recent years",
+      "地球温暖化": "global warming",
+      "休眠打破": "breaking dormancy (of buds)",
+      "反面": "on the other hand (contrasting aspects)",
+      "恐れがあります": "there is a risk/fear of",
+      "対処": "dealing with, coping with"
+    },
+    "questions": [
+      {
+        "question": "桜の開花時期が早まっている主な原因は何ですか。",
+        "options": [
+          "日本の伝統的なお花見文化の広がり",
+          "地球温暖化による気温の上昇",
+          "冬の寒さが厳しくなりすぎたこと",
+          "気象庁による新しい観測技術の導入"
+        ],
+        "answerIndex": 1,
+        "explanation": "The text states: '地球温暖化の影響によって、日本各地で桜の開花時期が早まっています' (Due to the effects of global warming, the cherry blossom blooming season is getting earlier across Japan)."
+      },
+      {
+        "question": "温暖化が進んだ場合、どのような懸念が述べられていますか。",
+        "options": [
+          "冬が来なくなってしまうこと",
+          "桜の木が日本全国からすべて枯れてしまうこと",
+          "伝統的な「お花見」の時期や文化が変わってしまう恐れ",
+          "お花見をする人がいなくなること"
+        ],
+        "answerIndex": 2,
+        "explanation": "The text warns: '将来的に伝統的な「お花見」の時期や文化そのものが変化してしまう恐れがあります' (There is a risk that the timing and culture of traditional cherry blossom viewing itself will change in the future)."
+      }
+    ]
+  }
+];
+
+const mockTestsDatabase = {
+  "N5": [
+    {
+      "question": "日本語で「ありがとう」は英語で何ですか。",
+      "options": [
+        "Hello",
+        "Thank you",
+        "Goodbye",
+        "Excuse me"
+      ],
+      "answerIndex": 1,
+      "explanation": "「ありがとう」 means 'Thank you' in Japanese."
+    },
+    {
+      "question": "「食べる」のます形は何ですか。",
+      "options": [
+        "食べます",
+        "食べります",
+        "食ます",
+        "食びます"
+      ],
+      "answerIndex": 0,
+      "explanation": "食べる is a Group 2 (Ru) verb. Remove 'ru' and add 'masu' -> 食べます."
+    },
+    {
+      "question": "「水」の読み方は何ですか。",
+      "options": [
+        "みず",
+        "かわ",
+        "うみ",
+        "いけ"
+      ],
+      "answerIndex": 0,
+      "explanation": "The kanji 水 (water) is read as 'mizu' (kunyomi)."
+    },
+    {
+      "question": "私は明日、京都に＿＿＿＿。 (I will go to Kyoto tomorrow.)",
+      "options": [
+        "行きました",
+        "行く",
+        "行きます",
+        "行って"
+      ],
+      "answerIndex": 2,
+      "explanation": "For a polite statement about future actions, the non-past polite form 「行きます」 is correct."
+    }
+  ],
+  "N4": [
+    {
+      "question": "車の運転が＿＿＿＿＿ことができます。",
+      "options": [
+        "する",
+        "して",
+        "できる",
+        "やり"
+      ],
+      "answerIndex": 0,
+      "explanation": "The pattern is Verb [Dictionary Form] + ことができる. The dictionary form of 運転する is 運転する."
+    },
+    {
+      "question": "「読書」の読み方は何ですか。",
+      "options": [
+        "よみしょ",
+        "どくしょ",
+        "とうしょ",
+        "よむしょ"
+      ],
+      "answerIndex": 1,
+      "explanation": "読書 (reading books) is read as どくしょ (onyomi for both kanji)."
+    },
+    {
+      "question": "雨が降っている＿＿＿、傘を持っていきます。 (Since it's raining, I'll take an umbrella.)",
+      "options": [
+        "から",
+        "まで",
+        "より",
+        "ながら"
+      ],
+      "answerIndex": 0,
+      "explanation": "「から」 indicates a reason or cause ('because' or 'since')."
+    }
+  ],
+  "N3": [
+    {
+      "question": "来週から出張することに＿＿＿＿＿。",
+      "options": [
+        "なりました",
+        "しました",
+        "ありました",
+        "きました"
+      ],
+      "answerIndex": 0,
+      "explanation": "ことになりました indicates a decision made by others, company, or circumstances."
+    },
+    {
+      "question": "「解決」の読み方は何ですか。",
+      "options": [
+        "かいけつ",
+        "かいけっつ",
+        "がいけつ",
+        "かいけつう"
+      ],
+      "answerIndex": 0,
+      "explanation": "解決 (solution) is read as かいけつ."
+    }
+  ],
+  "N2": [
+    {
+      "question": "世界経済は変動し＿＿＿＿＿。 (The global economy is in the process of fluctuating.)",
+      "options": [
+        "つつある",
+        "がちだ",
+        "きる",
+        "かねない"
+      ],
+      "answerIndex": 0,
+      "explanation": "「つつある」 is used for changes in progress ('in the process of gradually doing...')."
+    },
+    {
+      "question": "「影響」の読み方は何ですか。",
+      "options": [
+        "えいきょう",
+        "えいこう",
+        "ようきょう",
+        "えいきょ"
+      ],
+      "answerIndex": 0,
+      "explanation": "影響 (influence) is read as えいきょう."
+    }
+  ]
+};
+
+// Export to window object for ease of vanilla Javascript access
+window.vocabDatabase = vocabDatabase;
+window.kanjiDatabase = kanjiDatabase;
+window.grammarDatabase = grammarDatabase;
+window.readingDatabase = readingDatabase;
+window.mockTestsDatabase = mockTestsDatabase;
