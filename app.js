@@ -1891,7 +1891,7 @@ class NihongoApp {
         const item = document.createElement("div");
         item.className = "grammar-list-item";
         item.innerHTML = `
-          <h4>${g.pattern}</h4>
+          <h4>${g.patternFurigana || g.pattern}</h4>
           <p>${g.explanation ? g.explanation.substring(0, 45) + '...' : ''}</p>
         `;
         item.onclick = () => {
@@ -2085,10 +2085,10 @@ class NihongoApp {
       pane.innerHTML = `
         <div class="grammar-detail-header" style="display:flex; justify-content:space-between; align-items:center;">
           <div style="display:flex; align-items:center; gap:12px;">
-            <h2>${g.pattern}</h2>
+            <h2>${g.patternFurigana || g.pattern}</h2>
             <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" 
                     onclick="window.showZoomModal(this.getAttribute('data-jp'), 'Base Grammar Pattern')"
-                    data-jp="${g.pattern.replace(/"/g, '&quot;')}">
+                    data-jp="${(g.patternFurigana || g.pattern).replace(/"/g, '&quot;')}">
               🔍 Zoom Pattern
             </button>
           </div>
@@ -2103,12 +2103,35 @@ class NihongoApp {
           <p>${g.formation || ""}</p>
         </div>
 
+        ${g.notes ? `
+        <div class="grammar-section-block">
+          <h3>Notes</h3>
+          <p>${g.notes}</p>
+        </div>
+        ` : ""}
+
+        ${g.commonMistakes && (g.commonMistakes.incorrect || g.commonMistakes.correct || g.commonMistakes.explanation) ? `
+        <div class="grammar-section-block mistakes-block" style="border-left: 4px solid #ef4444; padding-left: 15px; background: rgba(239, 68, 68, 0.06); border-radius: 6px; padding-top: 12px; padding-bottom: 12px; margin-top: 20px;">
+          <h3 style="color: #f87171; margin-top: 0; margin-bottom: 8px; font-size: 1.05rem; font-weight: 700; text-transform: uppercase;">⚠️ Common Mistakes</h3>
+          ${g.commonMistakes.incorrect ? `<p style="margin: 0 0 4px 0;">❌ <strong>Incorrect:</strong> ${g.commonMistakes.incorrect}</p>` : ""}
+          ${g.commonMistakes.correct ? `<p style="margin: 0 0 8px 0;">✅ <strong>Correct:</strong> ${g.commonMistakes.correct}</p>` : ""}
+          ${g.commonMistakes.explanation ? `<p style="margin: 0; opacity: 0.8; font-size: 0.9rem;">${g.commonMistakes.explanation}</p>` : ""}
+        </div>
+        ` : ""}
+
+        ${g.comparison && g.comparison.target ? `
+        <div class="grammar-section-block comparison-block" style="border-left: 4px solid #3b82f6; padding-left: 15px; background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding-top: 12px; padding-bottom: 12px; margin-top: 20px;">
+          <h3 style="color: #60a5fa; margin-top: 0; margin-bottom: 8px; font-size: 1.05rem; font-weight: 700; text-transform: uppercase;">🔍 Comparison vs ${g.comparison.target}</h3>
+          <p style="margin: 0; opacity: 0.95; font-size: 0.95rem;">${g.comparison.difference}</p>
+        </div>
+        ` : ""}
+
         <div class="grammar-section-block present-tense-block" style="margin-top: 20px; border-left: 4px solid #3b82f6; padding-left: 15px; background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding-top: 12px; padding-bottom: 12px;">
           <h3 style="color: #60a5fa; margin-top: 0; margin-bottom: 8px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
             ☀️ Present Tense Form
           </h3>
           <p style="margin: 0 0 6px 0; font-size: 1.1rem; font-weight: 600;">
-            Present Form: <code style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.95em;">${g.pattern}</code>
+            Present Form: <code style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.95em;">${g.patternFurigana || g.pattern}</code>
           </p>
           <p style="margin: 0 0 6px 0; font-size: 0.95rem; opacity: 0.85;">
             <strong>Formation:</strong> ${g.formation || "N/A"}
