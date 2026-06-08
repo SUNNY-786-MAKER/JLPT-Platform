@@ -1,5 +1,20 @@
 // Main Application Logic for Nihongo Path
 
+// Utility to format raw Kanji<rt>Reading</rt> into precise HTML ruby tags
+window.formatFurigana = (text) => {
+  if (!text) return "";
+  const rubyBlocks = [];
+  let processed = text.replace(/<ruby>[\s\S]*?<\/ruby>/gi, (match) => {
+    rubyBlocks.push(match);
+    return `__RUBY_PLACEHOLDER_${rubyBlocks.length - 1}__`;
+  });
+  processed = processed.replace(/([\u4e00-\u9fff\u3400-\u4dbf\u3005\u30f6]+)<rt>([^<]+)<\/rt>/g, '<ruby>$1<rt>$2</rt></ruby>');
+  for (let i = 0; i < rubyBlocks.length; i++) {
+    processed = processed.replace(`__RUBY_PLACEHOLDER_${i}__`, rubyBlocks[i]);
+  }
+  return processed;
+};
+
 // Global Zoom System Modal
 window.showZoomModal = (htmlContent, translationText = "") => {
   let modal = document.getElementById("global-zoom-modal");
@@ -835,12 +850,12 @@ class NihongoApp {
           <div class="vocab-card-footer" style="position: relative;">
             <div class="example-box" style="padding-right: 25px;">
               <span class="lbl">Ex:</span>
-              <ruby>${vocab.exampleFurigana}</ruby>
+              ${window.formatFurigana(vocab.exampleFurigana)}
               <div class="example-translation">${vocab.exampleMeaning}</div>
             </div>
             <button class="zoom-btn" title="Zoom Example" style="position: absolute; right: 8px; top: 12px; background: none; border: none; color: var(--text-muted, #94a3b8); cursor: pointer; font-size: 0.8rem; opacity: 0.5; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"
                     onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
-                    data-jp="${(`<ruby>${vocab.exampleFurigana}</ruby>`).replace(/"/g, '&quot;')}"
+                    data-jp="${window.formatFurigana(vocab.exampleFurigana).replace(/"/g, '&quot;')}"
                     data-en="${(vocab.exampleMeaning).replace(/"/g, '&quot;')}">
               🔍
             </button>
@@ -936,7 +951,7 @@ class NihongoApp {
             <p class="reading">Reading: <strong>${item.kana}</strong> (${item.romaji})</p>
             ${item.exampleFurigana ? `
             <div class="slide-example">
-              <p class="jp-sentence"><ruby>${item.exampleFurigana}</ruby></p>
+              <p class="jp-sentence">${window.formatFurigana(item.exampleFurigana)}</p>
               <p class="en-sentence">${item.exampleMeaning}</p>
             </div>` : ''}
           </div>
@@ -2077,9 +2092,8 @@ class NihongoApp {
       const pane = document.getElementById("grammar-detail-pane");
       const isBookmarked = self.state.user.bookmarks.grammar && self.state.user.bookmarks.grammar.includes(g.id);
       const pastDetails = getPastFormDetails(g);
-      
       const firstEx = g.examples && g.examples[0] ? g.examples[0] : null;
-      const presentExampleJp = firstEx ? (firstEx.furigana ? `<ruby>${firstEx.furigana}</ruby>` : firstEx.japanese) : "";
+      const presentExampleJp = firstEx ? (firstEx.furigana ? window.formatFurigana(firstEx.furigana) : firstEx.japanese) : "";
       const presentExampleEn = firstEx ? firstEx.translation : "";
 
       pane.innerHTML = `
@@ -2173,12 +2187,12 @@ class NihongoApp {
             <div style="background: rgba(0, 0, 0, 0.2); padding: 10px 14px; border-radius: 6px; border-left: 2px solid #a78bfa; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
               <div style="flex: 1; margin-right: 10px;">
                 <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; display: block; margin-bottom: 4px; font-weight: 700;">Past Example:</span>
-                <p class="jp font-japanese" style="margin: 0 0 4px 0; font-size: 1.1rem; line-height: 1.5;"><ruby>${pastDetails.exampleJp}</ruby></p>
+                <p class="jp font-japanese" style="margin: 0 0 4px 0; font-size: 1.1rem; line-height: 1.5;">${window.formatFurigana(pastDetails.exampleJp)}</p>
                 <p style="margin: 0; font-size: 0.88rem; opacity: 0.8; font-style: italic;">${pastDetails.exampleEn}</p>
               </div>
               <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" 
                       onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
-                      data-jp="${(`<ruby>${pastDetails.exampleJp}</ruby>`).replace(/"/g, '&quot;')}"
+                      data-jp="${window.formatFurigana(pastDetails.exampleJp).replace(/"/g, '&quot;')}"
                       data-en="${pastDetails.exampleEn.replace(/"/g, '&quot;')}">
                 🔍 Zoom
               </button>
@@ -2191,13 +2205,13 @@ class NihongoApp {
           ${g.examples ? g.examples.map(e => `
             <div class="example-item" style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div style="flex:1; margin-right: 10px;">
-                <p class="jp font-japanese">${e.furigana ? `<ruby>${e.furigana}</ruby>` : e.japanese || ""}</p>
+                <p class="jp font-japanese">${e.furigana ? window.formatFurigana(e.furigana) : e.japanese || ""}</p>
                 <p class="en">${e.translation || ""}</p>
               </div>
               <button class="btn btn-secondary btn-sm zoom-action-btn" 
                       style="padding: 2px 6px; font-size: 0.8rem; margin-top: 5px; opacity: 0.7;" 
                       onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
-                      data-jp="${(e.furigana ? `<ruby>${e.furigana}</ruby>` : e.japanese || "").replace(/"/g, '&quot;')}"
+                      data-jp="${(e.furigana ? window.formatFurigana(e.furigana) : e.japanese || "").replace(/"/g, '&quot;')}"
                       data-en="${(e.translation || "").replace(/"/g, '&quot;')}">
                 🔍 Zoom
               </button>
