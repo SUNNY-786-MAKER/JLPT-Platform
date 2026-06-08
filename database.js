@@ -1,5 +1,20 @@
 // JLPT N5 - N2 Japanese Learning Database (Expanded)
 
+// Utility to format raw Kanji<rt>Reading</rt> into precise HTML ruby tags
+window.formatFurigana = (text) => {
+  if (!text) return "";
+  const rubyBlocks = [];
+  let processed = text.replace(/<ruby>[\s\S]*?<\/ruby>/gi, (match) => {
+    rubyBlocks.push(match);
+    return `__RUBY_PLACEHOLDER_${rubyBlocks.length - 1}__`;
+  });
+  processed = processed.replace(/([\u4e00-\u9fff\u3400-\u4dbf\u3005\u30f6]+)<rt>([^<]+)<\/rt>/g, '<ruby>$1<rt>$2</rt></ruby>');
+  for (let i = 0; i < rubyBlocks.length; i++) {
+    processed = processed.replace(`__RUBY_PLACEHOLDER_${i}__`, rubyBlocks[i]);
+  }
+  return processed;
+};
+
 const vocabDatabase = [
   {
     "id": "v_n5_1",

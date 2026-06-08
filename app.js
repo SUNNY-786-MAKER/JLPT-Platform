@@ -1,19 +1,7 @@
 // Main Application Logic for Nihongo Path
 
-// Utility to format raw Kanji<rt>Reading</rt> into precise HTML ruby tags
-window.formatFurigana = (text) => {
-  if (!text) return "";
-  const rubyBlocks = [];
-  let processed = text.replace(/<ruby>[\s\S]*?<\/ruby>/gi, (match) => {
-    rubyBlocks.push(match);
-    return `__RUBY_PLACEHOLDER_${rubyBlocks.length - 1}__`;
-  });
-  processed = processed.replace(/([\u4e00-\u9fff\u3400-\u4dbf\u3005\u30f6]+)<rt>([^<]+)<\/rt>/g, '<ruby>$1<rt>$2</rt></ruby>');
-  for (let i = 0; i < rubyBlocks.length; i++) {
-    processed = processed.replace(`__RUBY_PLACEHOLDER_${i}__`, rubyBlocks[i]);
-  }
-  return processed;
-};
+// Ensure formatFurigana is defined (it is defined in database.js, which loads first)
+window.formatFurigana = window.formatFurigana || ((text) => text);
 
 // Global Zoom System Modal
 window.showZoomModal = (htmlContent, translationText = "") => {
@@ -2334,7 +2322,7 @@ class NihongoApp {
         }
       });
 
-      bodyBox.innerHTML = formattedHTML;
+      bodyBox.innerHTML = window.formatFurigana(formattedHTML);
 
       // Render Questions
       const questionsBin = document.getElementById("reading-questions-container");

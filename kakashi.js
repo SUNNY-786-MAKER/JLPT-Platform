@@ -289,7 +289,7 @@ class KakashiAssistant {
         const best = subMatches[0];
         let examplesText = "";
         if (best.examples && best.examples.length > 0) {
-          examplesText = `\n\n**Examples:**\n` + best.examples.slice(0, 2).map(e => `* **<ruby>${e.furigana || e.japanese}</ruby>**\n  *Translation: ${e.translation}*\n  *Breakdown: ${e.breakdown || "N/A"}*`).join("\n");
+          examplesText = `\n\n**Examples:**\n` + best.examples.slice(0, 2).map(e => `* **${window.formatFurigana(e.furigana || e.japanese)}**\n  *Translation: ${e.translation}*\n  *Breakdown: ${e.breakdown || "N/A"}*`).join("\n");
         }
         
         let otherMatchesNotice = "";
@@ -348,7 +348,7 @@ class KakashiAssistant {
       if (fuzzyVocabMatch) {
         let exampleText = "";
         if (fuzzyVocabMatch.example || fuzzyVocabMatch.exampleFurigana) {
-          const jpStr = fuzzyVocabMatch.exampleFurigana ? `<ruby>${fuzzyVocabMatch.exampleFurigana}</ruby>` : fuzzyVocabMatch.example;
+          const jpStr = fuzzyVocabMatch.exampleFurigana ? window.formatFurigana(fuzzyVocabMatch.exampleFurigana) : fuzzyVocabMatch.example;
           exampleText = `\n\n**Example Sentence:**\n* **${jpStr}**\n  *Translation: ${fuzzyVocabMatch.exampleMeaning || "N/A"}*`;
         }
         return {
