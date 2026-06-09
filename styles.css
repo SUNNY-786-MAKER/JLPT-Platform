@@ -2691,7 +2691,7 @@ canvas {
     right: -300px; /* Hidden off-screen */
     width: 280px;
     height: 100vh;
-    background: var(--bg-secondary);
+    background: var(--bg-secondary) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-left: 1px solid var(--border-color);
