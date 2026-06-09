@@ -395,43 +395,108 @@ class NihongoApp {
         link.classList.remove("active");
       }
     });
+
+    // Close mobile menu drawer if it is open
+    const hamburger = document.getElementById("hamburger-menu");
+    const navLinks = document.querySelector(".nav-links");
+    const overlay = document.getElementById("drawer-overlay");
+    if (hamburger && hamburger.classList.contains("active")) {
+      hamburger.classList.remove("active");
+      if (navLinks) navLinks.classList.remove("open");
+      if (overlay) overlay.classList.remove("open");
+    }
   }
 
   setupGlobalEvents() {
-    // Theme selector
+    // Mobile Drawer events
+    const hamburger = document.getElementById("hamburger-menu");
+    const navLinks = document.querySelector(".nav-links");
+    const overlay = document.getElementById("drawer-overlay");
+
+    if (hamburger && navLinks) {
+      hamburger.addEventListener("click", () => {
+        const isOpen = navLinks.classList.contains("open");
+        hamburger.classList.toggle("active", !isOpen);
+        navLinks.classList.toggle("open", !isOpen);
+        if (overlay) overlay.classList.toggle("open", !isOpen);
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener("click", () => {
+        if (hamburger) hamburger.classList.remove("active");
+        if (navLinks) navLinks.classList.remove("open");
+        overlay.classList.remove("open");
+      });
+    }
+
+    // Theme selector (desktop and mobile)
     const themeSelector = document.getElementById("theme-selector");
-    if (themeSelector) {
-      const savedTheme = localStorage.getItem("nihongo-theme") || "dark";
-      themeSelector.value = savedTheme;
+    const mobileThemeSelector = document.getElementById("mobile-theme-selector");
+
+    const applyTheme = (themeName) => {
+      document.body.classList.remove("light-mode", "theme-light", "theme-sakura", "theme-stealth");
       
-      const applyTheme = (themeName) => {
-        document.body.classList.remove("light-mode", "theme-light", "theme-sakura", "theme-stealth");
-        
-        if (themeName === "light") {
-          document.body.classList.add("light-mode", "theme-light");
-        } else if (themeName === "sakura") {
-          document.body.classList.add("light-mode", "theme-sakura");
-        } else if (themeName === "stealth") {
-          document.body.classList.add("theme-stealth");
-        }
-        localStorage.setItem("nihongo-theme", themeName);
-      };
+      if (themeName === "light") {
+        document.body.classList.add("light-mode", "theme-light");
+      } else if (themeName === "sakura") {
+        document.body.classList.add("light-mode", "theme-sakura");
+      } else if (themeName === "stealth") {
+        document.body.classList.add("theme-stealth");
+      }
+      localStorage.setItem("nihongo-theme", themeName);
+      
+      // Sync values across desktop and mobile selects
+      if (themeSelector) themeSelector.value = themeName;
+      if (mobileThemeSelector) mobileThemeSelector.value = themeName;
+    };
 
-      applyTheme(savedTheme);
+    const savedTheme = localStorage.getItem("nihongo-theme") || "dark";
+    applyTheme(savedTheme);
 
+    if (themeSelector) {
       themeSelector.addEventListener("change", (e) => {
         applyTheme(e.target.value);
       });
     }
+    if (mobileThemeSelector) {
+      mobileThemeSelector.addEventListener("change", (e) => {
+        applyTheme(e.target.value);
+      });
+    }
 
-    // Furigana toggle global button
+    // Furigana toggle (desktop and mobile)
     const firiToggle = document.getElementById("global-furigana-toggle");
+    const mobFiriToggle = document.getElementById("mobile-furigana-toggle");
+
+    const updateFuriganaUI = () => {
+      document.body.classList.toggle("hide-furigana", !this.furiganaVisible);
+      
+      if (firiToggle) {
+        firiToggle.classList.toggle("active", this.furiganaVisible);
+        const toggleSpan = firiToggle.querySelector("span");
+        if (toggleSpan) toggleSpan.textContent = this.furiganaVisible ? "あ ON" : "あ OFF";
+      }
+      if (mobFiriToggle) {
+        mobFiriToggle.classList.toggle("active", this.furiganaVisible);
+        const toggleSpanMob = mobFiriToggle.querySelector("span");
+        if (toggleSpanMob) toggleSpanMob.textContent = this.furiganaVisible ? "あ ON" : "あ OFF";
+      }
+    };
+
+    // Initialize state
+    updateFuriganaUI();
+
     if (firiToggle) {
       firiToggle.addEventListener("click", () => {
         this.furiganaVisible = !this.furiganaVisible;
-        document.body.classList.toggle("hide-furigana", !this.furiganaVisible);
-        firiToggle.classList.toggle("active", this.furiganaVisible);
-        firiToggle.querySelector("span").textContent = this.furiganaVisible ? "あ ON" : "あ OFF";
+        updateFuriganaUI();
+      });
+    }
+    if (mobFiriToggle) {
+      mobFiriToggle.addEventListener("click", () => {
+        this.furiganaVisible = !this.furiganaVisible;
+        updateFuriganaUI();
       });
     }
 
@@ -2218,7 +2283,15 @@ class NihongoApp {
 
   // READING COMPREHENSION PAGE RENDER
   renderReading(container) {
+    const self = this;
     container.innerHTML = `
+      <style>
+      @keyframes spin-chakra {
+        0% { transform: rotate(0deg) scale(1); color: var(--accent-indigo, #6366f1); }
+        50% { transform: rotate(180deg) scale(1.2); color: var(--accent-coral, #ff4e50); }
+        100% { transform: rotate(360deg) scale(1); color: var(--accent-indigo, #6366f1); }
+      }
+      </style>
       <div class="page-header">
         <div>
           <h1>Reading Comprehension</h1>
@@ -2226,12 +2299,27 @@ class NihongoApp {
         </div>
       </div>
 
-      <div class="filter-bar">
-        <div class="level-tabs" id="reading-level-tabs">
+      <div class="filter-bar" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <div class="level-tabs" id="reading-level-tabs" style="margin: 0;">
           <button class="tab-btn active" data-lvl="N5">N5</button>
           <button class="tab-btn" data-lvl="N4">N4</button>
           <button class="tab-btn" data-lvl="N3">N3</button>
           <button class="tab-btn" data-lvl="N2">N2</button>
+        </div>
+
+        <div class="interest-generator-box" style="padding: 10px 16px; background: rgba(255,255,255,0.03); border-radius: 30px; border: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span style="font-weight: 600; font-size: 0.88rem; color: var(--text-secondary);">✨ AI Scroll Compiler:</span>
+          <select id="reading-interest-select" class="control-btn" style="padding: 6px 12px; border-radius: 20px; outline: none; border: 1px solid var(--border-color); background: var(--bg-primary, #0f172a); color: var(--text-primary); cursor: pointer; font-size: 0.85rem;">
+            <option value="travelling">✈️ Travelling</option>
+            <option value="anime">🌸 Anime</option>
+            <option value="sports">⚽ Sports</option>
+            <option value="movies">🎬 Movies</option>
+            <option value="music">🎵 Music</option>
+            <option value="universe">🌌 Universe</option>
+            <option value="custom">✍️ Custom Topic...</option>
+          </select>
+          <input type="text" id="reading-custom-interest" placeholder="Type topic..." class="control-btn" style="display: none; padding: 6px 12px; border-radius: 20px; outline: none; border: 1px solid var(--border-color); background: var(--bg-primary, #0f172a); color: var(--text-primary); width: 130px; font-size: 0.85rem;">
+          <button class="btn btn-primary btn-sm" id="reading-generate-btn" style="padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; height: auto;">📜 Compile Scroll</button>
         </div>
       </div>
 
@@ -2251,6 +2339,114 @@ class NihongoApp {
     `;
 
     let activeLvl = "N5";
+
+    const interestSelect = document.getElementById("reading-interest-select");
+    const customInterestInput = document.getElementById("reading-custom-interest");
+    const generateBtn = document.getElementById("reading-generate-btn");
+
+    interestSelect.onchange = (e) => {
+      if (e.target.value === "custom") {
+        customInterestInput.style.display = "inline-block";
+        customInterestInput.focus();
+      } else {
+        customInterestInput.style.display = "none";
+      }
+    };
+
+    generateBtn.onclick = async () => {
+      let interest = interestSelect.value;
+      let displayTopic = interest;
+      if (interest === "custom") {
+        interest = customInterestInput.value.trim();
+        displayTopic = interest;
+        if (!interest) {
+          self.showNotification("⚠️ Invalid Topic", "Please enter a custom topic first!", "warning");
+          return;
+        }
+      }
+
+      // Disable UI during generation
+      generateBtn.disabled = true;
+      const originalText = generateBtn.innerHTML;
+      generateBtn.innerHTML = "🌀 Compiling...";
+      interestSelect.disabled = true;
+      customInterestInput.disabled = true;
+
+      // Show shinobi compilation state
+      const pane = document.getElementById("passage-detail-pane");
+      pane.innerHTML = `
+        <div class="empty-state" style="padding: 50px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
+          <div class="loading-chakra-spin" style="font-size: 3.5rem; animation: spin-chakra 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;">🌀</div>
+          <h3 style="margin: 10px 0 5px 0;">Kakashi is compiling your custom reading scroll...</h3>
+          <p style="color: var(--text-secondary); max-width: 400px; font-size: 0.9rem; line-height: 1.5;">
+            Concentrating chakra to format a level-appropriate passage and quiz on <strong>"${displayTopic}"</strong>. Please wait!
+          </p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch("/generate_reading", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ level: activeLvl, interest: interest })
+        });
+
+        if (response.ok) {
+          const parsed = await response.json();
+          
+          if (parsed.offline) {
+            self.showNotification(
+              "🥷 Out of Chakra!", 
+              `Kakashi is out of chakra right now, its restoring its chakra so pls wait. Loaded offline fallback scroll: ${parsed.category}!`, 
+              "warning"
+            );
+          } else {
+            self.showNotification("📜 Scroll Compiled!", `Successfully created passage on "${displayTopic}"!`, "success");
+          }
+
+          // Create passage object and push to database
+          const newPass = {
+            id: "gen_" + Date.now(),
+            level: activeLvl,
+            title: parsed.title,
+            content: parsed.content,
+            hints: parsed.hints,
+            questions: parsed.questions
+          };
+
+          window.readingDatabase.push(newPass);
+          renderPassagesList();
+          selectPassage(newPass);
+        } else {
+          throw new Error("HTTP Status " + response.status);
+        }
+      } catch (err) {
+        console.error("Error compiling scroll:", err);
+        self.showNotification(
+          "🥷 Out of Chakra!", 
+          "Kakashi is out of chakra right now, its restoring its chakra so pls wait. Loaded offline fallback scroll.", 
+          "warning"
+        );
+        
+        // Load offline client fallback
+        const offlineData = window.readingDatabase.find(r => r.level === activeLvl);
+        if (offlineData) {
+          selectPassage(offlineData);
+        } else {
+          pane.innerHTML = `
+            <div class="empty-state" style="padding: 40px; text-align: center;">
+              <p>Failed to compile custom scroll. Please select a static passage from the sidebar or try compiling again.</p>
+            </div>
+          `;
+        }
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = originalText;
+        interestSelect.disabled = false;
+        customInterestInput.disabled = false;
+      }
+    };
+
 
     const renderPassagesList = () => {
       const sidebar = document.getElementById("passages-list");

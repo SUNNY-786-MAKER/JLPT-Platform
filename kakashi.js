@@ -140,18 +140,20 @@ class KakashiAssistant {
             data.response.includes("quota limit") || 
             data.response.includes("API key or quota issue") ||
             data.response.includes("ResourceExhausted") ||
-            data.response.includes("Resource exhausted")) {
-          return this.runOfflineFallbackSearch(userInput, "Rate Limit Exceeded (15/min)");
+            data.response.includes("Resource exhausted") ||
+            data.response.includes("out of chakra") ||
+            data.response.includes("restoring its chakra")) {
+          return this.runOfflineFallbackSearch(userInput, "Kakashi is out of chakra right now, its restoring its chakra so pls wait");
         }
         return {
           text: data.response
         };
       } else {
-        return this.runOfflineFallbackSearch(userInput, `Server Status ${response.status}`);
+        return this.runOfflineFallbackSearch(userInput, "Kakashi is out of chakra right now, its restoring its chakra so pls wait");
       }
     } catch (e) {
       console.error("Failed to fetch from chat backend:", e);
-      return this.runOfflineFallbackSearch(userInput, "Network Offline");
+      return this.runOfflineFallbackSearch(userInput, "Kakashi is out of chakra right now, its restoring its chakra so pls wait");
     }
   }
 
@@ -162,7 +164,7 @@ class KakashiAssistant {
     // Attempt local database search
     const localMatch = this.searchLocalScrolls(cleanInput);
     
-    const prefix = `\u26a0\ufe0f **Copy Ninja Offline Scrolls activated!**\n*(Reason: ${reason})*\n\nI couldn't reach my live AI brain, but don't worry! I've searched my internal database scrolls for your query. Here is what I found:\n\n`;
+    const prefix = `\u26a0\ufe0f **Kakashi is out of chakra right now, its restoring its chakra so pls wait.**\n*(Offline scrolls activated: ${reason})*\n\nI couldn't reach my live AI brain, but don't worry! I've searched my internal database scrolls for your query. Here is what I found:\n\n`;
 
     if (localMatch) {
       return {
@@ -231,7 +233,7 @@ class KakashiAssistant {
 
     // Ultimate fallback if nothing is found
     return {
-      text: `Interesting question! I couldn't find a direct match for "${userInput}" in my active local JLPT database scrolls, and my AI brain is currently offline.\n\nAs your tutor Kakashi, here is how you can use my offline features:\n* Type **\`quiz\`** to test your knowledge with interactive cards.\n* Type **\`correct: [your sentence]\`** to practice writing and get instant corrections.\n* Compare particles by asking: **\`は vs が\`**, **\`に vs で\`**, **\`ので vs から\`**, **\`と vs や\`**, or **\`に vs へ\`**.\n* Look up verb conjugations by typing **\`conjugation\`**.\n* Check JLPT criteria by typing **\`JLPT N3\`** or **\`JLPT N5 exam points\`**.\n\nKeep studying! がんばってください！ \ud83d\udcaa\ud83d\udd25`
+      text: `### 🥷 Kakashi is out of chakra right now, its restoring its chakra so pls wait.\n\nI couldn't find a direct match for "${userInput}" in my active local JLPT database scrolls, and my AI brain is currently offline.\n\nAs your tutor Kakashi, here is how you can use my offline features:\n* Type **\`quiz\`** to test your knowledge with interactive cards.\n* Type **\`correct: [your sentence]\`** to practice writing and get instant corrections.\n* Compare particles by asking: **\`は vs が\`**, **\`に vs で\`**, **\`ので vs から\`**, **\`と vs や\`**, or **\`に vs へ\`**.\n* Look up verb conjugations by typing **\`conjugation\`**.\n* Check JLPT criteria by typing **\`JLPT N3\`** or **\`JLPT N5 exam points\`**.\n\nKeep studying! がんばってください！ 💪🔥`
     };
   }
 

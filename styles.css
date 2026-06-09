@@ -2565,6 +2565,110 @@ canvas {
   100% { transform: translateY(0px); }
 }
 
+/* CHAKRA SWIRL MENU BUTTON */
+.chakra-menu-btn {
+  display: none; /* Hidden on desktop */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 110;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.chakra-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.05);
+}
+
+.chakra-icon {
+  filter: drop-shadow(0 0 4px var(--accent-indigo));
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chakra-swirl-path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 0;
+  transition: stroke 0.4s ease, filter 0.4s ease;
+}
+
+.chakra-glow-circle {
+  transform-origin: center;
+  animation: pulseGlow 2s infinite alternate ease-in-out;
+}
+
+.chakra-core {
+  transition: fill 0.4s ease;
+}
+
+/* When menu is open / button active */
+.chakra-menu-btn.active .chakra-icon {
+  transform: rotate(360deg) scale(1.1);
+  filter: drop-shadow(0 0 10px var(--accent-coral));
+}
+
+.chakra-menu-btn.active .chakra-swirl-path {
+  stroke: var(--accent-coral);
+}
+
+.chakra-menu-btn.active .chakra-core {
+  fill: var(--accent-coral);
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.85); opacity: 0.4; }
+  100% { transform: scale(1.15); opacity: 0.85; }
+}
+
+/* DRAWER OVERLAY */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.open {
+  display: block;
+  opacity: 1;
+}
+
+/* MOBILE SETTINGS ITEM (Hiding by default on desktop) */
+.mobile-settings-divider {
+  display: none;
+  height: 1px;
+  background: var(--border-color);
+  margin: 15px 0 10px 0;
+  width: 100%;
+  opacity: 0.5;
+}
+
+.mobile-setting-item {
+  display: none;
+}
+
+.mobile-setting-item.font-sub {
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  padding-left: 10px;
+}
+
 /* RESPONSIVE MEDIA QUERIES */
 @media (max-width: 1024px) {
   .hero-section {
@@ -2600,14 +2704,103 @@ canvas {
 
 @media (max-width: 768px) {
   .nav-links {
-    display: none; /* simple mobile drawer toggle could be added, but for basic single app simplicity we hide long nav */
+    position: fixed;
+    top: 0;
+    right: -300px; /* Hidden off-screen */
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+    flex-direction: column;
+    padding: 90px 24px 40px;
+    gap: 12px;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+    border-radius: 0;
+    margin: 0;
+    display: flex; /* Override display: none / flex row settings */
   }
+  
+  .nav-links.open {
+    right: 0;
+  }
+  
+  .nav-links li {
+    width: 100%;
+  }
+  
+  .nav-link {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 12px;
+  }
+
   .nav-container {
     padding: 10px 15px;
   }
-  .hero-content h1 {
-    font-size: 36px;
+  
+  .nav-controls #global-furigana-toggle,
+  .nav-controls .theme-select-container {
+    display: none; /* Hide setting buttons from header to save space */
   }
+  
+  .chakra-menu-btn {
+    display: flex; /* Show Chakra menu button */
+  }
+  
+  /* Mobile settings list item container styles */
+  .mobile-settings-divider {
+    display: block;
+  }
+  
+  .mobile-setting-item {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 10px;
+    width: 100%;
+  }
+  
+  .mobile-setting-item .control-btn, 
+  .mobile-setting-item .theme-select-container {
+    width: 100%;
+  }
+  
+  .mobile-setting-item select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .main-content {
+    padding: 20px 15px;
+  }
+
+  .vocab-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .kanji-display-row {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+  
+  .kanji-info-block {
+    width: 100%;
+  }
+  
+  .kanji-examples-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .hero-content h1 {
+    font-size: 32px;
+  }
+  
   .footer-container {
     grid-template-columns: 1fr;
     gap: 30px;

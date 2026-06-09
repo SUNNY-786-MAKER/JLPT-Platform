@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Main Styling -->
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -55,6 +55,25 @@
         <li><a href="#kakashi" class="nav-link kakashi-nav-highlight" data-page="kakashi">🥷 Kakashi AI</a></li>
         <li><a href="#dashboard" class="nav-link" data-page="dashboard">Dashboard</a></li>
         <li><a href="#login" class="nav-link login-nav-link" data-page="login">Login</a></li>
+        
+        <!-- Mobile Drawer settings (visible on mobile drawer only) -->
+        <li class="mobile-settings-divider"></li>
+        <li class="mobile-setting-item font-sub">Settings</li>
+        <li class="mobile-setting-item">
+          <button class="control-btn toggle" id="mobile-furigana-toggle" title="Toggle Furigana Readings">
+            <span>あ ON</span>
+          </button>
+        </li>
+        <li class="mobile-setting-item" style="margin-top: 5px;">
+          <div class="theme-select-container" style="width: 100%;">
+            <select id="mobile-theme-selector" class="control-btn" title="Choose Theme" style="padding: 8px 12px; cursor: pointer; outline: none; border-radius: 20px; font-weight: 600; width: 100%;">
+              <option value="dark">🌑 Slate Dark</option>
+              <option value="light">☀️ Tatami Light</option>
+              <option value="sakura">🌸 Sakura Light</option>
+              <option value="stealth">🥷 Shinobi Dark</option>
+            </select>
+          </div>
+        </li>
       </ul>
 
       <!-- User Info & Interactive Controls -->
@@ -74,6 +93,23 @@
           <span class="xp" id="user-xp-display">Lvl 1 (35/100 XP)</span>
           <span class="streak" id="user-streak-display">5 Days 🔥</span>
         </div>
+        
+        <!-- Mobile Chakra Swirl Menu Button -->
+        <button class="chakra-menu-btn" id="hamburger-menu" aria-label="Toggle Menu">
+          <svg viewBox="0 0 100 100" class="chakra-icon" width="36" height="36">
+            <defs>
+              <radialGradient id="chakra-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#60a5fa" />
+                <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="50%" cy="50%" r="40" fill="url(#chakra-glow)" class="chakra-glow-circle"/>
+            <path d="M50,15 C65,15 78,28 78,45 C78,62 60,78 45,78 C30,78 18,65 18,50 C18,35 35,22 50,22 C62,22 75,32 75,48 C75,60 62,70 50,70 C40,70 32,60 38,50 C42,42 52,42 55,48 C57,52 52,58 48,56" 
+                  fill="none" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" class="chakra-swirl-path"/>
+            <circle cx="50%" cy="50%" r="6" fill="#ffffff" class="chakra-core"/>
+          </svg>
+        </button>
       </div>
     </nav>
   </header>
@@ -127,9 +163,12 @@
     </div>
   </footer>
 
+  <!-- Navigation Drawer Overlay -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+
   <!-- Scripts -->
-  <script src="database.js?v=5"></script>
-  <script src="kakashi.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="database.js?v=6"></script>
+  <script src="kakashi.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
