@@ -46,13 +46,18 @@ body.light-mode {
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-main);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
-  overflow-x: hidden;
 }
 
 a {
@@ -2565,63 +2570,40 @@ canvas {
   100% { transform: translateY(0px); }
 }
 
-/* CHAKRA SWIRL MENU BUTTON */
-.chakra-menu-btn {
+/* HAMBURGER MENU BUTTON */
+.hamburger-menu-btn {
   display: none; /* Hidden on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
   z-index: 110;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  align-items: center;
-  justify-content: center;
   outline: none;
 }
 
-.chakra-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: scale(1.05);
+.hamburger-menu-btn .bar {
+  width: 24px;
+  height: 2px;
+  background-color: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.chakra-icon {
-  filter: drop-shadow(0 0 4px var(--accent-indigo));
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* Transform hamburger into close button (X) */
+.hamburger-menu-btn.active .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
 }
 
-.chakra-swirl-path {
-  stroke-dasharray: 200;
-  stroke-dashoffset: 0;
-  transition: stroke 0.4s ease, filter 0.4s ease;
+.hamburger-menu-btn.active .bar:nth-child(2) {
+  opacity: 0;
 }
 
-.chakra-glow-circle {
-  transform-origin: center;
-  animation: pulseGlow 2s infinite alternate ease-in-out;
-}
-
-.chakra-core {
-  transition: fill 0.4s ease;
-}
-
-/* When menu is open / button active */
-.chakra-menu-btn.active .chakra-icon {
-  transform: rotate(360deg) scale(1.1);
-  filter: drop-shadow(0 0 10px var(--accent-coral));
-}
-
-.chakra-menu-btn.active .chakra-swirl-path {
-  stroke: var(--accent-coral);
-}
-
-.chakra-menu-btn.active .chakra-core {
-  fill: var(--accent-coral);
-}
-
-@keyframes pulseGlow {
-  0% { transform: scale(0.85); opacity: 0.4; }
-  100% { transform: scale(1.15); opacity: 0.85; }
+.hamburger-menu-btn.active .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 /* DRAWER OVERLAY */
@@ -2717,15 +2699,19 @@ canvas {
     flex-direction: column;
     padding: 90px 24px 40px;
     gap: 12px;
-    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
     z-index: 100;
     border-radius: 0;
     margin: 0;
     display: flex; /* Override display: none / flex row settings */
+    visibility: hidden;
+    pointer-events: none;
   }
   
   .nav-links.open {
     right: 0;
+    visibility: visible;
+    pointer-events: auto;
   }
   
   .nav-links li {
@@ -2749,8 +2735,8 @@ canvas {
     display: none; /* Hide setting buttons from header to save space */
   }
   
-  .chakra-menu-btn {
-    display: flex; /* Show Chakra menu button */
+  .hamburger-menu-btn {
+    display: flex; /* Show Hamburger menu button */
   }
   
   /* Mobile settings list item container styles */
