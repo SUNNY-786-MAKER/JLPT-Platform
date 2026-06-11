@@ -1,0 +1,7 @@
+# IDE / System files
+.vscode/
+.DS_Store
+*.log
+.gemini/
+thumbs.db
+Desktop.ini
