@@ -26,6 +26,232 @@ class NihongoApp {
     this.updateDashboardStats();
   }
 
+  generateFurigana(word, kana) {
+    if (!/[々\u4e00-\u9fff]/.test(word)) {
+      return word;
+    }
+    let start = 0;
+    let endWord = word.length;
+    let endKana = kana.length;
+    while (start < endWord && start < endKana && word[start] === kana[start] && !/[々\u4e00-\u9fff]/.test(word[start])) {
+      start++;
+    }
+    while (endWord > start && endKana > start && word[endWord - 1] === kana[endKana - 1] && !/[々\u4e00-\u9fff]/.test(word[endWord - 1])) {
+      endWord--;
+      endKana--;
+    }
+    const prefix = word.substring(0, start);
+    const suffix = word.substring(endWord);
+    const baseWord = word.substring(start, endWord);
+    const baseKana = kana.substring(start, endKana);
+    if (baseWord && baseKana) {
+      return `${prefix}${baseWord}<rt>${baseKana}</rt>${suffix}`;
+    }
+    return word;
+  }
+
+  getStrippedRoot(word, kana) {
+    if (!/[々\u4e00-\u9fff]/.test(word)) {
+      return null;
+    }
+    let start = 0;
+    let endWord = word.length;
+    let endKana = kana.length;
+    while (start < endWord && start < endKana && word[start] === kana[start] && !/[々\u4e00-\u9fff]/.test(word[start])) {
+      start++;
+    }
+    while (endWord > start && endKana > start && word[endWord - 1] === kana[endKana - 1] && !/[々\u4e00-\u9fff]/.test(word[endWord - 1])) {
+      endWord--;
+      endKana--;
+    }
+    return {
+      baseWord: word.substring(start, endWord),
+      baseKana: kana.substring(start, endKana)
+    };
+  }
+
+  initVocabFuriganaMap() {
+    if (this.vocabFuriganaMap) return;
+    this.vocabFuriganaMap = {};
+    if (window.vocabDatabase) {
+      window.vocabDatabase.forEach(v => {
+        if (v.word && v.kana && v.word !== v.kana) {
+          const furigana = this.generateFurigana(v.word, v.kana);
+          if (furigana !== v.word) {
+            this.vocabFuriganaMap[v.word] = furigana;
+          }
+          const rootInfo = this.getStrippedRoot(v.word, v.kana);
+          if (rootInfo && rootInfo.baseWord && rootInfo.baseKana && rootInfo.baseWord !== rootInfo.baseKana) {
+            this.vocabFuriganaMap[rootInfo.baseWord] = `${rootInfo.baseWord}<rt>${rootInfo.baseKana}</rt>`;
+          }
+        }
+      });
+    }
+    this.sortedVocabWords = Object.keys(this.vocabFuriganaMap).sort((a, b) => b.length - a.length);
+  }
+
+  annotateSentence(sentence) {
+    if (!sentence) return '';
+    this.initVocabFuriganaMap();
+    const parts = sentence.split(/(<\/?[^>]+>)/g);
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 0) {
+        let text = parts[i];
+        const replacements = [];
+        for (const word of this.sortedVocabWords) {
+          if (text.includes(word)) {
+            let index = text.indexOf(word);
+            while (index !== -1) {
+              const placeholder = `___TOKEN_${replacements.length}___`;
+              replacements.push({
+                placeholder: placeholder,
+                html: this.vocabFuriganaMap[word]
+              });
+              text = text.substring(0, index) + placeholder + text.substring(index + word.length);
+              index = text.indexOf(word);
+            }
+          }
+        }
+        for (const rep of replacements) {
+          text = text.replace(rep.placeholder, rep.html);
+        }
+        parts[i] = text;
+      }
+    }
+    return parts.join('');
+  }
+
+  rubyExample(text) {
+    if (!text) return '';
+    let annotated = text;
+    if (!text.includes('<rt>')) {
+      annotated = this.annotateSentence(text);
+    }
+    return annotated.replace(/([\u4e00-\u9fff\u3005\u3007]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
+  }
+
+  getTenseTable(pattern) {
+    const clean = pattern.replace(/[～~]/g, '').trim();
+    if (clean.endsWith('たい')) {
+      const stem = clean.slice(0, -2);
+      return {
+        title: "たい-form (Desire) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Want to)", plain: `${stem}たい`, polite: `${stem}たいです` },
+          { tense: "Present Negative (Don't want to)", plain: `${stem}たくない`, polite: `${stem}たくないです` },
+          { tense: "Past Affirmative (Wanted to)", plain: `${stem}たかった`, polite: `${stem}たかったです` },
+          { tense: "Past Negative (Didn't want to)", plain: `${stem}たくなかった`, polite: `${stem}たくなかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことができる') || clean.endsWith('ことができるです')) {
+      const stem = clean.slice(0, -6);
+      return {
+        title: "ことができる (Ability) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Can)", plain: `${stem}ことができる`, polite: `${stem}ことができます` },
+          { tense: "Present Negative (Cannot)", plain: `${stem}ことはできない / ことができない`, polite: `${stem}ことができません` },
+          { tense: "Past Affirmative (Could)", plain: `${stem}ことができた`, polite: `${stem}ことができました` },
+          { tense: "Past Negative (Could not)", plain: `${stem}ことができなかった`, polite: `${stem}ことができませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('つもりだ') || clean.endsWith('つもり')) {
+      const stem = clean.replace('だ', '');
+      return {
+        title: "つもり (Intention) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Intend to)", plain: `${stem}つもりだ`, polite: `${stem}つもりです` },
+          { tense: "Present Negative (Do not intend to)", plain: `${stem}つもりはない`, polite: `${stem}つもりはありません` },
+          { tense: "Past Affirmative (Intended to)", plain: `${stem}つもりだった`, polite: `${stem}つもりでした` },
+          { tense: "Past Negative (Did not intend to)", plain: `${stem}つもりはなかった`, polite: `${stem}つもりはありませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ほうがいい')) {
+      return {
+        title: "ほうがいい (Recommendation) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Should)", plain: `～ほうがいい`, polite: `～ほうがいいです` },
+          { tense: "Present Negative (Should not)", plain: `～ないほうがいい`, polite: `～ないほうがいいです` },
+          { tense: "Past Affirmative (Should have)", plain: `～ほうがよかった`, polite: `～ほうがよかったです` },
+          { tense: "Past Negative (Should not have)", plain: `～ないほうがよかった`, polite: `～ないほうがよかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことになる')) {
+      return {
+        title: "ことになる (Arrangement) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (It is decided)", plain: `～ことになる`, polite: `～ことになります` },
+          { tense: "Present Negative (It is decided not to)", plain: `～ことにならない`, polite: `～ことになりません` },
+          { tense: "Past Affirmative (It has been decided)", plain: `～ことになった`, polite: `～ことになりました` },
+          { tense: "Past Negative (It was decided not to)", plain: `～ことにならなかった`, polite: `～ことになりませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことにする')) {
+      return {
+        title: "ことにする (Decision) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (I decide to)", plain: `～ことにする`, polite: `～ことにします` },
+          { tense: "Present Negative (I decide not to)", plain: `～ことにしない`, polite: `～ことにしません` },
+          { tense: "Past Affirmative (I have decided to)", plain: `～ことにした`, polite: `～ことにしました` },
+          { tense: "Past Negative (I decided not to)", plain: `～ことにしなかった`, polite: `～ことにしませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('はずだ') || clean.endsWith('はず')) {
+      const stem = clean.replace('だ', '');
+      return {
+        title: "はず (Expectation) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Expected to)", plain: `${stem}はずだ`, polite: `${stem}はずです` },
+          { tense: "Present Negative (Not expected to)", plain: `${stem}はずがない`, polite: `${stem}はずがありません` },
+          { tense: "Past Affirmative (Was expected to)", plain: `${stem}はずだった`, polite: `${stem}はずでした` },
+          { tense: "Past Negative (Was not expected to)", plain: `${stem}はずではなかった`, polite: `${stem}はずではありませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ている') || clean.endsWith('ているです')) {
+      const stem = clean.slice(0, -3);
+      return {
+        title: "ている (Continuous / State) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Is doing)", plain: `${stem}ている`, polite: `${stem}ています` },
+          { tense: "Present Negative (Is not doing)", plain: `${stem}ていない`, polite: `${stem}ていません` },
+          { tense: "Past Affirmative (Was doing)", plain: `${stem}ていた`, polite: `${stem}ていました` },
+          { tense: "Past Negative (Was not doing)", plain: `${stem}ていなかった`, polite: `${stem}ていませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('てみる')) {
+      const stem = clean.slice(0, -3);
+      return {
+        title: "てみる (Try doing) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Try doing)", plain: `${stem}てみる`, polite: `${stem}てみます` },
+          { tense: "Present Negative (Don't try doing)", plain: `${stem}てみない`, polite: `${stem}てみません` },
+          { tense: "Past Affirmative (Tried doing)", plain: `${stem}てみた`, polite: `${stem}てみました` },
+          { tense: "Past Negative (Didn't try doing)", plain: `${stem}てみなかった`, polite: `${stem}てみませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('やすい') || clean.endsWith('にくい') || clean.endsWith('いい')) {
+      const stem = clean.slice(0, -1);
+      return {
+        title: "Adverbial / い-Adjective Ending Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative", plain: `${clean}`, polite: `${clean}です` },
+          { tense: "Present Negative", plain: `${stem}くない`, polite: `${stem}くないです` },
+          { tense: "Past Affirmative", plain: `${stem}かった`, polite: `${stem}かったです` },
+          { tense: "Past Negative", plain: `${stem}くなかった`, polite: `${stem}くなかったです` }
+        ]
+      };
+    }
+    return null;
+  }
+
   loadState() {
     const saved = localStorage.getItem("nihongo_app_state");
     if (saved) {
@@ -722,9 +948,9 @@ class NihongoApp {
             <span class="level-label">${item.level} • ${item.category.toUpperCase()}</span>
             <h2>${item.meaning}</h2>
             <p class="reading">Reading: <strong>${item.kana}</strong> (${item.romaji})</p>
-            ${item.exampleFurigana ? `
+            ${item.exampleFurigana || item.example ? `
             <div class="slide-example">
-              <p class="jp-sentence"><ruby>${item.exampleFurigana}</ruby></p>
+              <p class="jp-sentence">${this.rubyExample(item.exampleFurigana || item.example || '')}</p>
               <p class="en-sentence">${item.exampleMeaning}</p>
             </div>` : ''}
           </div>
@@ -1517,8 +1743,7 @@ class NihongoApp {
 
       // Helper: apply ruby markup to example furigana text
       const rubyExample = (text) => {
-        if (!text) return '';
-        return text.replace(/([^\s<>]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
+        return self.rubyExample(text);
       };
 
       pane.innerHTML = `
@@ -1540,6 +1765,37 @@ class NihongoApp {
             ${formatFormation(g.formation)}
           </div>
         </div>
+
+        <!-- Present & Past Formations Table -->
+        ${(() => {
+          const tableData = self.getTenseTable(g.pattern);
+          if (!tableData) return '';
+          return `
+          <div class="grammar-section-block" style="margin-top:16px;">
+            <h3>📊 Present &amp; Past Tense Formations</h3>
+            <div style="overflow-x:auto; background:var(--bg-tertiary); border-radius:12px; padding:8px 12px; border:1px solid var(--border-color);">
+              <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border-color); color:var(--text-secondary);">
+                    <th style="padding:10px;">Tense / Form</th>
+                    <th style="padding:10px;">Plain Form (Casual)</th>
+                    <th style="padding:10px;">Polite Form (Formal)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tableData.rows.map(row => `
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                      <td style="padding:10px; font-weight:600; color:var(--accent-indigo);">${row.tense}</td>
+                      <td style="padding:10px; font-family:var(--font-japanese); font-size:16px;">${row.plain}</td>
+                      <td style="padding:10px; font-family:var(--font-japanese); font-size:16px;">${row.polite}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          `;
+        })()}
 
         <!-- Examples -->
         <div class="grammar-examples">
@@ -1609,7 +1865,7 @@ class NihongoApp {
      * Single-pass: ([^\s<>]+) captures the kanji, (<rt>...) captures the reading.
      */
     const applyRubyMarkup = (html) => {
-      return html.replace(/([^\s<>]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
+      return html.replace(/([\u4e00-\u9fff\u3005\u3007]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
     };
 
 
