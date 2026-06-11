@@ -130,6 +130,75 @@ class NihongoApp {
     return annotated.replace(/([\u4e00-\u9fff\u3005\u3007]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
   }
 
+  conjugateSentenceToPast(sentence, translation) {
+    if (!sentence) return null;
+    
+    let pastJp = sentence;
+    let pastEn = translation || '';
+    
+    const rules = [
+      { from: 'たいです。', to: 'たかったです。' },
+      { from: 'たい。', to: 'たかった。' },
+      { from: 'たいです', to: 'たかったです' },
+      { from: 'たい', to: 'たかった' },
+      { from: 'ます。', to: 'ました。' },
+      { from: 'ます', to: 'ました' },
+      { from: 'いいです。', to: 'よかったです。' },
+      { from: 'いいです', to: 'よかったです' },
+      { from: 'ないです。', to: 'なかったです。' },
+      { from: 'ないです', to: 'なかったです' },
+      { from: 'いい。', to: 'よかった。' },
+      { from: 'いい', to: 'よかった' },
+      { from: 'ある。', to: 'あった。' },
+      { from: 'ある', to: 'あった' },
+      { from: 'する。', to: 'した。' },
+      { from: 'する', to: 'した' },
+      { from: 'いる。', to: 'いた。' },
+      { from: 'いる', to: 'いた' },
+      { from: 'だ。', to: 'だった。' },
+      { from: 'だ', to: 'だった' },
+      { from: 'ない。', to: 'なかった。' },
+      { from: 'ない', to: 'なかった' }
+    ];
+    
+    let matched = false;
+    for (const rule of rules) {
+      if (pastJp.endsWith(rule.from)) {
+        pastJp = pastJp.substring(0, pastJp.length - rule.from.length) + rule.to;
+        matched = true;
+        break;
+      }
+    }
+    
+    if (!matched) return null;
+    
+    const enRules = [
+      { from: /\bwant to\b/g, to: 'wanted to' },
+      { from: /\bwants to\b/g, to: 'wanted to' },
+      { from: /\bcan\b/g, to: 'could' },
+      { from: /\bis\b/g, to: 'was' },
+      { from: /\bare\b/g, to: 'were' },
+      { from: /\bam\b/g, to: 'was' },
+      { from: /\bwill go\b/g, to: 'went' },
+      { from: /\bgo\b/g, to: 'went' },
+      { from: /\bgoes\b/g, to: 'went' },
+      { from: /\bhad better\b/g, to: 'had better have' },
+      { from: /\bit is better\b/g, to: 'it would have been better' },
+      { from: /\bdecides to\b/g, to: 'decided to' },
+      { from: /\bdecide to\b/g, to: 'decided to' },
+      { from: /\bshould\b/g, to: 'should have' }
+    ];
+    
+    for (const rule of enRules) {
+      pastEn = pastEn.replace(rule.from, rule.to);
+    }
+    
+    return {
+      japanese: pastJp,
+      translation: pastEn
+    };
+  }
+
   getTenseTable(pattern) {
     const clean = pattern.replace(/[～~]/g, '').trim();
     if (clean.endsWith('たい')) {
@@ -179,25 +248,27 @@ class NihongoApp {
         ]
       };
     }
-    if (clean.endsWith('ことになる')) {
+    if (clean.endsWith('ことになる') || clean.endsWith('なる')) {
+      const stem = clean.endsWith('ことになる') ? '～こと' : '～';
       return {
-        title: "ことになる (Arrangement) Conjugation Table",
+        title: "なる (Arrangement/Become) Conjugation Table",
         rows: [
-          { tense: "Present Affirmative (It is decided)", plain: `～ことになる`, polite: `～ことになります` },
-          { tense: "Present Negative (It is decided not to)", plain: `～ことにならない`, polite: `～ことになりません` },
-          { tense: "Past Affirmative (It has been decided)", plain: `～ことになった`, polite: `～ことになりました` },
-          { tense: "Past Negative (It was decided not to)", plain: `～ことにならなかった`, polite: `～ことになりませんでした` }
+          { tense: "Present Affirmative", plain: `${stem}になる`, polite: `${stem}になります` },
+          { tense: "Present Negative", plain: `${stem}にならない`, polite: `${stem}になりません` },
+          { tense: "Past Affirmative", plain: `${stem}になった`, polite: `${stem}になりました` },
+          { tense: "Past Negative", plain: `${stem}にならなかった`, polite: `${stem}になりませんでした` }
         ]
       };
     }
-    if (clean.endsWith('ことにする')) {
+    if (clean.endsWith('ことにする') || clean.endsWith('する')) {
+      const stem = clean.endsWith('ことにする') ? '～こと' : '～';
       return {
-        title: "ことにする (Decision) Conjugation Table",
+        title: "する (Decision/Do) Conjugation Table",
         rows: [
-          { tense: "Present Affirmative (I decide to)", plain: `～ことにする`, polite: `～ことにします` },
-          { tense: "Present Negative (I decide not to)", plain: `～ことにしない`, polite: `～ことにしません` },
-          { tense: "Past Affirmative (I have decided to)", plain: `～ことにした`, polite: `～ことにしました` },
-          { tense: "Past Negative (I decided not to)", plain: `～ことにしなかった`, polite: `～ことにしませんでした` }
+          { tense: "Present Affirmative", plain: `${stem}にする`, polite: `${stem}にします` },
+          { tense: "Present Negative", plain: `${stem}にしない`, polite: `${stem}にしません` },
+          { tense: "Past Affirmative", plain: `${stem}にした`, polite: `${stem}にしました` },
+          { tense: "Past Negative", plain: `${stem}にしなかった`, polite: `${stem}にしませんでした` }
         ]
       };
     }
@@ -237,10 +308,32 @@ class NihongoApp {
         ]
       };
     }
-    if (clean.endsWith('やすい') || clean.endsWith('にくい') || clean.endsWith('いい')) {
+    if (clean.endsWith('なければならない') || clean.endsWith('ねばならない')) {
+      return {
+        title: "なければならない (Necessity) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Must do)", plain: `～なければならない`, polite: `～なければなりません` },
+          { tense: "Present Negative (Do not have to do)", plain: `～なくてもいい`, polite: `～なくてもいいです` },
+          { tense: "Past Affirmative (Had to do)", plain: `～なければならなかった`, polite: `～なければなりませんでした` },
+          { tense: "Past Negative (Did not have to do)", plain: `～なくてもよかった`, polite: `～なくてもよかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('てはいけない') || clean.endsWith('てはならない')) {
+      return {
+        title: "てはいけない (Prohibition) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Must not do)", plain: `～てはいけない`, polite: `～てはいけません` },
+          { tense: "Present Negative (Do not have to avoid)", plain: `～てはいけないことはない`, polite: `～てはいけないことはないです` },
+          { tense: "Past Affirmative (Was not allowed to)", plain: `～てはいけなかった`, polite: `～てはいけませんでした` },
+          { tense: "Past Negative (Was allowed to / did not have to)", plain: `～てはいけなくなかった`, polite: `～てはいけなくなかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('やすい') || clean.endsWith('にくい') || clean.endsWith('いい') || clean.endsWith('ほしい')) {
       const stem = clean.slice(0, -1);
       return {
-        title: "Adverbial / い-Adjective Ending Conjugation Table",
+        title: "い-Adjective Ending Conjugation Table",
         rows: [
           { tense: "Present Affirmative", plain: `${clean}`, polite: `${clean}です` },
           { tense: "Present Negative", plain: `${stem}くない`, polite: `${stem}くないです` },
@@ -1800,13 +1893,27 @@ class NihongoApp {
         <!-- Examples -->
         <div class="grammar-examples">
           <h3>✏️ Examples</h3>
-          ${g.examples && g.examples.length > 0 ? g.examples.map(e => `
-            <div class="example-item">
-              <p class="jp font-japanese" style="font-size:18px; line-height:2.8;">${rubyExample(e.furigana || e.japanese || '')}</p>
-              <p class="en" style="color:var(--text-secondary); font-size:14px;">${e.translation || ''}</p>
-              ${e.breakdown ? `<p style="font-size:12px; color:var(--accent-indigo); margin-top:4px;">💡 ${e.breakdown}</p>` : ''}
-            </div>
-          `).join('') : '<p style="color:var(--text-secondary);">No examples available.</p>'}
+          ${g.examples && g.examples.length > 0 ? g.examples.map(e => {
+            const originalHTML = `
+              <div class="example-item" style="margin-bottom:12px;">
+                <span style="font-size:11px; background:rgba(99,102,241,0.15); color:var(--accent-indigo); padding:2px 8px; border-radius:10px; font-weight:700;">Present / Affirmative Form</span>
+                <p class="jp font-japanese" style="font-size:18px; line-height:2.8; margin-top:6px; margin-bottom:4px;">${rubyExample(e.furigana || e.japanese || '')}</p>
+                <p class="en" style="color:var(--text-secondary); font-size:14px; margin-bottom:6px;">${e.translation || ''}</p>
+                ${e.breakdown ? `<p style="font-size:12px; color:var(--accent-indigo); margin-top:4px;">💡 ${e.breakdown}</p>` : ''}
+              </div>
+            `;
+            
+            const pastEx = self.conjugateSentenceToPast(e.furigana || e.japanese || '', e.translation || '');
+            const pastHTML = pastEx ? `
+              <div class="example-item" style="border-left: 2px dashed var(--success-color); padding-left: 12px; margin-top: 10px; margin-bottom: 20px; background: rgba(16,185,129,0.02);">
+                <span style="font-size:11px; background:rgba(16,185,129,0.15); color:var(--success-color); padding:2px 8px; border-radius:10px; font-weight:700;">Past Form</span>
+                <p class="jp font-japanese" style="font-size:18px; line-height:2.8; margin-top:6px; margin-bottom:4px;">${rubyExample(pastEx.japanese)}</p>
+                <p class="en" style="color:var(--text-secondary); font-size:14px;">${pastEx.translation}</p>
+              </div>
+            ` : '';
+            
+            return originalHTML + pastHTML;
+          }).join('') : '<p style="color:var(--text-secondary);">No examples available.</p>'}
         </div>
 
         <!-- Notes -->
@@ -2020,6 +2127,9 @@ class NihongoApp {
                 <option value="shopping">🛒 Shopping &amp; Services (買い物)</option>
                 <option value="hobbies">🎨 Hobbies &amp; Recreation (趣味)</option>
                 <option value="weather">☀ Weather &amp; Seasons (天気)</option>
+                <option value="anime">🐱 Anime &amp; Manga (アニメ)</option>
+                <option value="movies">🎬 Movies &amp; Cinema (映画)</option>
+                <option value="series">📺 TV Series &amp; Dramas (ドラマ)</option>
               </select>
             </div>
           </div>

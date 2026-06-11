@@ -662,11 +662,79 @@ const backupPools = {
         }
       ]
     }
+  ],
+  "anime": [
+    {
+      "text": "私<rt>わたし</rt>は日本<rt>にほん</rt>のアニメが大好<rt>だいす</rt>きです。特に[anime_character]が一番<rt>いちばん</rt>のヒーローです。",
+      "translation": "I love Japanese anime. Especially, [anime_character_en] is my number one hero.",
+      "hints": { "特に": "especially", "ヒーロー": "hero" },
+      "questions": [
+        {
+          "question": "この人の一番 of ヒーローは誰ですか。",
+          "options": ["[anime_character]です", "ドラえもんです", "アンパンマンです", "誰も好きではありません"],
+          "answerIndex": 0,
+          "explanation": "The text states that [anime_character_en] is their number one hero."
+        }
+      ]
+    },
+    {
+      "text": "アニメの中で、[anime_character]が[anime_power]を使<rt>つか</rt>う場面<rt>ばめん</rt>はとてもかっこよくて興奮<rt>こうふん</rt>します。",
+      "translation": "In the anime, the scene where [anime_character_en] uses [anime_power_en] is extremely cool and exciting.",
+      "hints": { "場面": "scene", "興奮": "exciting/excited" },
+      "questions": [
+        {
+          "question": "[anime_character]が何を使う場面がかっこいいですか。",
+          "options": ["[anime_power]です", "お金です", "道具です", "魔法の杖です"],
+          "answerIndex": 0,
+          "explanation": "The text states: '[anime_character]が[anime_power]を使う場面はとてもかっこいい'."
+        }
+      ]
+    }
+  ],
+  "movies": [
+    {
+      "text": "昨日<rt>きのう</rt>、私は友達と映画館へ行って[movie_title]を観<rt>み</rt>ました。この映画は[movie_genre]として有名<rt>ゆうめい</rt>です。",
+      "translation": "Yesterday, I went to the movie theater with my friend and watched [movie_title_en]. This movie is famous as a [movie_genre_en].",
+      "hints": { "映画館": "movie theater", "有名": "famous" },
+      "questions": [
+        {
+          "question": "昨日映画館で何を観ましたか。",
+          "options": ["[movie_title]を観ました", "本を読みました", "寝ました", "ゲームをしました"],
+          "answerIndex": 0,
+          "explanation": "The text states: '映画館へ行って[movie_title]を観ました'."
+        }
+      ]
+    }
+  ],
+  "series": [
+    {
+      "text": "最近<rt>さいきん</rt>、私は家で日本のテレビドラマ[series_title]を観<rt>み</rt>るのにはまっています。ストーリーが非常に面白<rt>おもしろ</rt>いです。",
+      "translation": "Recently, I am hooked on watching the Japanese TV drama [series_title_en] at home. The story is extremely interesting.",
+      "hints": { "最近": "recently/lately", "はまっている": "hooked on/into" },
+      "questions": [
+        {
+          "question": "最近家で何を観ていますか。",
+          "options": ["ドラマ[series_title]を観ています", "ニュースを観ています", "アニメだけです", "何も観ていません"],
+          "answerIndex": 0,
+          "explanation": "The text says they are hooked on watching the drama [series_title_en]."
+        }
+      ]
+    }
   ]
 };
 
 // Global variables dictionary to draw from for substitutions
 const globalVariables = {
+  "[anime_character]": ["悟空<rt>ごくう</rt>（ドラゴンボール）", "ナルト（NARUTO）", "五条<rt>ごじょう</rt>悟<rt>さとる</rt>（呪術廻戦）", "水<rt>みず</rt>篠<rt>しの</rt>旬<rt>しゅん</rt>（俺だけレベルアップな件）"],
+  "[anime_character_en]": ["Goku (Dragon Ball)", "Naruto (NARUTO)", "Gojo Satoru (Jujutsu Kaisen)", "Sung Jinwoo (Solo Leveling)"],
+  "[anime_power]": ["かめはめ波<rt>は</rt>", "螺旋丸<rt>らせんがん</rt>", "無下限呪術<rt>むかげんじゅじゅつ</rt>", "影<rt>かげ</rt>の兵士<rt>へいし</rt>を召喚<rt>しょうかん</rt>する力"],
+  "[anime_power_en]": ["Kamehameha", "Rasengan", "Limitless Cursed Technique", "power to summon shadow soldiers"],
+  "[movie_title]": ["「君の名は。」", "「千と千尋の神隠し」", "「鬼滅の刃 無限列車編」", "「THE FIRST SLAM DUNK」"],
+  "[movie_title_en]": ["Your Name", "Spirited Away", "Demon Slayer: Mugen Train", "The First Slam Dunk"],
+  "[movie_genre]": ["アニメ映画", "ファンタジー", "アクション映画", "スポーツドラマ"],
+  "[movie_genre_en]": ["anime movie", "fantasy", "action movie", "sports drama"],
+  "[series_title]": ["「相棒」", "「半沢直樹」", "「逃げるは恥だが役に立つ」", "「アリス・イン・ワンダーランド」"],
+  "[series_title_en]": ["Aibou (Partners)", "Hanzawa Naoki", "We Married as a Job", "Alice in Borderland"],
   "[time]": ["六時<rt>ろくじ</rt>", "七時<rt>しちじ</rt>", "八時<rt>はちじ</rt>", "九時<rt>くじ</rt>"],
   "[time_en]": ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"],
   "[breakfast]": ["朝<rt>あさ</rt>御<rt>ご</rt>飯<rt>はん</rt>", "パンと卵<rt>たまご</rt>", "お粥<rt>かゆ</rt>", "シリアル"],
@@ -750,51 +818,57 @@ function buildProceduralPassage(level, topic) {
 
   // Select sentences
   let intro, action, desc, concl;
+  let content = "";
+  let translation = "";
+  const collectedQuestions = [];
+  const hints = {};
   
   if (usingBackup) {
     // Backups are simple single-element arrays with full content already
     const base = topicPool[Math.floor(Math.random() * topicPool.length)];
-    return {
-      title: `Dynamic ${level} Reading: ${topic.charAt(0).toUpperCase() + topic.slice(1)}`,
-      content: base.text,
-      translation: base.translation,
-      hints: { ...base.hints },
-      questions: base.questions.map(q => ({
-        question: q.question,
-        options: [...q.options],
-        answerIndex: q.answerIndex,
-        explanation: q.explanation
-      }))
-    };
-  }
+    content = base.text;
+    translation = base.translation;
+    if (base.questions) {
+      base.questions.forEach(q => collectedQuestions.push(q));
+    }
+    if (base.hints) {
+      Object.assign(hints, base.hints);
+    }
+  } else {
+    // Draw one random sentence from each pool
+    intro = topicPool.intros[Math.floor(Math.random() * topicPool.intros.length)];
+    action = topicPool.actions ? topicPool.actions[Math.floor(Math.random() * topicPool.actions.length)] : null;
+    desc = topicPool.descriptions ? topicPool.descriptions[Math.floor(Math.random() * topicPool.descriptions.length)] : null;
+    concl = topicPool.conclusions ? topicPool.conclusions[Math.floor(Math.random() * topicPool.conclusions.length)] : null;
 
-  // Draw one random sentence from each pool
-  intro = topicPool.intros[Math.floor(Math.random() * topicPool.intros.length)];
-  action = topicPool.actions ? topicPool.actions[Math.floor(Math.random() * topicPool.actions.length)] : null;
-  desc = topicPool.descriptions ? topicPool.descriptions[Math.floor(Math.random() * topicPool.descriptions.length)] : null;
-  concl = topicPool.conclusions ? topicPool.conclusions[Math.floor(Math.random() * topicPool.conclusions.length)] : null;
+    // Combine text and translations
+    content = intro.text;
+    translation = intro.translation;
 
-  // Combine text and translations
-  let content = intro.text;
-  let translation = intro.translation;
-  const collectedQuestions = [];
+    if (intro.question) collectedQuestions.push(intro.question);
 
-  if (intro.question) collectedQuestions.push(intro.question);
+    if (action) {
+      content += " " + action.text;
+      translation += " " + action.translation;
+      if (action.question) collectedQuestions.push(action.question);
+    }
+    if (desc) {
+      content += " " + desc.text;
+      translation += " " + desc.translation;
+      if (desc.question) collectedQuestions.push(desc.question);
+    }
+    if (concl) {
+      content += " " + concl.text;
+      translation += " " + concl.translation;
+      if (concl.question) collectedQuestions.push(concl.question);
+    }
 
-  if (action) {
-    content += " " + action.text;
-    translation += " " + action.translation;
-    if (action.question) collectedQuestions.push(action.question);
-  }
-  if (desc) {
-    content += " " + desc.text;
-    translation += " " + desc.translation;
-    if (desc.question) collectedQuestions.push(desc.question);
-  }
-  if (concl) {
-    content += " " + concl.text;
-    translation += " " + concl.translation;
-    if (concl.question) collectedQuestions.push(concl.question);
+    // Build hints
+    [intro, action, desc, concl].forEach(section => {
+      if (section && section.hints) {
+        Object.assign(hints, section.hints);
+      }
+    });
   }
 
   // Build replacements index uniformly across the story
@@ -859,14 +933,7 @@ function buildProceduralPassage(level, topic) {
     };
   });
 
-  // Build hints
-  const hints = {};
-  // Extract custom hints from intros/actions etc.
-  [intro, action, desc, concl].forEach(section => {
-    if (section && section.hints) {
-      Object.assign(hints, section.hints);
-    }
-  });
+  // Hints were already initialized and built in the intro/backup branches above.
 
   // Add variables replacements to hints
   Object.keys(replacements).forEach(key => {
