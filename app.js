@@ -423,7 +423,9 @@ class NihongoApp {
     }
   }
 
-  addXP(amount) {
+  addXP(amount, silent = false) {
+    if (amount <= 0) return; // Skip zero-XP calls entirely
+
     this.state.user.xp += amount;
     
     // Level up check
@@ -440,7 +442,7 @@ class NihongoApp {
 
     if (leveledUp) {
       this.showNotification("🎉 LEVEL UP!", `You have reached Level ${this.state.user.level}! Keep going!`, "success");
-    } else {
+    } else if (!silent) {
       this.showNotification("✨ XP Gained", `+${amount} XP Added to your progress`, "info");
     }
   }
@@ -948,7 +950,7 @@ class NihongoApp {
           <div class="vocab-card-footer">
             <div class="example-box">
               <span class="lbl">Ex:</span>
-              <ruby>${vocab.exampleFurigana}</ruby>
+              ${this.rubyExample(vocab.exampleFurigana)}
               <div class="example-translation">${vocab.exampleMeaning}</div>
             </div>
           </div>` : ''}
@@ -1069,7 +1071,7 @@ class NihongoApp {
           currentIndex++;
           isFlipped = false;
           renderSlide();
-          this.addXP(2); // XP for reading flashcards
+          this.addXP(2, true); // XP for reading flashcards (silent – avoid notification spam)
         } else {
           this.showNotification("🎉 Review Finished!", "You have reached the end of the stack!", "success");
           fcModal.style.display = "none";
@@ -1187,7 +1189,7 @@ class NihongoApp {
           document.getElementById("vocab-quiz-feedback").style.display = "none";
           document.getElementById("vocab-quiz-next-btn").style.display = "none";
           
-          this.addXP(score * 10);
+          if (score > 0) this.addXP(score * 10); // Bonus XP only when at least 1 correct
           this.unlockBadge("b5"); // Unlocks a badge
 
           document.getElementById("vocab-quiz-finish-close-btn").onclick = () => {
@@ -1303,9 +1305,48 @@ class NihongoApp {
         if (idx === 0) selectKanji(kanji);
       });
     };
+    const loadKanjiStrokePaths = async (kanji) => {
+      if (kanji.svgPaths) return; // Already loaded
 
-    const selectKanji = (kanji) => {
+      // If database has strokePaths, use them (normalizing coordinates to 109x109 box)
+      if (kanji.strokePaths && kanji.strokePaths.length > 0) {
+        kanji.svgPaths = kanji.strokePaths.map(pathPoints => {
+          if (pathPoints.length === 0) return "";
+          const start = pathPoints[0];
+          let d = `M ${start[0] * 1.09} ${start[1] * 1.09}`;
+          for (let i = 1; i < pathPoints.length; i++) {
+            d += ` L ${pathPoints[i][0] * 1.09} ${pathPoints[i][1] * 1.09}`;
+          }
+          return d;
+        }).filter(d => d !== "");
+        return;
+      }
+
+      // Fetch from KanjiVG GitHub
+      try {
+        const hex = kanji.character.codePointAt(0).toString(16).toLowerCase().padStart(5, '0');
+        const response = await fetch(`https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${hex}.svg`);
+        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+        const svgText = await response.text();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgText, "image/svg+xml");
+        const paths = Array.from(doc.querySelectorAll("path")).map(p => p.getAttribute("d")).filter(Boolean);
+        if (paths.length > 0) {
+          kanji.svgPaths = paths;
+        } else {
+          kanji.svgPaths = [];
+        }
+      } catch (err) {
+        console.warn("Failed to load KanjiVG stroke paths:", err);
+        kanji.svgPaths = []; // Fallback to empty
+      }
+    };
+
+    const selectKanji = async (kanji) => {
       this.activeKanji = kanji;
+      if (this.stopStrokeAnimation) this.stopStrokeAnimation();
+      await loadKanjiStrokePaths(kanji);
       const pane = document.getElementById("kanji-details-pane");
       const isBookmarked = this.state.user.bookmarks.kanji.includes(kanji.id);
       
@@ -1382,32 +1423,116 @@ class NihongoApp {
       };
 
       // Set up Canvas drawing
-      this.hasDrawn = false; // Track if user has actually drawn anything
+      this.hasDrawn = false;       // Track if user has actually drawn anything
+      this.drawnPointCount = 0;    // Track number of points drawn for meaningful stroke detection
+      this.userStrokes = [];       // Track actual strokes drawn by the user
+      this.currentStroke = null;
       this.initKanjiCanvas();
 
       // Trigger animations / clears
       document.getElementById("canvas-clear-btn").onclick = () => {
         this.hasDrawn = false;
+        this.drawnPointCount = 0;
+        this.stopStrokeAnimation();
         this.clearCanvas();
       };
-      document.getElementById("canvas-animate-btn").onclick = () => this.animateStrokeOrder();
+      document.getElementById("canvas-animate-btn").onclick = () => {
+        // Watching the animation doesn't count as drawing
+        this.hasDrawn = false;
+        this.drawnPointCount = 0;
+        this.stopStrokeAnimation();
+        this.animateStrokeOrder();
+      };
       document.getElementById("canvas-verify-btn").onclick = () => {
-        if (!this.hasDrawn) {
+        const paths = this.activeKanji.svgPaths;
+        if (!paths || paths.length === 0) {
+          // Fallback if no vector guidelines exist
+          if (!this.hasDrawn || this.drawnPointCount < 3) {
+            this.showNotification("✏️ Draw First!", "Please draw the kanji on the canvas before verifying.", "warning");
+            return;
+          }
+          this.addXP(10);
+          this.unlockBadge("b2");
+          this.showNotification("🎯 Verified!", "Your kanji drawing has been verified! +10 XP", "success");
+          this.clearCanvas();
+          return;
+        }
+
+        const targetStrokesCount = paths.length;
+        const userStrokesCount = this.userStrokes ? this.userStrokes.length : 0;
+
+        if (userStrokesCount === 0) {
           this.showNotification("✏️ Draw First!", "Please draw the kanji on the canvas before verifying.", "warning");
           return;
         }
+
+        if (userStrokesCount < targetStrokesCount) {
+          this.showNotification("✏️ Missing Strokes", `You drew only ${userStrokesCount} of ${targetStrokesCount} strokes. Please complete all strokes in the correct order.`, "warning");
+          return;
+        }
+
+        if (userStrokesCount > targetStrokesCount) {
+          this.showNotification("✏️ Extra Strokes", `You drew ${userStrokesCount} strokes, but the Kanji only has ${targetStrokesCount} strokes. Please clear and try again.`, "warning");
+          return;
+        }
+
+        // Verify each stroke in order
+        const scale = 250 / 109;
+        const maxAllowedDistance = 45; // Pixel distance tolerance
+
+        for (let i = 0; i < targetStrokesCount; i++) {
+          const pathD = paths[i];
+          const userPoints = this.userStrokes[i];
+
+          // Compute target start and end points using browser SVG element APIs
+          const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          tempPath.setAttribute("d", pathD);
+          const length = tempPath.getTotalLength();
+          const targetStart = tempPath.getPointAtLength(0);
+          const targetEnd = tempPath.getPointAtLength(length);
+
+          const targetStartX = targetStart.x * scale;
+          const targetStartY = targetStart.y * scale;
+          const targetEndX = targetEnd.x * scale;
+          const targetEndY = targetEnd.y * scale;
+
+          // User points
+          const userStartX = userPoints[0].x;
+          const userStartY = userPoints[0].y;
+          const userEndX = userPoints[userPoints.length - 1].x;
+          const userEndY = userPoints[userPoints.length - 1].y;
+
+          // Verify distance of start and end coordinates (validates order and direction)
+          const startDist = Math.hypot(userStartX - targetStartX, userStartY - targetStartY);
+          const endDist = Math.hypot(userEndX - targetEndX, userEndY - targetEndY);
+
+          if (startDist > maxAllowedDistance || endDist > maxAllowedDistance) {
+            this.showNotification("❌ Incorrect Stroke Order", `Stroke ${i + 1} was drawn incorrectly, in the wrong direction, or out of sequence. Follow the guide numbers.`, "warning");
+            return;
+          }
+        }
+
+        // All checks passed!
         this.addXP(10);
         this.unlockBadge("b2"); // Kanji Artist badge
-        this.showNotification("🎯 Stroke Verified!", "Excellent practice! Your strokes look great! +10 XP", "success");
+        this.showNotification("🎯 Stroke Verified!", "Excellent practice! Your strokes look great and follow the correct order! +10 XP", "success");
         this.hasDrawn = false;
+        this.drawnPointCount = 0;
+        this.stopStrokeAnimation();
         this.clearCanvas();
       };
     };
 
     // Canvas Events
     this.initKanjiCanvas = () => {
-      this.canvas = document.getElementById("kanji-canvas");
-      if (!this.canvas) return;
+      // Replace the canvas element with a clone to remove ALL previously-attached
+      // event listeners (prevents listener accumulation when switching kanji).
+      const oldCanvas = document.getElementById("kanji-canvas");
+      if (!oldCanvas) return;
+      const freshCanvas = oldCanvas.cloneNode(true);
+      oldCanvas.parentNode.replaceChild(freshCanvas, oldCanvas);
+
+      this.canvas = freshCanvas;
       this.ctx = this.canvas.getContext("2d");
       this.ctx.lineWidth = 10;
       this.ctx.lineCap = "round";
@@ -1416,15 +1541,27 @@ class NihongoApp {
       // Draw background guidelines of Kanji character
       this.drawKanjiGuidelines();
 
-      // Drawing Event listeners
+      // Drawing Event listeners (attached fresh – no accumulation)
       const startDrawing = (e) => {
         this.isDrawing = true;
         this.hasDrawn = true; // Mark that user has started drawing
+        this.ctx.beginPath(); // Ensure the path starts fresh and doesn't connect to guidelines
+        
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        this.currentStroke = [{ x, y }];
+        
         this.draw(e);
       };
 
       const stopDrawing = () => {
+        if (this.isDrawing && this.currentStroke && this.currentStroke.length >= 2) {
+          if (!this.userStrokes) this.userStrokes = [];
+          this.userStrokes.push(this.currentStroke);
+        }
         this.isDrawing = false;
+        this.currentStroke = null;
         this.ctx.beginPath();
       };
 
@@ -1472,10 +1609,31 @@ class NihongoApp {
       this.ctx.stroke();
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
+
+      // Increment stroke-point counter for meaningful draw detection
+      this.drawnPointCount = (this.drawnPointCount || 0) + 1;
+      
+      // Push point to current user stroke
+      if (this.currentStroke) {
+        this.currentStroke.push({ x, y });
+      }
+    };
+
+    this.stopStrokeAnimation = () => {
+      if (this.strokeAnimationTimeout) {
+        clearTimeout(this.strokeAnimationTimeout);
+        this.strokeAnimationTimeout = null;
+      }
+      if (this.strokeSegmentTimeout) {
+        clearTimeout(this.strokeSegmentTimeout);
+        this.strokeSegmentTimeout = null;
+      }
     };
 
     this.clearCanvas = () => {
       if (!this.canvas || !this.ctx) return;
+      this.userStrokes = [];
+      this.currentStroke = null;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.drawKanjiGuidelines();
     };
@@ -1484,56 +1642,122 @@ class NihongoApp {
       if (!this.canvas || !this.ctx || !this.activeKanji) return;
       
       this.ctx.save();
-      // Draw standard font guideline in background
-      this.ctx.font = "160px 'Noto Sans JP', sans-serif";
-      this.ctx.fillStyle = "rgba(100, 116, 139, 0.15)"; // Light grey guideline
-      this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "middle";
-      this.ctx.fillText(this.activeKanji.character, this.canvas.width / 2, this.canvas.height / 2 + 10);
+      
+      const paths = this.activeKanji.svgPaths;
+      if (paths && paths.length > 0) {
+        // Draw the vector guidelines in background (faint blue/gray)
+        this.ctx.save();
+        this.ctx.scale(250 / 109, 250 / 109);
+        this.ctx.strokeStyle = "rgba(37, 99, 235, 0.12)"; // Light blue guideline
+        this.ctx.lineWidth = 6; // scaled to ~13.8px
+        this.ctx.lineCap = "round";
+        this.ctx.lineJoin = "round";
+        
+        paths.forEach(pathD => {
+          this.ctx.stroke(new Path2D(pathD));
+        });
+        this.ctx.restore();
+
+        // Draw numbers at the start of each path
+        this.ctx.save();
+        this.ctx.scale(250 / 109, 250 / 109);
+        this.ctx.font = "bold 6px 'Outfit', sans-serif"; // scaled by ~2.3 = 13.8px
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+
+        paths.forEach((pathD, idx) => {
+          const match = pathD.match(/^[Mm]\s*(-?\d+\.?\d*)\s*[\s,]\s*(-?\d+\.?\d*)/);
+          if (match) {
+            const startX = parseFloat(match[1]);
+            const startY = parseFloat(match[2]);
+
+            // Draw the number text directly without any background circle
+            this.ctx.fillStyle = "#2563eb"; // Royal blue for number text
+            this.ctx.fillText(idx + 1, startX - 4, startY - 4);
+          }
+        });
+        this.ctx.beginPath(); // Reset the path to ensure user drawings do not connect to the guidelines
+        this.ctx.restore();
+      } else {
+        // Fallback to text guideline in background
+        this.ctx.font = "160px 'Noto Sans JP', sans-serif";
+        this.ctx.fillStyle = "rgba(100, 116, 139, 0.15)"; // Light grey guideline
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(this.activeKanji.character, this.canvas.width / 2, this.canvas.height / 2 + 10);
+      }
+      
       this.ctx.restore();
     };
 
     this.animateStrokeOrder = () => {
       if (!this.canvas || !this.ctx || !this.activeKanji) return;
+      this.stopStrokeAnimation();
+      
+      // Reset drawn-state so watching the animation doesn't unlock Verify
+      this.hasDrawn = false;
+      this.drawnPointCount = 0;
       this.clearCanvas();
 
-      const paths = this.activeKanji.strokePaths;
+      const paths = this.activeKanji.svgPaths;
       if (!paths || paths.length === 0) return;
 
       let currentStrokeIdx = 0;
+      
       const drawStrokeStep = () => {
         if (currentStrokeIdx >= paths.length) return;
 
-        const pathPoints = paths[currentStrokeIdx];
-        this.ctx.save();
-        this.ctx.strokeStyle = "#4f46e5"; // Animate guidelines in beautiful indigo
-        this.ctx.lineWidth = 6;
-        this.ctx.lineCap = "round";
-        this.ctx.beginPath();
+        const pathD = paths[currentStrokeIdx];
+        const path2d = new Path2D(pathD);
 
-        const scale = 250 / 100; // Database scale coordinates out of 100
-        const startX = pathPoints[0][0] * scale;
-        const startY = pathPoints[0][1] * scale;
-        this.ctx.moveTo(startX, startY);
+        // Create a temporary SVG path element to calculate the path length
+        const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        tempPath.setAttribute("d", pathD);
+        const length = tempPath.getTotalLength();
 
-        let ptIdx = 1;
-        const drawSegment = () => {
-          if (ptIdx >= pathPoints.length) {
-            this.ctx.stroke();
-            this.ctx.restore();
+        let startOffset = length;
+        const speed = Math.max(1.5, length / 40); // Dynamic speed based on stroke length
+
+        const animateSegment = () => {
+          if (startOffset <= 0) {
             currentStrokeIdx++;
-            setTimeout(drawStrokeStep, 350); // Pause between strokes
+            // Pause between strokes
+            this.strokeAnimationTimeout = setTimeout(drawStrokeStep, 350);
             return;
           }
-          const nextX = pathPoints[ptIdx][0] * scale;
-          const nextY = pathPoints[ptIdx][1] * scale;
-          this.ctx.lineTo(nextX, nextY);
-          this.ctx.stroke();
-          ptIdx++;
-          setTimeout(drawSegment, 80); // Speed of tracing line
+
+          // Redraw guidelines first
+          this.clearCanvas();
+          
+          // Draw previous completed strokes fully in dark blue
+          this.ctx.save();
+          this.ctx.scale(250 / 109, 250 / 109);
+          this.ctx.strokeStyle = "#2563eb"; // Royal blue for completed strokes
+          this.ctx.lineWidth = 7; // Thicker lines
+          this.ctx.lineCap = "round";
+          this.ctx.lineJoin = "round";
+          for (let i = 0; i < currentStrokeIdx; i++) {
+            this.ctx.stroke(new Path2D(paths[i]));
+          }
+          this.ctx.restore();
+
+          // Draw the current stroke partially
+          this.ctx.save();
+          this.ctx.scale(250 / 109, 250 / 109);
+          this.ctx.strokeStyle = "#2563eb"; // Royal blue
+          this.ctx.lineWidth = 7; // Thicker lines
+          this.ctx.lineCap = "round";
+          this.ctx.lineJoin = "round";
+          this.ctx.setLineDash([length, length]);
+          this.ctx.lineDashOffset = startOffset;
+          this.ctx.stroke(path2d);
+          this.ctx.restore();
+
+          startOffset -= speed;
+          this.strokeSegmentTimeout = setTimeout(animateSegment, 16); // ~60fps
         };
 
-        drawSegment();
+        animateSegment();
       };
 
       drawStrokeStep();
@@ -1621,7 +1845,7 @@ class NihongoApp {
         if (idx === q.correctIndex) {
           score++;
           feedback.innerHTML = `<span class="correct-text">🎉 Correct!</span><p>${q.explanation}</p>`;
-          this.addXP(6);
+          this.addXP(6, true); // Silent – summary bonus shown at quiz end
         } else {
           feedback.innerHTML = `<span class="incorrect-text">❌ Incorrect.</span><p>${q.explanation}</p>`;
         }
@@ -1644,7 +1868,7 @@ class NihongoApp {
           `;
           document.getElementById("kanji-quiz-feedback").style.display = "none";
           document.getElementById("kanji-quiz-next-btn").style.display = "none";
-          this.addXP(score * 10);
+          if (score > 0) this.addXP(score * 10); // Bonus XP only when at least 1 correct
 
           document.getElementById("k-quiz-finish-close").onclick = () => {
             kQuizModal.style.display = "none";
