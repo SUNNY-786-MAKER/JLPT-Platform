@@ -1265,9 +1265,20 @@ class NihongoApp {
       });
     };
 
-    const selectKanji = (kanji) => {
+    const selectKanji = async (kanji) => {
       this.activeKanji = kanji;
-      this.fetchStrokePaths(kanji);
+      
+      // Reset any active animations
+      if (this._animationFrameId) {
+        cancelAnimationFrame(this._animationFrameId);
+        this._animationFrameId = null;
+      }
+      if (this._animationTimeoutId) {
+        clearTimeout(this._animationTimeoutId);
+        this._animationTimeoutId = null;
+      }
+
+      await this.fetchStrokePaths(kanji);
       const pane = document.getElementById("kanji-details-pane");
       const isBookmarked = this.state.user.bookmarks.kanji.includes(kanji.id);
       
@@ -1472,6 +1483,7 @@ class NihongoApp {
         }
         this.isDrawing = true;
         this.currentStroke = [];
+        this.ctx.beginPath(); // Ensure drawing starts fresh and does not connect to guidelines
         this.draw(e);
       };
 
@@ -1556,12 +1568,80 @@ class NihongoApp {
       if (!this.canvas || !this.ctx || !this.activeKanji) return;
       
       this.ctx.save();
-      // Draw standard font guideline in background
-      this.ctx.font = "160px 'Noto Sans JP', sans-serif";
-      this.ctx.fillStyle = "rgba(100, 116, 139, 0.15)"; // Light grey guideline
-      this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "middle";
-      this.ctx.fillText(this.activeKanji.character, this.canvas.width / 2, this.canvas.height / 2 + 10);
+      
+      const paths = this.activeKanji.strokePaths;
+      if (paths && paths.length > 0) {
+        // Draw the vector guidelines in background (faint blue/gray)
+        paths.forEach(stroke => {
+          this.ctx.save();
+          let d = stroke.d;
+          if (!d) {
+            // Convert point array to SVG path
+            d = "M " + stroke.map(p => `${p[0]} ${p[1]}`).join(" L ");
+          }
+          
+          if (stroke.isDbPoints || Array.isArray(stroke)) {
+            this.ctx.scale(250 / 100, 250 / 100);
+            this.ctx.lineWidth = 14 * (100 / 250); // scales to ~14px on screen
+          } else {
+            this.ctx.scale(250 / 109, 250 / 109);
+            this.ctx.lineWidth = 14 * (109 / 250); // scales to ~14px on screen
+          }
+          
+          this.ctx.strokeStyle = "rgba(37, 99, 235, 0.12)"; // Light blue guideline
+          this.ctx.lineCap = "round";
+          this.ctx.lineJoin = "round";
+          
+          this.ctx.stroke(new Path2D(d));
+          this.ctx.restore();
+        });
+        
+        // Draw numbers directly at the start of each path (without circular dots)
+        this.ctx.save();
+        this.ctx.font = "bold 13px 'Outfit', sans-serif";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillStyle = "#2563eb"; // Royal blue for number text
+
+        paths.forEach((stroke, idx) => {
+          let d = stroke.d;
+          let isDb = false;
+          if (!d) {
+            d = "M " + stroke.map(p => `${p[0]} ${p[1]}`).join(" L ");
+            isDb = true;
+          } else if (stroke.isDbPoints) {
+            isDb = true;
+          }
+          
+          const match = d.match(/^[Mm]\s*(-?\d+\.?\d*)\s*[\s,]\s*(-?\d+\.?\d*)/);
+          if (match) {
+            let startX = parseFloat(match[1]);
+            let startY = parseFloat(match[2]);
+            
+            // Scale start coordinates to 250x250 canvas space
+            if (isDb) {
+              startX = startX * (250 / 100);
+              startY = startY * (250 / 100);
+            } else {
+              startX = startX * (250 / 109);
+              startY = startY * (250 / 109);
+            }
+            
+            // Draw the number text directly offset slightly
+            this.ctx.fillText(idx + 1, startX - 9, startY - 9);
+          }
+        });
+        this.ctx.restore();
+      } else {
+        // Fallback to text guideline in background
+        this.ctx.font = "160px 'Noto Sans JP', sans-serif";
+        this.ctx.fillStyle = "rgba(100, 116, 139, 0.15)"; // Light grey guideline
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(this.activeKanji.character, this.canvas.width / 2, this.canvas.height / 2 + 10);
+      }
+      
+      this.ctx.beginPath(); // Ensure the path starts fresh and doesn't connect to guidelines
       this.ctx.restore();
     };
 
@@ -1628,11 +1708,11 @@ class NihongoApp {
         if (stroke.isDbPoints) {
           // Scale 100x100 database points to 250x250 canvas
           this.ctx.scale(250 / 100, 250 / 100);
-          this.ctx.lineWidth = 14 * (100 / 250); // ~5.6px thickness in 100x100 grid space
+          this.ctx.lineWidth = 18 * (100 / 250); // ~7.2px thickness in 100x100 grid space (scales to 18px on canvas)
         } else {
           // Scale 109x109 KanjiVG points to 250x250 canvas
           this.ctx.scale(250 / 109, 250 / 109);
-          this.ctx.lineWidth = 14 * (109 / 250); // ~6.1px thickness in 109x109 grid space
+          this.ctx.lineWidth = 18 * (109 / 250); // ~7.8px thickness in 109x109 grid space (scales to 18px on canvas)
         }
         
         this.ctx.strokeStyle = "#4f46e5"; // Indigo guideline trace
