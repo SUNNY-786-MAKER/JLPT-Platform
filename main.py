@@ -50,8 +50,8 @@ init_error = None
 if api_key:
     try:
         client = genai.Client(api_key=api_key)
-        # Allow choosing the model via GEMINI_MODEL env var (e.g., 'gemini-3.5-flash')
-        model_name = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+        # Allow choosing the model via GEMINI_MODEL env var (e.g., 'gemini-2.5-flash')
+        model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
         # Initialize the chat session with the system prompt
         chat_session = client.chats.create(
             model=model_name,
@@ -454,7 +454,7 @@ async def generate_reading(request: Request):
     # Attempt to query Gemini API
     if client:
         try:
-            model_name = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+            model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
             prompt = READING_GENERATOR_PROMPT.format(level=level, interest=interest)
             response = client.models.generate_content(
                 model=model_name,
