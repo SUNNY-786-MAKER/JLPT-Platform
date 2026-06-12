@@ -474,7 +474,7 @@ body.light-mode .hero-tag, body.theme-light .hero-tag, body.theme-sakura .hero-t
 /* LEVEL OVERVIEW */
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
 }
 
@@ -489,6 +489,8 @@ body.light-mode .hero-tag, body.theme-light .hero-tag, body.theme-sakura .hero-t
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .level-card:hover {
@@ -1521,18 +1523,11 @@ canvas {
 
 /* READING COMPREHENSION */
 .reading-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 30px;
-  height: 600px;
+  display: block;
 }
 
 .reading-sidebar {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 20px;
-  overflow-y: auto;
+  display: none; /* sidebar removed */
 }
 
 .passage-list-item {
@@ -1566,16 +1561,15 @@ canvas {
 }
 
 .reading-main {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 30px;
-  overflow-y: auto;
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow-y: visible;
 }
 
 .passage-body-row {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 30px;
   margin-top: 20px;
 }
@@ -1595,7 +1589,8 @@ canvas {
 .passage-content-box {
   font-family: var(--font-japanese);
   font-size: 19px;
-  line-height: 2.2;
+  line-height: 3.0; /* extra line-height to give room for furigana above kanji */
+  word-break: break-word;
 }
 
 /* Tooltip hints on passages */
@@ -2769,6 +2764,29 @@ canvas {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
+  /* Level cards: 2x2 grid on tablet/mobile */
+  .level-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .level-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .level-card h3 {
+    font-size: 20px;
+  }
+
+  .level-card p {
+    font-size: 13px;
+  }
+
+  .level-meta {
+    font-size: 11px;
+  }
+
   .kanji-display-row {
     flex-direction: column;
     gap: 24px;
@@ -2790,6 +2808,37 @@ canvas {
   .footer-container {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+
+  /* Testimonials stacked on mobile */
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Kakashi showcase stacked */
+  .kakashi-showcase {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Extra small screens: single column for level cards */
+@media (max-width: 480px) {
+  .level-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .level-card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .level-card h3 {
+    font-size: 22px;
+  }
+
+  .level-card p {
+    font-size: 14px;
   }
 }
 
@@ -2931,4 +2980,85 @@ body.light-mode #theme-selector, body.theme-light #theme-selector, body.theme-sa
   background: var(--accent-coral);
   color: #ffffff;
   border-color: var(--accent-coral);
+}
+
+/* ==========================================================================
+   DYNAMIC READING GENERATOR STYLES
+   ========================================================================== */
+
+.active-mode-btn {
+  background: var(--accent-indigo) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-indigo) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
+}
+
+.engine-option.active-engine {
+  border-color: var(--accent-indigo) !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+  box-shadow: 0 0 0 1px var(--accent-indigo);
+}
+
+/* Form Styling within Generator */
+.generator-container .form-group {
+  margin-bottom: 20px;
+}
+
+.generator-container .form-group label {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.generator-container input[type="text"],
+.generator-container input[type="password"],
+.generator-container select {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.generator-container input[type="text"]:focus,
+.generator-container input[type="password"]:focus,
+.generator-container select:focus {
+  border-color: var(--accent-indigo) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Custom Ninja Spin Animation for Loader */
+@keyframes ninja-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.25);
+    filter: drop-shadow(0 0 15px var(--accent-indigo));
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.loader-ninja-spin {
+  display: inline-block;
+  animation: ninja-spin 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Saved items custom styling */
+.passage-list-item.generator-btn-item:hover {
+  background: rgba(99, 102, 241, 0.15) !important;
+  transform: scale(1.02);
+}
+
+.translation-box {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
