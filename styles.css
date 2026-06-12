@@ -346,6 +346,7 @@ body.light-mode .hero-tag, body.theme-light .hero-tag, body.theme-sakura .hero-t
 .hero-actions {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .hero-image-pane {
@@ -474,7 +475,7 @@ body.light-mode .hero-tag, body.theme-light .hero-tag, body.theme-sakura .hero-t
 /* LEVEL OVERVIEW */
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
   gap: 24px;
 }
 
@@ -2764,15 +2765,17 @@ canvas {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
-  /* Level cards: 2x2 grid on tablet/mobile */
+  /* Level cards: single column on all portrait phones */
   .level-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .level-card {
     padding: 20px;
     border-radius: 18px;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .level-card h3 {
@@ -2780,11 +2783,35 @@ canvas {
   }
 
   .level-card p {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .level-meta {
-    font-size: 11px;
+    font-size: 12px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* Hide hero image pane on mobile to prevent overflow */
+  .hero-image-pane {
+    display: none;
+  }
+
+  /* Remove max-width constraint on hero paragraph */
+  .hero-content p {
+    max-width: 100%;
+  }
+
+  /* Hero buttons wrap on small screens */
+  .hero-actions {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .hero-actions .btn {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
   }
 
   .kanji-display-row {
@@ -2818,27 +2845,6 @@ canvas {
   /* Kakashi showcase stacked */
   .kakashi-showcase {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Extra small screens: single column for level cards */
-@media (max-width: 480px) {
-  .level-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .level-card {
-    padding: 18px 16px;
-    border-radius: 16px;
-  }
-
-  .level-card h3 {
-    font-size: 22px;
-  }
-
-  .level-card p {
-    font-size: 14px;
   }
 }
 
