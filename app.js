@@ -157,6 +157,325 @@ class NihongoApp {
     this.updateDashboardStats();
   }
 
+  generateFurigana(word, kana) {
+    if (!/[々\u4e00-\u9fff]/.test(word)) {
+      return word;
+    }
+    let start = 0;
+    let endWord = word.length;
+    let endKana = kana.length;
+    while (start < endWord && start < endKana && word[start] === kana[start] && !/[々\u4e00-\u9fff]/.test(word[start])) {
+      start++;
+    }
+    while (endWord > start && endKana > start && word[endWord - 1] === kana[endKana - 1] && !/[々\u4e00-\u9fff]/.test(word[endWord - 1])) {
+      endWord--;
+      endKana--;
+    }
+    const prefix = word.substring(0, start);
+    const suffix = word.substring(endWord);
+    const baseWord = word.substring(start, endWord);
+    const baseKana = kana.substring(start, endKana);
+    if (baseWord && baseKana) {
+      return `${prefix}${baseWord}<rt>${baseKana}</rt>${suffix}`;
+    }
+    return word;
+  }
+
+  getStrippedRoot(word, kana) {
+    if (!/[々\u4e00-\u9fff]/.test(word)) {
+      return null;
+    }
+    let start = 0;
+    let endWord = word.length;
+    let endKana = kana.length;
+    while (start < endWord && start < endKana && word[start] === kana[start] && !/[々\u4e00-\u9fff]/.test(word[start])) {
+      start++;
+    }
+    while (endWord > start && endKana > start && word[endWord - 1] === kana[endKana - 1] && !/[々\u4e00-\u9fff]/.test(word[endWord - 1])) {
+      endWord--;
+      endKana--;
+    }
+    return {
+      baseWord: word.substring(start, endWord),
+      baseKana: kana.substring(start, endKana)
+    };
+  }
+
+  initVocabFuriganaMap() {
+    if (this.vocabFuriganaMap) return;
+    this.vocabFuriganaMap = {};
+    if (window.vocabDatabase) {
+      window.vocabDatabase.forEach(v => {
+        if (v.word && v.kana && v.word !== v.kana) {
+          const furigana = this.generateFurigana(v.word, v.kana);
+          if (furigana !== v.word) {
+            this.vocabFuriganaMap[v.word] = furigana;
+          }
+          const rootInfo = this.getStrippedRoot(v.word, v.kana);
+          if (rootInfo && rootInfo.baseWord && rootInfo.baseKana && rootInfo.baseWord !== rootInfo.baseKana) {
+            this.vocabFuriganaMap[rootInfo.baseWord] = `${rootInfo.baseWord}<rt>${rootInfo.baseKana}</rt>`;
+          }
+        }
+      });
+    }
+    this.sortedVocabWords = Object.keys(this.vocabFuriganaMap).sort((a, b) => b.length - a.length);
+  }
+
+  annotateSentence(sentence) {
+    if (!sentence) return '';
+    this.initVocabFuriganaMap();
+    const parts = sentence.split(/(<\/?[^>]+>)/g);
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 0) {
+        let text = parts[i];
+        const replacements = [];
+        for (const word of this.sortedVocabWords) {
+          if (text.includes(word)) {
+            let index = text.indexOf(word);
+            while (index !== -1) {
+              const placeholder = `___TOKEN_${replacements.length}___`;
+              replacements.push({
+                placeholder: placeholder,
+                html: this.vocabFuriganaMap[word]
+              });
+              text = text.substring(0, index) + placeholder + text.substring(index + word.length);
+              index = text.indexOf(word);
+            }
+          }
+        }
+        for (const rep of replacements) {
+          text = text.replace(rep.placeholder, rep.html);
+        }
+        parts[i] = text;
+      }
+    }
+    return parts.join('');
+  }
+
+  rubyExample(text) {
+    if (!text) return '';
+    let annotated = text;
+    if (!text.includes('<rt>')) {
+      annotated = this.annotateSentence(text);
+    }
+    return annotated.replace(/([\u4e00-\u9fff\u3005\u3007]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
+  }
+
+  conjugateSentenceToPast(sentence, translation) {
+    if (!sentence) return null;
+    
+    let pastJp = sentence;
+    let pastEn = translation || '';
+    
+    const rules = [
+      { from: 'たいです。', to: 'たかったです。' },
+      { from: 'たい。', to: 'たかった。' },
+      { from: 'たいです', to: 'たかったです' },
+      { from: 'たい', to: 'たかった' },
+      { from: 'ます。', to: 'ました。' },
+      { from: 'ます', to: 'ました' },
+      { from: 'いいです。', to: 'よかったです。' },
+      { from: 'いいです', to: 'よかったです' },
+      { from: 'ないです。', to: 'なかったです。' },
+      { from: 'ないです', to: 'なかったです' },
+      { from: 'いい。', to: 'よかった。' },
+      { from: 'いい', to: 'よかった' },
+      { from: 'ある。', to: 'あった。' },
+      { from: 'ある', to: 'あった' },
+      { from: 'する。', to: 'した。' },
+      { from: 'する', to: 'した' },
+      { from: 'いる。', to: 'いた。' },
+      { from: 'いる', to: 'いた' },
+      { from: 'だ。', to: 'だった。' },
+      { from: 'だ', to: 'だった' },
+      { from: 'ない。', to: 'なかった。' },
+      { from: 'ない', to: 'なかった' }
+    ];
+    
+    let matched = false;
+    for (const rule of rules) {
+      if (pastJp.endsWith(rule.from)) {
+        pastJp = pastJp.substring(0, pastJp.length - rule.from.length) + rule.to;
+        matched = true;
+        break;
+      }
+    }
+    
+    if (!matched) return null;
+    
+    const enRules = [
+      { from: /\bwant to\b/g, to: 'wanted to' },
+      { from: /\bwants to\b/g, to: 'wanted to' },
+      { from: /\bcan\b/g, to: 'could' },
+      { from: /\bis\b/g, to: 'was' },
+      { from: /\bare\b/g, to: 'were' },
+      { from: /\bam\b/g, to: 'was' },
+      { from: /\bwill go\b/g, to: 'went' },
+      { from: /\bgo\b/g, to: 'went' },
+      { from: /\bgoes\b/g, to: 'went' },
+      { from: /\bhad better\b/g, to: 'had better have' },
+      { from: /\bit is better\b/g, to: 'it would have been better' },
+      { from: /\bdecides to\b/g, to: 'decided to' },
+      { from: /\bdecide to\b/g, to: 'decided to' },
+      { from: /\bshould\b/g, to: 'should have' }
+    ];
+    
+    for (const rule of enRules) {
+      pastEn = pastEn.replace(rule.from, rule.to);
+    }
+    
+    return {
+      japanese: pastJp,
+      translation: pastEn
+    };
+  }
+
+  getTenseTable(pattern) {
+    const clean = pattern.replace(/[～~]/g, '').trim();
+    if (clean.endsWith('たい')) {
+      const stem = clean.slice(0, -2);
+      return {
+        title: "たい-form (Desire) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Want to)", plain: `${stem}たい`, polite: `${stem}たいです` },
+          { tense: "Present Negative (Don't want to)", plain: `${stem}たくない`, polite: `${stem}たくないです` },
+          { tense: "Past Affirmative (Wanted to)", plain: `${stem}たかった`, polite: `${stem}たかったです` },
+          { tense: "Past Negative (Didn't want to)", plain: `${stem}たくなかった`, polite: `${stem}たくなかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことができる') || clean.endsWith('ことができるです')) {
+      const stem = clean.slice(0, -6);
+      return {
+        title: "ことができる (Ability) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Can)", plain: `${stem}ことができる`, polite: `${stem}ことができます` },
+          { tense: "Present Negative (Cannot)", plain: `${stem}ことはできない / ことができない`, polite: `${stem}ことができません` },
+          { tense: "Past Affirmative (Could)", plain: `${stem}ことができた`, polite: `${stem}ことができました` },
+          { tense: "Past Negative (Could not)", plain: `${stem}ことができなかった`, polite: `${stem}ことができませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('つもりだ') || clean.endsWith('つもり')) {
+      const stem = clean.replace('だ', '');
+      return {
+        title: "つもり (Intention) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Intend to)", plain: `${stem}つもりだ`, polite: `${stem}つもりです` },
+          { tense: "Present Negative (Do not intend to)", plain: `${stem}つもりはない`, polite: `${stem}つもりはありません` },
+          { tense: "Past Affirmative (Intended to)", plain: `${stem}つもりだった`, polite: `${stem}つもりでした` },
+          { tense: "Past Negative (Did not intend to)", plain: `${stem}つもりはなかった`, polite: `${stem}つもりはありませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ほうがいい')) {
+      return {
+        title: "ほうがいい (Recommendation) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Should)", plain: `～ほうがいい`, polite: `～ほうがいいです` },
+          { tense: "Present Negative (Should not)", plain: `～ないほうがいい`, polite: `～ないほうがいいです` },
+          { tense: "Past Affirmative (Should have)", plain: `～ほうがよかった`, polite: `～ほうがよかったです` },
+          { tense: "Past Negative (Should not have)", plain: `～ないほうがよかった`, polite: `～ないほうがよかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことになる') || clean.endsWith('なる')) {
+      const stem = clean.endsWith('ことになる') ? '～こと' : '～';
+      return {
+        title: "なる (Arrangement/Become) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative", plain: `${stem}になる`, polite: `${stem}になります` },
+          { tense: "Present Negative", plain: `${stem}にならない`, polite: `${stem}になりません` },
+          { tense: "Past Affirmative", plain: `${stem}になった`, polite: `${stem}になりました` },
+          { tense: "Past Negative", plain: `${stem}にならなかった`, polite: `${stem}になりませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ことにする') || clean.endsWith('する')) {
+      const stem = clean.endsWith('ことにする') ? '～こと' : '～';
+      return {
+        title: "する (Decision/Do) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative", plain: `${stem}にする`, polite: `${stem}にします` },
+          { tense: "Present Negative", plain: `${stem}にしない`, polite: `${stem}にしません` },
+          { tense: "Past Affirmative", plain: `${stem}にした`, polite: `${stem}にしました` },
+          { tense: "Past Negative", plain: `${stem}にしなかった`, polite: `${stem}にしませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('はずだ') || clean.endsWith('はず')) {
+      const stem = clean.replace('だ', '');
+      return {
+        title: "はず (Expectation) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Expected to)", plain: `${stem}はずだ`, polite: `${stem}はずです` },
+          { tense: "Present Negative (Not expected to)", plain: `${stem}はずがない`, polite: `${stem}はずがありません` },
+          { tense: "Past Affirmative (Was expected to)", plain: `${stem}はずだった`, polite: `${stem}はずでした` },
+          { tense: "Past Negative (Was not expected to)", plain: `${stem}はずではなかった`, polite: `${stem}はずではありませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('ている') || clean.endsWith('ているです')) {
+      const stem = clean.slice(0, -3);
+      return {
+        title: "ている (Continuous / State) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Is doing)", plain: `${stem}ている`, polite: `${stem}ています` },
+          { tense: "Present Negative (Is not doing)", plain: `${stem}ていない`, polite: `${stem}ていません` },
+          { tense: "Past Affirmative (Was doing)", plain: `${stem}ていた`, polite: `${stem}ていました` },
+          { tense: "Past Negative (Was not doing)", plain: `${stem}ていなかった`, polite: `${stem}ていませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('てみる')) {
+      const stem = clean.slice(0, -3);
+      return {
+        title: "てみる (Try doing) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Try doing)", plain: `${stem}てみる`, polite: `${stem}てみます` },
+          { tense: "Present Negative (Don't try doing)", plain: `${stem}てみない`, polite: `${stem}てみません` },
+          { tense: "Past Affirmative (Tried doing)", plain: `${stem}てみた`, polite: `${stem}てみました` },
+          { tense: "Past Negative (Didn't try doing)", plain: `${stem}てみなかった`, polite: `${stem}てみませんでした` }
+        ]
+      };
+    }
+    if (clean.endsWith('なければならない') || clean.endsWith('ねばならない')) {
+      return {
+        title: "なければならない (Necessity) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Must do)", plain: `～なければならない`, polite: `～なければれません` },
+          { tense: "Present Negative (Do not have to do)", plain: `～なくてもいい`, polite: `～なくてもいいです` },
+          { tense: "Past Affirmative (Had to do)", plain: `～なければならなかった`, polite: `～なければなりませんでした` },
+          { tense: "Past Negative (Did not have to do)", plain: `～なくてもよかった`, polite: `～なくてもよかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('てはいけない') || clean.endsWith('てはならない')) {
+      return {
+        title: "てはいけない (Prohibition) Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative (Must not do)", plain: `～てはいけない`, polite: `～てはいけません` },
+          { tense: "Present Negative (Do not have to avoid)", plain: `～てはいけないことはない`, polite: `～てはいけないことはないです` },
+          { tense: "Past Affirmative (Was not allowed to)", plain: `～てはいけなかった`, polite: `～てはいけませんでした` },
+          { tense: "Past Negative (Was allowed to / did not have to)", plain: `～てはいけなくなかった`, polite: `～てはいけなくなかったです` }
+        ]
+      };
+    }
+    if (clean.endsWith('やすい') || clean.endsWith('にくい') || clean.endsWith('いい') || clean.endsWith('ほしい')) {
+      const stem = clean.slice(0, -1);
+      return {
+        title: "い-Adjective Ending Conjugation Table",
+        rows: [
+          { tense: "Present Affirmative", plain: `${clean}`, polite: `${clean}です` },
+          { tense: "Present Negative", plain: `${stem}くない`, polite: `${stem}くないです` },
+          { tense: "Past Affirmative", plain: `${stem}かった`, polite: `${stem}かったです` },
+          { tense: "Past Negative", plain: `${stem}くなかった`, polite: `${stem}くなかったです` }
+        ]
+      };
+    }
+    return null;
+  }
+
   loadState() {
     const saved = localStorage.getItem("nihongo_app_state");
     if (saved) {
@@ -248,7 +567,8 @@ class NihongoApp {
     }
   }
 
-  addXP(amount, source = null) {
+  addXP(amount, source = null, silent = false) {
+    if (amount <= 0) return;
     this.state.user.xp += amount;
     if (source === "quiz") {
       this.state.user.xpFromQuizzes = (this.state.user.xpFromQuizzes || 0) + amount;
@@ -270,7 +590,7 @@ class NihongoApp {
 
     if (leveledUp) {
       this.showNotification("🎉 LEVEL UP!", `You have reached Level ${this.state.user.level}! Keep going!`, "success");
-    } else {
+    } else if (!silent) {
       this.showNotification("✨ XP Gained", `+${amount} XP Added to your progress`, "info");
     }
   }
@@ -903,12 +1223,12 @@ class NihongoApp {
           <div class="vocab-card-footer" style="position: relative;">
             <div class="example-box" style="padding-right: 25px;">
               <span class="lbl">Ex:</span>
-              ${window.formatFurigana(vocab.exampleFurigana)}
+              ${this.rubyExample(vocab.exampleFurigana)}
               <div class="example-translation">${vocab.exampleMeaning}</div>
             </div>
             <button class="zoom-btn" title="Zoom Example" style="position: absolute; right: 8px; top: 12px; background: none; border: none; color: var(--text-muted, #94a3b8); cursor: pointer; font-size: 0.8rem; opacity: 0.5; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"
                     onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
-                    data-jp="${window.formatFurigana(vocab.exampleFurigana).replace(/"/g, '&quot;')}"
+                    data-jp="${this.rubyExample(vocab.exampleFurigana).replace(/"/g, '&quot;')}"
                     data-en="${(vocab.exampleMeaning).replace(/"/g, '&quot;')}">
               🔍
             </button>
@@ -1002,9 +1322,9 @@ class NihongoApp {
             <span class="level-label">${item.level} • ${item.category.toUpperCase()}</span>
             <h2>${item.meaning}</h2>
             <p class="reading">Reading: <strong>${item.kana}</strong> (${item.romaji})</p>
-            ${item.exampleFurigana ? `
+            ${item.exampleFurigana || item.example ? `
             <div class="slide-example">
-              <p class="jp-sentence">${window.formatFurigana(item.exampleFurigana)}</p>
+              <p class="jp-sentence">${this.rubyExample(item.exampleFurigana || item.example || '')}</p>
               <p class="en-sentence">${item.exampleMeaning}</p>
             </div>` : ''}
           </div>
@@ -2333,23 +2653,79 @@ class NihongoApp {
           ` : ""}
         </div>
 
-        <div class="grammar-examples">
-          <h3>Examples</h3>
-          ${g.examples ? g.examples.map(e => `
-            <div class="example-item" style="display:flex; justify-content:space-between; align-items:flex-start;">
-              <div style="flex:1; margin-right: 10px;">
-                <p class="jp font-japanese">${e.furigana ? window.formatFurigana(e.furigana) : e.japanese || ""}</p>
-                <p class="en">${e.translation || ""}</p>
-              </div>
-              <button class="btn btn-secondary btn-sm zoom-action-btn" 
-                      style="padding: 2px 6px; font-size: 0.8rem; margin-top: 5px; opacity: 0.7;" 
-                      onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
-                      data-jp="${(e.furigana ? window.formatFurigana(e.furigana) : e.japanese || "").replace(/"/g, '&quot;')}"
-                      data-en="${(e.translation || "").replace(/"/g, '&quot;')}">
-                🔍 Zoom
-              </button>
+        <!-- Tense Table -->
+        ${(() => {
+          const tableData = self.getTenseTable(g.pattern);
+          if (!tableData) return '';
+          return `
+          <div class="grammar-section-block" style="margin-top:20px;">
+            <h3 style="display: flex; align-items: center; gap: 8px;">📊 Present &amp; Past Tense Formations</h3>
+            <div style="overflow-x:auto; background:var(--bg-tertiary); border-radius:12px; padding:8px 12px; border:1px solid var(--border-color);">
+              <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border-color); color:var(--text-secondary);">
+                    <th style="padding:10px;">Tense / Form</th>
+                    <th style="padding:10px;">Plain Form (Casual)</th>
+                    <th style="padding:10px;">Polite Form (Formal)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tableData.rows.map(row => `
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                      <td style="padding:10px; font-weight:600; color:var(--accent-indigo);">${row.tense}</td>
+                      <td style="padding:10px; font-family:var(--font-japanese); font-size:16px;">${row.plain}</td>
+                      <td style="padding:10px; font-family:var(--font-japanese); font-size:16px;">${row.polite}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
             </div>
-          `).join('') : '<p>No examples available.</p>'}
+          </div>
+          `;
+        })()}
+
+        <div class="grammar-examples" style="margin-top: 20px;">
+          <h3>Examples</h3>
+          ${g.examples && g.examples.length > 0 ? g.examples.map(e => {
+            const jpText = e.furigana ? self.rubyExample(e.furigana) : e.japanese || "";
+            const originalHTML = `
+              <div class="example-item" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:12px;">
+                <div style="flex:1; margin-right: 10px;">
+                  <span style="font-size:10px; background:rgba(99,102,241,0.15); color:var(--accent-indigo); padding:2px 8px; border-radius:10px; font-weight:700;">Present / Affirmative Form</span>
+                  <p class="jp font-japanese" style="margin-top: 6px; margin-bottom: 4px; font-size: 1.1rem; line-height: 1.6;">${jpText}</p>
+                  <p class="en" style="margin: 0; opacity: 0.85;">${e.translation || ""}</p>
+                  ${e.breakdown ? `<p style="font-size:12px; color:var(--accent-indigo); margin: 4px 0 0 0;">💡 ${e.breakdown}</p>` : ''}
+                </div>
+                <button class="btn btn-secondary btn-sm zoom-action-btn" 
+                        style="padding: 2px 6px; font-size: 0.8rem; margin-top: 5px; opacity: 0.7;" 
+                        onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
+                        data-jp="${jpText.replace(/"/g, '&quot;')}"
+                        data-en="${(e.translation || "").replace(/"/g, '&quot;')}">
+                  🔍 Zoom
+                </button>
+              </div>
+            `;
+            
+            const pastEx = self.conjugateSentenceToPast(e.furigana || e.japanese || '', e.translation || '');
+            const pastHTML = pastEx ? `
+              <div class="example-item" style="border-left: 2px dashed var(--success-color); padding-left: 12px; margin-top: 10px; margin-bottom: 20px; background: rgba(16,185,129,0.02); display:flex; justify-content:space-between; align-items:flex-start;">
+                <div style="flex:1; margin-right: 10px;">
+                  <span style="font-size:10px; background:rgba(16,185,129,0.15); color:var(--success-color); padding:2px 8px; border-radius:10px; font-weight:700;">Past Form</span>
+                  <p class="jp font-japanese" style="margin-top: 6px; margin-bottom: 4px; font-size: 1.1rem; line-height: 1.6;">${self.rubyExample(pastEx.japanese)}</p>
+                  <p class="en" style="margin: 0; opacity: 0.85;">${pastEx.translation}</p>
+                </div>
+                <button class="btn btn-secondary btn-sm zoom-action-btn" 
+                        style="padding: 2px 6px; font-size: 0.8rem; margin-top: 5px; opacity: 0.7;" 
+                        onclick="window.showZoomModal(this.getAttribute('data-jp'), this.getAttribute('data-en'))"
+                        data-jp="${self.rubyExample(pastEx.japanese).replace(/"/g, '&quot;')}"
+                        data-en="${pastEx.translation.replace(/"/g, '&quot;')}">
+                  🔍 Zoom
+                </button>
+              </div>
+            ` : '';
+            
+            return originalHTML + pastHTML;
+          }).join('') : '<p>No examples available.</p>'}
         </div>
       `;
       const bookmarkBtn = document.getElementById("grammar-bookmark-btn");
@@ -2364,299 +2740,387 @@ class NihongoApp {
   // READING COMPREHENSION PAGE RENDER
   renderReading(container) {
     const self = this;
+
     container.innerHTML = `
-      <style>
-      @keyframes spin-chakra {
-        0% { transform: rotate(0deg) scale(1); color: var(--accent-indigo, #6366f1); }
-        50% { transform: rotate(180deg) scale(1.2); color: var(--accent-coral, #ff4e50); }
-        100% { transform: rotate(360deg) scale(1); color: var(--accent-indigo, #6366f1); }
-      }
-      </style>
       <div class="page-header">
         <div>
-          <h1>Reading Comprehension</h1>
-          <p>Train your contextual reading, vocabulary hints, and instant multiple choice question checks.</p>
+          <h1>Dynamic Reading Practice</h1>
+          <p>Generate customized Japanese reading passages matching your JLPT level and study topic instantly.</p>
         </div>
       </div>
-
-      <div class="filter-bar" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
-        <div class="level-tabs" id="reading-level-tabs" style="margin: 0;">
-          <button class="tab-btn active" data-lvl="N5">N5</button>
-          <button class="tab-btn" data-lvl="N4">N4</button>
-          <button class="tab-btn" data-lvl="N3">N3</button>
-          <button class="tab-btn" data-lvl="N2">N2</button>
-        </div>
-
-        <div class="interest-generator-box" style="padding: 10px 16px; background: rgba(255,255,255,0.03); border-radius: 30px; border: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <span style="font-weight: 600; font-size: 0.88rem; color: var(--text-secondary);">✨ AI Scroll Compiler:</span>
-          <select id="reading-interest-select" class="control-btn" style="padding: 6px 12px; border-radius: 20px; outline: none; border: 1px solid var(--border-color); background: var(--bg-primary, #0f172a); color: var(--text-primary); cursor: pointer; font-size: 0.85rem;">
-            <option value="travelling">✈️ Travelling</option>
-            <option value="anime">🌸 Anime</option>
-            <option value="sports">⚽ Sports</option>
-            <option value="movies">🎬 Movies</option>
-            <option value="music">🎵 Music</option>
-            <option value="universe">🌌 Universe</option>
-            <option value="custom">✍️ Custom Topic...</option>
-          </select>
-          <input type="text" id="reading-custom-interest" placeholder="Type topic..." class="control-btn" style="display: none; padding: 6px 12px; border-radius: 20px; outline: none; border: 1px solid var(--border-color); background: var(--bg-primary, #0f172a); color: var(--text-primary); width: 130px; font-size: 0.85rem;">
-          <button class="btn btn-primary btn-sm" id="reading-generate-btn" style="padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; height: auto;">📜 Compile Scroll</button>
-        </div>
-      </div>
-
-      <div class="reading-layout">
-        <!-- Sidebar Passage Selector -->
-        <div class="reading-sidebar" id="passages-list">
-          <!-- Dynamically populated -->
-        </div>
-
-        <!-- Passage Main Pane -->
-        <div class="reading-main" id="passage-detail-pane">
-          <div class="empty-state">
-            <p>Select a reading passage from the sidebar to start reading and answering comprehension questions.</p>
-          </div>
-        </div>
-      </div>
+      <div id="reading-content-pane"></div>
     `;
 
-    let activeLvl = "N5";
-
-    const interestSelect = document.getElementById("reading-interest-select");
-    const customInterestInput = document.getElementById("reading-custom-interest");
-    const generateBtn = document.getElementById("reading-generate-btn");
-
-    interestSelect.onchange = (e) => {
-      if (e.target.value === "custom") {
-        customInterestInput.style.display = "inline-block";
-        customInterestInput.focus();
-      } else {
-        customInterestInput.style.display = "none";
-      }
+    /**
+     * Converts bare  KANJI<rt>reading</rt>  into  <ruby>KANJI<rt>reading</rt></ruby>
+     * so furigana stacks ABOVE the kanji in all browsers.
+     * Single-pass: ([^\s<>]+) captures the kanji, (<rt>...) captures the reading.
+     */
+    const applyRubyMarkup = (html) => {
+      return html.replace(/([\u4e00-\u9fff\u3005\u3007]+)(<rt>[^<]*<\/rt>)/g, '<ruby>$1$2</ruby>');
     };
 
-    generateBtn.onclick = async () => {
-      let interest = interestSelect.value;
-      let displayTopic = interest;
-      if (interest === "custom") {
-        interest = customInterestInput.value.trim();
-        displayTopic = interest;
-        if (!interest) {
-          self.showNotification("⚠️ Invalid Topic", "Please enter a custom topic first!", "warning");
-          return;
-        }
-      }
-
-      // Disable UI during generation
-      generateBtn.disabled = true;
-      const originalText = generateBtn.innerHTML;
-      generateBtn.innerHTML = "🌀 Compiling...";
-      interestSelect.disabled = true;
-      customInterestInput.disabled = true;
-
-      // Show shinobi compilation state
-      const pane = document.getElementById("passage-detail-pane");
-      pane.innerHTML = `
-        <div class="empty-state" style="padding: 50px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
-          <div class="loading-chakra-spin" style="font-size: 3.5rem; animation: spin-chakra 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;">🌀</div>
-          <h3 style="margin: 10px 0 5px 0;">Kakashi is compiling your custom reading scroll...</h3>
-          <p style="color: var(--text-secondary); max-width: 400px; font-size: 0.9rem; line-height: 1.5;">
-            Concentrating chakra to format a level-appropriate passage and quiz on <strong>"${displayTopic}"</strong>. Please wait!
-          </p>
-        </div>
-      `;
-
-      try {
-        const response = await fetch("/generate_reading", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ level: activeLvl, interest: interest })
-        });
-
-        if (response.ok) {
-          const parsed = await response.json();
-          
-          if (parsed.offline) {
-            self.showNotification(
-              "🥷 Out of Chakra!", 
-              `Kakashi is out of chakra right now, its restoring its chakra so pls wait. Loaded offline fallback scroll: ${parsed.category}!`, 
-              "warning"
-            );
-          } else {
-            self.showNotification("📜 Scroll Compiled!", `Successfully created passage on "${displayTopic}"!`, "success");
-          }
-
-          // Create passage object and push to database
-          const newPass = {
-            id: "gen_" + Date.now(),
-            level: activeLvl,
-            title: parsed.title,
-            content: parsed.content,
-            hints: parsed.hints,
-            questions: parsed.questions
-          };
-
-          window.readingDatabase.push(newPass);
-          renderPassagesList();
-          selectPassage(newPass);
-        } else {
-          throw new Error("HTTP Status " + response.status);
-        }
-      } catch (err) {
-        console.error("Error compiling scroll:", err);
-        self.showNotification(
-          "🥷 Out of Chakra!", 
-          "Kakashi is out of chakra right now, its restoring its chakra so pls wait. Loaded offline fallback scroll.", 
-          "warning"
-        );
-        
-        // Load offline client fallback
-        const offlineData = window.readingDatabase.find(r => r.level === activeLvl);
-        if (offlineData) {
-          selectPassage(offlineData);
-        } else {
-          pane.innerHTML = `
-            <div class="empty-state" style="padding: 40px; text-align: center;">
-              <p>Failed to compile custom scroll. Please select a static passage from the sidebar or try compiling again.</p>
-            </div>
-          `;
-        }
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.innerHTML = originalText;
-        interestSelect.disabled = false;
-        customInterestInput.disabled = false;
-      }
-    };
-
-
-    const renderPassagesList = () => {
-      const sidebar = document.getElementById("passages-list");
-      sidebar.innerHTML = "";
-
-      const filtered = window.readingDatabase.filter(r => r.level === activeLvl);
-      if (filtered.length === 0) {
-        sidebar.innerHTML = `<div class="empty-state">No reading passages.</div>`;
-        return;
-      }
-
-      filtered.forEach((pass, idx) => {
-        const item = document.createElement("div");
-        item.className = "passage-list-item";
-        item.innerHTML = `
-          <h4>${pass.title}</h4>
-          <span class="lbl-tag">${pass.level}</span>
-        `;
-        item.onclick = () => selectPassage(pass);
-        sidebar.appendChild(item);
-
-        if (idx === 0) selectPassage(pass);
-      });
+    // Topic metadata for display
+    const topicMeta = {
+      daily:    { label: "Daily Life",          jp: "日常",       emoji: "🏡", cat: "everyday" },
+      travel:   { label: "Travel & Direction",  jp: "旅行",       emoji: "✈️", cat: "everyday" },
+      dining:   { label: "Food & Dining",       jp: "食事",       emoji: "🍜", cat: "everyday" },
+      shopping: { label: "Shopping & Services", jp: "買い物",     emoji: "🛒", cat: "everyday" },
+      hobbies:  { label: "Hobbies",             jp: "趣味",       emoji: "🎨", cat: "everyday" },
+      weather:  { label: "Weather & Seasons",   jp: "天気",       emoji: "🌤️", cat: "everyday" },
+      anime:    { label: "Anime & Manga",        jp: "アニメ",     emoji: "⚔️", cat: "entertainment" },
+      movies:   { label: "Movies & Cinema",     jp: "映画",       emoji: "🎬", cat: "entertainment" },
+      series:   { label: "TV Series & Dramas",  jp: "ドラマ",     emoji: "📺", cat: "entertainment" },
     };
 
     const selectPassage = (pass) => {
-      const pane = document.getElementById("passage-detail-pane");
-      
+      const pane = document.getElementById("reading-content-pane");
+      const topicKey = pass.topicKey || "daily";
+      const meta = topicMeta[topicKey] || { emoji: "📖", label: topicKey, jp: "" };
+      const isEntertainment = meta.cat === "entertainment";
+
       pane.innerHTML = `
         <div class="passage-view-container">
-          <div class="passage-header-block">
-            <span class="kanji-label-tag">JLPT ${pass.level} Reading</span>
-            <h2>${pass.title}</h2>
+          <div class="passage-header-block" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
+            <div>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                <span class="kanji-label-tag">JLPT ${pass.level} Reading</span>
+                ${isEntertainment ? `<span style="background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(236,72,153,0.25)); border: 1px solid rgba(139,92,246,0.4); color:#c084fc; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:700; letter-spacing:0.05em;">🎌 Entertainment Culture</span>` : ""}
+              </div>
+              <h2 style="margin-top:0;">${meta.emoji} ${pass.title}</h2>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <button class="btn btn-secondary" id="back-to-form-btn" style="display:flex; align-items:center; gap:6px;">⚡ New Passage</button>
+            </div>
           </div>
 
           <div class="passage-body-row">
             <!-- Passage Text Content -->
             <div class="passage-text-card">
-              <div class="passage-toggle-row">
-                <small>💡 Hover/Click highlighted words for English meanings!</small>
+              <div class="passage-toggle-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                <small style="display:flex; align-items:center; gap:6px;">
+                  <span style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:2px 8px; color:#60a5fa; font-weight:600; font-size:11px;">FURIGANA ON</span>
+                  💡 Hover underlined words for meanings!
+                </small>
+                <button class="control-btn" id="toggle-translation-btn" style="padding:5px 12px; font-size:12px; border-radius:12px;">📖 Show Translation</button>
               </div>
-              <div class="passage-content-box" id="reading-content-target">
-                <!-- Injected with interactable tooltip tags -->
+
+              <!-- Translation Panel (hidden by default) -->
+              <div id="passage-translation-box" style="display:none; margin-bottom:20px; padding:15px; background:var(--bg-tertiary); border-radius:12px; border:1px solid var(--border-color); font-size:14px; line-height:1.6; color:var(--text-secondary);">
+                <strong>English Translation:</strong>
+                <p style="margin-top:5px; font-weight:500;">${pass.translation || "Translation not provided."}</p>
               </div>
+
+              <!-- Passage Content with Furigana -->
+              <div class="passage-content-box" id="reading-content-target" style="font-size:1.25rem; line-height:2.8; font-family:var(--font-japanese); padding:25px;"></div>
             </div>
 
-            <!-- Quiz Questions side -->
+            <!-- Comprehension Quiz -->
             <div class="passage-questions-pane">
               <h3>Comprehension Quiz</h3>
-              <div id="reading-questions-container">
-                <!-- Rendered dynamically -->
-              </div>
+              <div id="reading-questions-container"></div>
             </div>
           </div>
         </div>
       `;
 
-      // Format and Inject text content with tooltips
+      document.getElementById("back-to-form-btn").onclick = () => renderGeneratorForm();
+
+      // Translation toggle
+      const transToggle = document.getElementById("toggle-translation-btn");
+      const transBox = document.getElementById("passage-translation-box");
+      transToggle.onclick = () => {
+        const isHidden = transBox.style.display === "none";
+        transBox.style.display = isHidden ? "block" : "none";
+        transToggle.textContent = isHidden ? "📖 Hide Translation" : "📖 Show Translation";
+      };
+
+      // Inject passage content with correct furigana + hint tooltips
       const bodyBox = document.getElementById("reading-content-target");
-      let formattedHTML = pass.content;
+      let formattedHTML = applyRubyMarkup(pass.content);
 
-      // Wrap hints words inside styled span tooltip triggers
-      Object.keys(pass.hints).forEach(word => {
-        const definition = pass.hints[word];
-        // Create regex to match word even if inside ruby tags partially (regex replacement on clean string is tricky, but let's do a simple wrap of the word)
-        // Find matching word
-        if (formattedHTML.includes(word)) {
-          formattedHTML = formattedHTML.split(word).join(`<span class="reading-hint-word" data-hint="${definition}">${word}</span>`);
-        }
-      });
+      if (pass.hints) {
+        // Sort keys by length descending to prevent partial replacement
+        const sortedWords = Object.keys(pass.hints).sort((a, b) => b.length - a.length);
+        sortedWords.forEach(word => {
+          const definition = pass.hints[word];
+          // Escape special regex characters for each character, allowing interspersed HTML/rt tags
+          const patternParts = Array.from(word).map(char => {
+            const escapedChar = char.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            return escapedChar + '(?:<rt>[^<]*<\\/rt>|<\\/?[^>]+>)*';
+          });
+          const regex = new RegExp(`(?<![\\w<])${patternParts.join('')}(?![\\w>])`, 'g');
+          
+          formattedHTML = formattedHTML.replace(regex, (match) => {
+            return `<span class="reading-hint-word" data-hint="${definition}">${match}</span>`;
+          });
+        });
+      }
 
-      bodyBox.innerHTML = window.formatFurigana(formattedHTML);
+      bodyBox.innerHTML = formattedHTML;
 
-      // Render Questions
+      // Render comprehension questions
       const questionsBin = document.getElementById("reading-questions-container");
       questionsBin.innerHTML = "";
 
-      pass.questions.forEach((q, qIdx) => {
-        const qBlock = document.createElement("div");
-        qBlock.className = "passage-q-block";
-        qBlock.innerHTML = `
-          <p class="question-text"><strong>Q${qIdx + 1}:</strong> ${q.question}</p>
-          <div class="options-stack">
-            ${q.options.map((opt, optIdx) => `
-              <button class="passage-opt-btn" data-q="${qIdx}" data-opt="${optIdx}">${opt}</button>
-            `).join("")}
-          </div>
-          <div class="passage-q-feedback" id="q-feedback-${qIdx}" style="display:none;"></div>
-        `;
+      if (pass.questions && pass.questions.length > 0) {
+        pass.questions.forEach((q, qIdx) => {
+          const qBlock = document.createElement("div");
+          qBlock.className = "passage-q-block";
+          qBlock.innerHTML = `
+            <p class="question-text"><strong>Q${qIdx + 1}:</strong> ${q.question}</p>
+            <div class="options-stack">
+              ${q.options.map((opt, optIdx) => `
+                <button class="passage-opt-btn" data-q="${qIdx}" data-opt="${optIdx}">${opt}</button>
+              `).join("")}
+            </div>
+            <div class="passage-q-feedback" id="q-feedback-${qIdx}" style="display:none;"></div>
+          `;
 
-        qBlock.querySelectorAll(".passage-opt-btn").forEach(btn => {
-          btn.onclick = (e) => {
-            const sQIdx = parseInt(e.target.getAttribute("data-q"));
-            const sOptIdx = parseInt(e.target.getAttribute("data-opt"));
-            
-            // disable buttons
-            qBlock.querySelectorAll(".passage-opt-btn").forEach(b => b.disabled = true);
+          qBlock.querySelectorAll(".passage-opt-btn").forEach(btn => {
+            btn.onclick = (e) => {
+              const sQIdx = parseInt(e.target.getAttribute("data-q"));
+              const sOptIdx = parseInt(e.target.getAttribute("data-opt"));
+              qBlock.querySelectorAll(".passage-opt-btn").forEach(b => b.disabled = true);
 
-            const feedback = document.getElementById(`q-feedback-${sQIdx}`);
-            feedback.style.display = "block";
+              const feedback = document.getElementById(`q-feedback-${sQIdx}`);
+              feedback.style.display = "block";
 
-            if (sOptIdx === q.answerIndex) {
-              e.target.classList.add("correct");
-              feedback.className = "passage-q-feedback success";
-              feedback.innerHTML = `🎉 <strong>Correct!</strong> <br>${q.explanation}`;
-              this.addXP(15, "quiz");
-            } else {
-              e.target.classList.add("incorrect");
-              qBlock.querySelector(`[data-opt="${q.answerIndex}"]`).classList.add("correct");
-              feedback.className = "passage-q-feedback error";
-              feedback.innerHTML = `❌ <strong>Incorrect.</strong> <br>${q.explanation}`;
-            }
-          };
+              if (sOptIdx === q.answerIndex) {
+                e.target.classList.add("correct");
+                feedback.className = "passage-q-feedback success";
+                feedback.innerHTML = `🎉 <strong>Correct!</strong><br>${q.explanation}`;
+                self.addXP(20);
+              } else {
+                e.target.classList.add("incorrect");
+                qBlock.querySelector(`[data-opt="${q.answerIndex}"]`).classList.add("correct");
+                feedback.className = "passage-q-feedback error";
+                feedback.innerHTML = `❌ <strong>Incorrect.</strong><br>${q.explanation}`;
+              }
+            };
+          });
+
+          questionsBin.appendChild(qBlock);
         });
-
-        questionsBin.appendChild(qBlock);
-      });
+      } else {
+        questionsBin.innerHTML = `<div class="empty-state">No comprehension questions for this passage.</div>`;
+      }
     };
 
-    // Filter Listener
-    document.querySelectorAll("#reading-level-tabs .tab-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        document.querySelectorAll("#reading-level-tabs .tab-btn").forEach(b => b.classList.remove("active"));
-        e.target.classList.add("active");
-        activeLvl = e.target.getAttribute("data-lvl");
-        renderPassagesList();
-      });
-    });
+    const renderGeneratorForm = () => {
+      const pane = document.getElementById("reading-content-pane");
 
-    renderPassagesList();
+      pane.innerHTML = `
+        <div class="generator-container" style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:30px; border-radius:24px;">
+          <div style="margin-bottom:25px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
+            <h2 style="display:flex; align-items:center; gap:10px;">✨ Dynamic Reading Generator</h2>
+            <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">
+              Select your JLPT level and study topic. Our engine compiles a passage with <strong>interactive furigana</strong> above every kanji, vocabulary hover hints, comprehension questions, and XP rewards.
+            </p>
+          </div>
+
+          <!-- JLPT Level Selector -->
+          <div class="form-group" style="margin-bottom:28px;">
+            <label style="display:block; font-weight:700; font-size:14px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">① JLPT Difficulty Level</label>
+            <div id="gen-level-selector" style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-secondary gen-lvl-btn active-mode-btn" data-lvl="N5" style="padding:12px 24px; flex:1; min-width:60px; font-size:1rem; font-weight:700;">N5<br><span style="font-size:10px; opacity:0.7; font-weight:400;">Beginner</span></button>
+              <button class="btn btn-secondary gen-lvl-btn" data-lvl="N4" style="padding:12px 24px; flex:1; min-width:60px; font-size:1rem; font-weight:700;">N4<br><span style="font-size:10px; opacity:0.7; font-weight:400;">Elementary</span></button>
+              <button class="btn btn-secondary gen-lvl-btn" data-lvl="N3" style="padding:12px 24px; flex:1; min-width:60px; font-size:1rem; font-weight:700;">N3<br><span style="font-size:10px; opacity:0.7; font-weight:400;">Intermediate</span></button>
+              <button class="btn btn-secondary gen-lvl-btn" data-lvl="N2" style="padding:12px 24px; flex:1; min-width:60px; font-size:1rem; font-weight:700;">N2<br><span style="font-size:10px; opacity:0.7; font-weight:400;">Advanced</span></button>
+            </div>
+          </div>
+
+          <!-- Topic Selector - Visual Cards -->
+          <div class="form-group" style="margin-bottom:28px;">
+            <label style="display:block; font-weight:700; font-size:14px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">② Reading Topic</label>
+
+            <!-- Everyday Life Category -->
+            <div style="margin-bottom:16px;">
+              <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span style="height:1px; flex:1; background:var(--border-color);"></span>
+                <span>Everyday Life</span>
+                <span style="height:1px; flex:1; background:var(--border-color);"></span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px;" id="topic-cards-everyday">
+                <button class="gen-topic-card" data-topic="daily" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🏡</div>
+                  <div>Daily Life</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">日常</div>
+                </button>
+                <button class="gen-topic-card" data-topic="travel" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">✈️</div>
+                  <div>Travel</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">旅行</div>
+                </button>
+                <button class="gen-topic-card" data-topic="dining" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🍜</div>
+                  <div>Food & Dining</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">食事</div>
+                </button>
+                <button class="gen-topic-card" data-topic="shopping" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🛒</div>
+                  <div>Shopping</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">買い物</div>
+                </button>
+                <button class="gen-topic-card" data-topic="hobbies" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🎨</div>
+                  <div>Hobbies</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">趣味</div>
+                </button>
+                <button class="gen-topic-card" data-topic="weather" style="background:var(--bg-tertiary); border:2px solid var(--border-color); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🌤️</div>
+                  <div>Weather</div>
+                  <div style="font-size:11px; opacity:0.6; font-weight:400; font-family:var(--font-japanese);">天気</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Entertainment Category -->
+            <div>
+              <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#a78bfa; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span style="height:1px; flex:1; background:rgba(139,92,246,0.3);"></span>
+                <span>🎌 Entertainment Culture — NEW!</span>
+                <span style="height:1px; flex:1; background:rgba(139,92,246,0.3);"></span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px;" id="topic-cards-entertainment">
+                <button class="gen-topic-card" data-topic="anime" style="background:rgba(139,92,246,0.07); border:2px solid rgba(139,92,246,0.35); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">⚔️</div>
+                  <div>Anime & Manga</div>
+                  <div style="font-size:11px; opacity:0.7; font-weight:400; font-family:var(--font-japanese);">アニメ・漫画</div>
+                </button>
+                <button class="gen-topic-card" data-topic="movies" style="background:rgba(139,92,246,0.07); border:2px solid rgba(139,92,246,0.35); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">🎬</div>
+                  <div>Movies & Cinema</div>
+                  <div style="font-size:11px; opacity:0.7; font-weight:400; font-family:var(--font-japanese);">映画</div>
+                </button>
+                <button class="gen-topic-card" data-topic="series" style="background:rgba(139,92,246,0.07); border:2px solid rgba(139,92,246,0.35); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; transition:all 0.2s; color:var(--text-primary); font-size:13px; font-weight:600;">
+                  <div style="font-size:24px; margin-bottom:5px;">📺</div>
+                  <div>TV Series & Dramas</div>
+                  <div style="font-size:11px; opacity:0.7; font-weight:400; font-family:var(--font-japanese);">ドラマ</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Furigana Info Banner -->
+          <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:12px 16px; margin-bottom:25px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:20px; flex-shrink:0;">振り仮名</span>
+            <div>
+              <div style="font-weight:700; color:#10b981; font-size:13px; margin-bottom:3px;">Furigana Enabled — Readings appear above every kanji!</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Example: <ruby style="font-family:var(--font-japanese); font-size:16px; line-height:2.2;">日本語<rt>にほんご</rt></ruby> • All passages include interactive furigana and vocabulary hints on hover.</div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border-color); padding-top:25px; display:flex; justify-content:center;">
+            <button class="btn btn-primary" id="trigger-generation-btn" style="padding:15px 50px; font-size:16px; border-radius:30px; font-weight:700; width:100%; max-width:420px; opacity:0.5; cursor:not-allowed;" disabled>
+              ← Select a topic above to generate ⚡
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Level button selection
+      let selectedLevel = "N5";
+      let selectedTopic = null;
+
+      document.querySelectorAll(".gen-lvl-btn").forEach(btn => {
+        btn.onclick = (e) => {
+          document.querySelectorAll(".gen-lvl-btn").forEach(b => b.classList.remove("active-mode-btn"));
+          e.target.classList.add("active-mode-btn");
+          selectedLevel = e.target.getAttribute("data-lvl");
+        };
+      });
+
+      // Topic card selection logic
+      const updateGenerateBtn = () => {
+        const genBtn = document.getElementById("trigger-generation-btn");
+        if (selectedTopic && topicMeta[selectedTopic]) {
+          const meta = topicMeta[selectedTopic];
+          genBtn.textContent = `Generate ${meta.emoji} ${meta.label} Passage ⚡`;
+          genBtn.style.opacity = "1";
+          genBtn.style.cursor = "pointer";
+          genBtn.disabled = false;
+        } else {
+          genBtn.textContent = "← Select a topic above to generate ⚡";
+          genBtn.style.opacity = "0.5";
+          genBtn.style.cursor = "not-allowed";
+          genBtn.disabled = true;
+        }
+      };
+
+      document.querySelectorAll(".gen-topic-card").forEach(card => {
+        card.onclick = (e) => {
+          const clickedCard = e.currentTarget;
+          const topic = clickedCard.getAttribute("data-topic");
+
+          // Reset all cards
+          document.querySelectorAll(".gen-topic-card").forEach(c => {
+            c.classList.remove("topic-selected");
+            const isEntCard = c.closest("#topic-cards-entertainment") !== null;
+            c.style.borderColor = isEntCard ? "rgba(139,92,246,0.35)" : "var(--border-color)";
+            c.style.background = isEntCard ? "rgba(139,92,246,0.07)" : "var(--bg-tertiary)";
+            c.style.transform = "";
+            c.style.boxShadow = "";
+          });
+
+          // Highlight selected card
+          clickedCard.classList.add("topic-selected");
+          const isEntCard = clickedCard.closest("#topic-cards-entertainment") !== null;
+          if (isEntCard) {
+            clickedCard.style.borderColor = "#a78bfa";
+            clickedCard.style.background = "rgba(139,92,246,0.25)";
+            clickedCard.style.boxShadow = "0 0 18px rgba(139,92,246,0.35)";
+          } else {
+            clickedCard.style.borderColor = "var(--primary, #3b82f6)";
+            clickedCard.style.background = "rgba(59,130,246,0.15)";
+            clickedCard.style.boxShadow = "0 0 18px rgba(59,130,246,0.25)";
+          }
+          clickedCard.style.transform = "translateY(-2px)";
+
+          selectedTopic = topic;
+          updateGenerateBtn();
+        };
+      });
+
+      // Generate button click
+      document.getElementById("trigger-generation-btn").onclick = async () => {
+        if (!selectedTopic) return;
+        const meta = topicMeta[selectedTopic] || { emoji: "📖", label: selectedTopic };
+
+        pane.innerHTML = `
+          <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:350px; text-align:center;">
+            <div style="font-size:50px; margin-bottom:20px; animation: spin 1s linear infinite;">🥷</div>
+            <h3>Kakashi is writing your reading passage...</h3>
+            <p style="color:var(--text-secondary); margin-top:8px; font-size:14px;">Synthesizing ${meta.emoji} ${meta.label} passage for ${selectedLevel} with furigana...</p>
+          </div>
+        `;
+
+        try {
+          await new Promise(resolve => setTimeout(resolve, 700));
+          const generated = window.JapaneseReadingGenerator.generateProceduralPassage(
+            selectedLevel, selectedTopic, null, null
+          );
+          generated.id = "gen_" + Date.now();
+          generated.level = selectedLevel;
+          generated.topicKey = selectedTopic;
+          generated.title = `${selectedLevel} ${meta.label} (${(topicMeta[selectedTopic] || {}).jp || ""})`;
+          selectPassage(generated);
+        } catch (err) {
+          console.error(err);
+          pane.innerHTML = `
+            <div style="text-align:center; padding:40px; border:1px solid var(--border-color); border-radius:24px; background:rgba(239,68,68,0.05);">
+              <span style="font-size:40px;">⚠️</span>
+              <h3 style="margin-top:15px; color:var(--danger-color);">Generation Failed</h3>
+              <p style="color:var(--text-secondary); margin-top:8px; font-size:14px;">An error occurred during passage synthesis.</p>
+              <button class="btn btn-primary" id="retry-form-btn" style="margin-top:20px;">Back to Settings</button>
+            </div>
+          `;
+          document.getElementById("retry-form-btn").onclick = () => renderGeneratorForm();
+        }
+      };
+    };
+
+    renderGeneratorForm();
   }
 
   // PRACTICE TEST PAGE RENDER
