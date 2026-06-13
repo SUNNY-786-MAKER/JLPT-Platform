@@ -802,6 +802,10 @@ class NihongoApp {
         const toggleSpanMob = mobFiriToggle.querySelector("span");
         if (toggleSpanMob) toggleSpanMob.textContent = this.furiganaVisible ? "あ ON" : "あ OFF";
       }
+      const readingFuriganaStatus = document.getElementById("reading-furigana-status");
+      if (readingFuriganaStatus) {
+        readingFuriganaStatus.textContent = this.furiganaVisible ? "FURIGANA ON" : "FURIGANA OFF";
+      }
     };
 
     // Initialize state
@@ -2799,7 +2803,7 @@ class NihongoApp {
             <div class="passage-text-card">
               <div class="passage-toggle-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                 <small style="display:flex; align-items:center; gap:6px;">
-                  <span style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:2px 8px; color:#60a5fa; font-weight:600; font-size:11px;">FURIGANA ON</span>
+                  <span id="reading-furigana-status" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:2px 8px; color:#60a5fa; font-weight:600; font-size:11px;">${self.furiganaVisible ? "FURIGANA ON" : "FURIGANA OFF"}</span>
                   💡 Hover underlined words for meanings!
                 </small>
                 <button class="control-btn" id="toggle-translation-btn" style="padding:5px 12px; font-size:12px; border-radius:12px;">📖 Show Translation</button>
@@ -2837,7 +2841,7 @@ class NihongoApp {
 
       // Inject passage content with correct furigana + hint tooltips
       const bodyBox = document.getElementById("reading-content-target");
-      let formattedHTML = applyRubyMarkup(pass.content);
+      let formattedHTML = pass.content;
 
       if (pass.hints) {
         // Sort keys by length descending to prevent partial replacement
@@ -2857,6 +2861,7 @@ class NihongoApp {
         });
       }
 
+      formattedHTML = applyRubyMarkup(formattedHTML);
       bodyBox.innerHTML = formattedHTML;
 
       // Render comprehension questions
@@ -2865,12 +2870,28 @@ class NihongoApp {
 
       if (pass.questions && pass.questions.length > 0) {
         pass.questions.forEach((q, qIdx) => {
+          // Shuffle options for this question to randomize option placement
+          const indexedOptions = q.options.map((opt, idx) => ({
+            opt,
+            isCorrect: idx === q.answerIndex
+          }));
+          
+          for (let i = indexedOptions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = indexedOptions[i];
+            indexedOptions[i] = indexedOptions[j];
+            indexedOptions[j] = temp;
+          }
+          
+          const shuffledOptions = indexedOptions.map(item => item.opt);
+          const newAnswerIndex = indexedOptions.findIndex(item => item.isCorrect);
+
           const qBlock = document.createElement("div");
           qBlock.className = "passage-q-block";
           qBlock.innerHTML = `
             <p class="question-text"><strong>Q${qIdx + 1}:</strong> ${q.question}</p>
             <div class="options-stack">
-              ${q.options.map((opt, optIdx) => `
+              ${shuffledOptions.map((opt, optIdx) => `
                 <button class="passage-opt-btn" data-q="${qIdx}" data-opt="${optIdx}">${opt}</button>
               `).join("")}
             </div>
@@ -2886,14 +2907,14 @@ class NihongoApp {
               const feedback = document.getElementById(`q-feedback-${sQIdx}`);
               feedback.style.display = "block";
 
-              if (sOptIdx === q.answerIndex) {
+              if (sOptIdx === newAnswerIndex) {
                 e.target.classList.add("correct");
                 feedback.className = "passage-q-feedback success";
                 feedback.innerHTML = `🎉 <strong>Correct!</strong><br>${q.explanation}`;
                 self.addXP(20);
               } else {
                 e.target.classList.add("incorrect");
-                qBlock.querySelector(`[data-opt="${q.answerIndex}"]`).classList.add("correct");
+                qBlock.querySelector(`[data-opt="${newAnswerIndex}"]`).classList.add("correct");
                 feedback.className = "passage-q-feedback error";
                 feedback.innerHTML = `❌ <strong>Incorrect.</strong><br>${q.explanation}`;
               }

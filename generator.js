@@ -9,8 +9,8 @@ const storyPools = {
           "translation": "I wake up at [time_en] every day. Then, I eat [breakfast_en].",
           "question": {
             "question": "朝御飯に何をしますか。",
-            "options": ["[breakfast]を食べます", "何も食べません", "日本語を勉強します", "散歩をします"],
-            "answerIndex": 0,
+            "options": ["何も食べません", "散歩をします", "日本語を勉強します", "[breakfast]を食べます"],
+            "answerIndex": 3,
             "explanation": "The text states: 'それから、[breakfast]を食べます'."
           }
         },
@@ -19,8 +19,8 @@ const storyPools = {
           "translation": "Today is a very busy day since morning. I had to wake up at [time_en].",
           "question": {
             "question": "今日は何時に起きましたか。",
-            "options": ["[time]に起きました", "十時に起きました", "寝坊しました", "起きませんでした"],
-            "answerIndex": 0,
+            "options": ["寝坊しました", "起きませんでした", "十時に起きました", "[time]に起きました"],
+            "answerIndex": 3,
             "explanation": "The text mentions having to wake up at [time_en] ('[time]に起きなければなりませんでした')."
           }
         }
@@ -31,8 +31,8 @@ const storyPools = {
           "translation": "And I go to [destination_en] by [transport_en]. I study Japanese at [destination_en].",
           "question": {
             "question": "何で目的地に行きますか。",
-            "options": ["[transport]で行きます", "歩いて行きます", "タクシーで行きます", "車で行きます"],
-            "answerIndex": 0,
+            "options": ["歩いて行きます", "車で行きます", "[transport]で行きます", "タクシーで行きます"],
+            "answerIndex": 2,
             "explanation": "The text states they go by [transport_en] ('[transport]で行きます')."
           }
         },
@@ -41,8 +41,8 @@ const storyPools = {
           "translation": "In the morning, I read a magazine about [transport_en] at the [destination_en]. In the afternoon, I talk with my friend.",
           "question": {
             "question": "午前中に何をしますか。",
-            "options": ["雑誌を読みます", "勉強をします", "友達と話します", "ご飯を食べます"],
-            "answerIndex": 0,
+            "options": ["勉強をします", "友達と話します", "雑誌を読みます", "ご飯を食べます"],
+            "answerIndex": 2,
             "explanation": "The text states they read a magazine in the morning ('午前中は...雑誌を読みます')."
           }
         }
@@ -53,8 +53,8 @@ const storyPools = {
           "translation": "Studying Japanese is a little [adjective_en], but I like it very much.",
           "question": {
             "question": "日本語の勉強はどうですか。",
-            "options": ["少し[adjective]ですが好きです", "とても簡単でつまらないです", "嫌いです", "分かりません"],
-            "answerIndex": 0,
+            "options": ["分かりません", "嫌いです", "少し[adjective]ですが好きです", "とても簡単でつまらないです"],
+            "answerIndex": 2,
             "explanation": "The text says studying is a little [adjective_en] but they like it ('少し[adjective]ですが、とても好きです')."
           }
         },
@@ -63,8 +63,8 @@ const storyPools = {
           "translation": "The teacher at the [destination_en] is very [people_en] and kind.",
           "question": {
             "question": "先生はどんな人ですか。",
-            "options": ["[people]で優しい人です", "とても厳しい人です", "静かな人です", "怖い人です"],
-            "answerIndex": 0,
+            "options": ["怖い人です", "とても厳しい人です", "[people]で優しい人です", "静かな人です"],
+            "answerIndex": 2,
             "explanation": "The text describes the teacher as [people_en] and kind ('[people]で優しいです')."
           }
         }
@@ -75,8 +75,8 @@ const storyPools = {
           "translation": "In the evening, I [night_activity_en] at ease at home and go to bed at [sleep_time_en].",
           "question": {
             "question": "夜は何時に寝ますか。",
-            "options": ["[sleep_time]に寝ます", "九時に寝ます", "朝起きます", "夜は寝ません"],
-            "answerIndex": 0,
+            "options": ["朝起きます", "[sleep_time]に寝ます", "夜は寝ません", "九時に寝ます"],
+            "answerIndex": 1,
             "explanation": "The text states they sleep at [sleep_time_en] ('[sleep_time]に寝ます')."
           }
         },
@@ -85,8 +85,8 @@ const storyPools = {
           "translation": "I want to rest well by [sleep_time_en] tomorrow and do my best again.",
           "question": {
             "question": "明日はどうしたいですか。",
-            "options": ["よく休んでまた頑張りたいです", "一日中遊びたいです", "どこかへ旅行したいです", "仕事を休みたいです"],
-            "answerIndex": 0,
+            "options": ["仕事を休みたいです", "一日中遊びたいです", "どこかへ旅行したいです", "よく休んでまた頑張りたいです"],
+            "answerIndex": 3,
             "explanation": "The text expresses a desire to rest well and try hard again ('明日も...よく休んで、また頑張りたいです')."
           }
         }
@@ -99,7 +99,7 @@ const storyPools = {
           "translation": "Next month, I will travel to [destination_en] in Japan.",
           "question": {
             "question": "いつ旅行に行きますか。",
-            "options": ["来月です", "今月です", "来年です", "昨日行きました"],
+            "options": ["来月です", "来年です", "昨日行きました", "今月です"],
             "answerIndex": 0,
             "explanation": "The passage starts with '来月、私は日本の[destination]へ旅行します'."
           }
@@ -109,8 +109,8 @@ const storyPools = {
           "translation": "My dream is to visit [destination_en] in Japan. I finally bought the tickets!",
           "question": {
             "question": "チケットを買ってどこに行きますか。",
-            "options": ["[destination]に行きます", "アメリカに行きます", "学校に行きます", "どこへも行きません"],
-            "answerIndex": 0,
+            "options": ["学校に行きます", "どこへも行きません", "[destination]に行きます", "アメリカに行きます"],
+            "answerIndex": 2,
             "explanation": "The text states the destination is [destination_en] in Japan."
           }
         }
@@ -121,8 +121,8 @@ const storyPools = {
           "translation": "I intend to [activity_en] in [destination_en]. I'm looking forward to it.",
           "question": {
             "question": "目的地で何をするつもりですか。",
-            "options": ["[activity]つもりです", "買い物をしません", "ずっと寝るつもりです", "仕事をします"],
-            "answerIndex": 0,
+            "options": ["仕事をします", "ずっと寝るつもりです", "[activity]つもりです", "買い物をしません"],
+            "answerIndex": 2,
             "explanation": "The text states: '[activity]をするつもりです'."
           }
         },
@@ -131,8 +131,8 @@ const storyPools = {
           "translation": "I want to enjoy the scenery while drinking lots of warm [drink_en] together with [person_en].",
           "question": {
             "question": "誰と一緒に景色を楽しみますか。",
-            "options": ["[person]と一緒です", "一人で楽しみます", "知らない人です", "先生です"],
-            "answerIndex": 0,
+            "options": ["一人で楽しみます", "[person]と一緒です", "先生です", "知らない人です"],
+            "answerIndex": 1,
             "explanation": "The passage says they will enjoy it together with [person_en] ('[person]と一緒に')."
           }
         }
@@ -143,8 +143,8 @@ const storyPools = {
           "translation": "I heard that Japan is a very [adjective_en] country, so I am excited.",
           "question": {
             "question": "なぜワクワクしていますか。",
-            "options": ["日本はとても[adjective]な国だと聞いたからです", "チケットを失くしたからです", "旅行が嫌いだからです", "言葉が分からないからです"],
-            "answerIndex": 0,
+            "options": ["言葉が分からないからです", "旅行が嫌いだからです", "日本はとても[adjective]な国だと聞いたからです", "チケットを失くしたからです"],
+            "answerIndex": 2,
             "explanation": "The text mentions they are excited because they heard Japan is [adjective_en]."
           }
         }
@@ -155,8 +155,8 @@ const storyPools = {
           "translation": "I will take many photos with my camera to make it a precious memory.",
           "question": {
             "question": "何で写真を撮りますか。",
-            "options": ["カメラで撮ります", "携帯電話で撮ります", "撮りません", "絵を描きます"],
-            "answerIndex": 0,
+            "options": ["絵を描きます", "撮りません", "携帯電話で撮ります", "カメラで撮ります"],
+            "answerIndex": 3,
             "explanation": "The text states: 'カメラで写真をたくさん撮って'."
           }
         }
@@ -169,8 +169,8 @@ const storyPools = {
           "translation": "Among Japanese dishes, I like [food_en] the best.",
           "question": {
             "question": "この人は何が一番好きですか。",
-            "options": ["[food]です", "カレーです", "パンです", "お菓子です"],
-            "answerIndex": 0,
+            "options": ["パンです", "カレーです", "お菓子です", "[food]です"],
+            "answerIndex": 3,
             "explanation": "The text states: '[food]が一番好きです'."
           }
         }
@@ -181,8 +181,8 @@ const storyPools = {
           "translation": "Today, I will go to a [place_en] with my friend and eat plenty of delicious [food_en]. We will also order cold [drink_en].",
           "question": {
             "question": "冷たい何を頼みますか。",
-            "options": ["[drink]を頼みます", "お茶を頼みます", "お湯を頼みます", "スープを頼みます"],
-            "answerIndex": 0,
+            "options": ["お湯を頼みます", "お茶を頼みます", "[drink]を頼みます", "スープを頼みます"],
+            "answerIndex": 2,
             "explanation": "The text states: '冷たい[drink]も頼みます'."
           }
         }
@@ -193,8 +193,8 @@ const storyPools = {
           "translation": "This shop's [food_en] is famous for being very [adjective_en].",
           "question": {
             "question": "この店は何で有名ですか。",
-            "options": ["[food]がとても[adjective]ことで有名です", "値段がとても高いことで有名です", "場所が静かなことです", "店員が怖いことです"],
-            "answerIndex": 0,
+            "options": ["値段がとても高いことで有名です", "店員が怖いことです", "[food]がとても[adjective]ことで有名です", "場所が静かなことです"],
+            "answerIndex": 2,
             "explanation": "The passage says it is famous for [food_en] being [adjective_en] ('[food]はとても[adjective]ことで有名です')."
           }
         }
@@ -205,8 +205,8 @@ const storyPools = {
           "translation": "My stomach is full. I feel very happy.",
           "question": {
             "question": "今の気分はどうですか。",
-            "options": ["とても幸せな気分です", "お腹が空いています", "悲しいです", "眠いです"],
-            "answerIndex": 0,
+            "options": ["眠いです", "とても幸せな気分です", "お腹が空いています", "悲しいです"],
+            "answerIndex": 1,
             "explanation": "The text states: 'とても幸せな気分です'."
           }
         }
@@ -219,8 +219,8 @@ const storyPools = {
           "translation": "Yesterday, I went to the [store_en] to buy something new.",
           "question": {
             "question": "昨日どこへ行きましたか。",
-            "options": ["[store]に行きました", "図書館に行きました", "映画館に行きました", "学校に行きました"],
-            "answerIndex": 0,
+            "options": ["図書館に行きました", "映画館に行きました", "学校に行きました", "[store]に行きました"],
+            "answerIndex": 3,
             "explanation": "The text states they went to the [store_en] ('[store]へ行きました')."
           }
         }
@@ -231,7 +231,7 @@ const storyPools = {
           "translation": "Looking at various shops, I found a favorite [item_en]. I paid [price_en] yen.",
           "question": {
             "question": "何円払いましたか。",
-            "options": ["[price]円払いました", "千円払いました", "無料でした", "一万円払いました"],
+            "options": ["[price]円払いました", "無料でした", "一万円払いました", "千円払いました"],
             "answerIndex": 0,
             "explanation": "The text mentions paying [price_en] yen ('[price]円を払いました')."
           }
@@ -243,8 +243,8 @@ const storyPools = {
           "translation": "Because this [item_en] has a [adjective_en] design, I fell in love at first sight.",
           "question": {
             "question": "なぜ一目惚れしましたか。",
-            "options": ["デザインが[adjective]からです", "安かったからです", "必要だったからです", "友達に勧められたからです"],
-            "answerIndex": 0,
+            "options": ["必要だったからです", "友達に勧められたからです", "安かったからです", "デザインが[adjective]からです"],
+            "answerIndex": 3,
             "explanation": "The text states: 'デザインが[adjective]ですから、一目惚れしました'."
           }
         }
@@ -255,8 +255,8 @@ const storyPools = {
           "translation": "The shopkeeper was also very [people_en], which made me happy. It was a good purchase.",
           "question": {
             "question": "買い物はどうでしたか。",
-            "options": ["良い買い物でした", "失敗でした", "面白くなかったです", "疲れました"],
-            "answerIndex": 0,
+            "options": ["面白くなかったです", "疲れました", "失敗でした", "良い買い物でした"],
+            "answerIndex": 3,
             "explanation": "The speaker concludes that it was a good purchase ('良い買い物でした')."
           }
         }
@@ -269,7 +269,7 @@ const storyPools = {
           "translation": "My hobby is [hobby_en]. It is very fun.",
           "question": {
             "question": "趣味は何ですか。",
-            "options": ["[hobby]です", "読書です", "料理です", "何もないです"],
+            "options": ["[hobby]です", "何もないです", "読書です", "料理です"],
             "answerIndex": 0,
             "explanation": "The text states: '私の趣味は[hobby]です'."
           }
@@ -281,8 +281,8 @@ const storyPools = {
           "translation": "Every weekend, when I have time, I [activity_en].",
           "question": {
             "question": "いつ趣味をしますか。",
-            "options": ["毎週末です", "毎日です", "月曜日だけです", "年に一回です"],
-            "answerIndex": 0,
+            "options": ["月曜日だけです", "毎日です", "年に一回です", "毎週末です"],
+            "answerIndex": 3,
             "explanation": "The text says: '毎週末...[activity]をしています'."
           }
         }
@@ -293,8 +293,8 @@ const storyPools = {
           "translation": "Sometimes [person_en] also joins in, and we spend a fun time together.",
           "question": {
             "question": "誰が参加することがありますか。",
-            "options": ["[person]です", "見知らぬ人です", "警察官です", "誰も参加しません"],
-            "answerIndex": 0,
+            "options": ["警察官です", "誰も参加しません", "[person]です", "見知らぬ人です"],
+            "answerIndex": 2,
             "explanation": "The text says: 'たまに[person]も参加して'."
           }
         }
@@ -305,8 +305,8 @@ const storyPools = {
           "translation": "Having a hobby makes my daily life brighter and richer.",
           "question": {
             "question": "趣味は生活にどんな効果がありますか。",
-            "options": ["生活が明るく豊かになります", "特に関係ないです", "毎日が退屈になります", "疲れるだけです"],
-            "answerIndex": 0,
+            "options": ["疲れるだけです", "毎日が退屈になります", "生活が明るく豊かになります", "特に関係ないです"],
+            "answerIndex": 2,
             "explanation": "The text states: '毎日の生活が明るく豊かになります'."
           }
         }
@@ -319,8 +319,8 @@ const storyPools = {
           "translation": "It is very [weather_en] weather since morning today, isn't it?",
           "question": {
             "question": "今日の天気はどうですか。",
-            "options": ["[weather]天気です", "台風です", "吹雪です", "分かりません"],
-            "answerIndex": 0,
+            "options": ["分かりません", "台風です", "[weather]天気です", "吹雪です"],
+            "answerIndex": 2,
             "explanation": "The text starts with: '今日は朝からとても[weather]天気ですね'."
           }
         }
@@ -331,8 +331,8 @@ const storyPools = {
           "translation": "The temperature is [temp_en] degrees, and it feels a bit [adjective_en] outside.",
           "question": {
             "question": "今日の気温は何度ですか。",
-            "options": ["[temp]度です", "十度です", "零度です", "五十度です"],
-            "answerIndex": 0,
+            "options": ["十度です", "零度です", "五十度です", "[temp]度です"],
+            "answerIndex": 3,
             "explanation": "The text states: '気温は[temp]度で'."
           }
         }
@@ -343,7 +343,7 @@ const storyPools = {
           "translation": "It is said that the weather will [change_en] from the afternoon, but what will happen?",
           "question": {
             "question": "午後から天気はどうなると言われていますか。",
-            "options": ["[change]と言われています", "晴れたままです", "大雨になります", "分かりません"],
+            "options": ["[change]と言われています", "大雨になります", "晴れたままです", "分かりません"],
             "answerIndex": 0,
             "explanation": "The text states: '午後から天気が[change]と言われていますが'."
           }
@@ -355,8 +355,8 @@ const storyPools = {
           "translation": "I plan to [action_en] and enjoy today at ease.",
           "question": {
             "question": "今日一日何をする予定ですか。",
-            "options": ["[action]をします", "一日中寝ます", "激しい運動をします", "旅行に出かけます"],
-            "answerIndex": 0,
+            "options": ["激しい運動をします", "一日中寝ます", "[action]をします", "旅行に出かけます"],
+            "answerIndex": 2,
             "explanation": "The passage concludes: '私は[action]をして、今日の一日をゆっくり楽しむ予定です'."
           }
         }
@@ -369,26 +369,26 @@ const storyPools = {
           "translation": "I love Japanese anime. Especially, [anime_character_en] is my number one hero.",
           "question": {
             "question": "この人の一番のヒーローは誰ですか。",
-            "options": ["[anime_character]です", "ドラえもんです", "アンパンマンです", "誰も好きではありません"],
-            "answerIndex": 0,
+            "options": ["アンパンマンです", "誰も好きではありません", "[anime_character]です", "ドラえもんです"],
+            "answerIndex": 2,
             "explanation": "The text states that [anime_character_en] is their number one hero."
           }
         },
         {
-          "text": "最<rt>さい</rt>近<rt>きん</rt>、世界中<rt>せいかいじゅう</rt>で日本のアニメを楽<rt>たの</rt>しむ人が増<rt>ふ</rt>えています。その中でも[anime_character]の人気<rt>にんき</rt>は圧倒的<rt>あっとうてき</rt>です。",
-          "translation": "Recently, the number of people enjoying Japanese anime around the world is increasing. Among them, [anime_character_en]'s popularity is overwhelming.",
+          "text": "最<rt>さい</rt>近<rt>きん</rt>、世界<rt>せかい</rt>中<rt>じゅう</rt>で日本<rt>にほん</rt>のアニメを楽<rt>たの</rt>しむ人<rt>ひと</rt>が増<rt>ふ</rt>えています。その中<rt>なか</rt>でも[anime_character]の人気<rt>にんき</rt>はとても高<rt>たか</rt>いです。",
+          "translation": "Recently, the number of people enjoying Japanese anime around the world is increasing. Among them, [anime_character_en]'s popularity is very high.",
           "question": {
             "question": "最近どのような人が増えていますか。",
-            "options": ["日本のアニメを楽しむ人", "テレビを見ない人", "本を読まない人", "運動をしない人"],
-            "answerIndex": 0,
+            "options": ["本を読まない人", "運動をしない人", "日本のアニメを楽しむ人", "テレビを見ない人"],
+            "answerIndex": 2,
             "explanation": "The text states: '日本のアニメを楽しむ人が増えています'."
           }
         }
       ],
       "actions": [
         {
-          "text": "アニメの中で、[anime_character]が[anime_power]を使<rt>つか</rt>う場面<rt>ばめん</rt>はとてもかっこよくて興奮<rt>こうふん</rt>します。",
-          "translation": "In the anime, the scene where [anime_character_en] uses [anime_power_en] is extremely cool and exciting.",
+          "text": "アニメの中<rt>なか</rt>で、[anime_character]が[anime_power]を使<rt>つか</rt>う場<rt>ば</rt>面<rt>めん</rt>はとてもかっこよくて、楽<rt>たの</rt>しいです。",
+          "translation": "In the anime, the scene where [anime_character_en] uses [anime_power_en] is extremely cool and fun.",
           "question": {
             "question": "[anime_character]が何を使う場面がかっこいいですか。",
             "options": ["[anime_power]です", "お金です", "道具です", "魔法の杖です"],
@@ -397,57 +397,57 @@ const storyPools = {
           }
         },
         {
-          "text": "彼<rt>かれ</rt>らは仲間<rt>なかま</rt>と協力<rt>きょうりょく</rt>して強<rt>つよ</rt>い敵<rt>てき</rt>を倒<rt>たお</rt>すために、日夜<rt>にちや</rt>修行<rt>しゅぎょう</rt>を重<rt>かさ</rt>ねています。",
-          "translation": "They train day and night in order to cooperate with their allies and defeat strong enemies.",
+          "text": "彼<rt>かれ</rt>らは友<rt>とも</rt>達<rt>だち</rt>と一<rt>いっ</rt>緒<rt>しょ</rt>に強<rt>つよ</rt>い敵<rt>てき</rt>を倒<rt>たお</rt>すために、毎<rt>まい</rt>日<rt>にち</rt>練習<rt>れんしゅう</rt>しています。",
+          "translation": "They practice every day with their friends to defeat strong enemies.",
           "question": {
-            "question": "なぜ修行を重ねていますか。",
-            "options": ["強い敵を倒すため", "遊ぶため", "お金を稼ぐため", "健康のため"],
+            "question": "なぜ毎日練習していますか。",
+            "options": ["強い敵を倒すため", "お金を稼ぐため", "健康のため", "遊ぶため"],
             "answerIndex": 0,
-            "explanation": "The text states: '強い敵を倒すために、日夜修行を重ねています'."
+            "explanation": "The text states: '強い敵を倒すために、毎日練習しています'."
           }
         }
       ],
       "descriptions": [
         {
-          "text": "彼<rt>かれ</rt>らの物語<rt>ものがたり</rt>は単<rt>たん</rt>なる娯楽<rt>ごらく</rt>ではなく、友情<rt>ゆうじょう</rt>や努力<rt>どりょく</rt>の大切<rt>たいせつ</rt>さを教<rt>おし</rt>えてくれます。",
-          "translation": "Their stories are not mere entertainment; they teach us the importance of friendship and effort.",
+          "text": "アニメの物<rt>もの</rt>語<rt>がたり</rt>から、友<rt>とも</rt>達<rt>だち</rt>や努力<rt>どりょく</rt>の大切<rt>たいせつ</rt>さを学<rt>まな</rt>ぶことができます。",
+          "translation": "From anime stories, we can learn the importance of friends and effort.",
           "question": {
-            "question": "彼らの物語は何を教えてくれますか。",
-            "options": ["友情や努力の大切さ", "お金の稼ぎ方", "歴史の知識", "特に何も教えてくれません"],
-            "answerIndex": 0,
-            "explanation": "The text says their stories teach the importance of friendship and effort ('友情や努力の大切さを教えてくれます')."
+            "question": "アニメの物語から何を学ぶことができますか。",
+            "options": ["お金の稼ぎ方", "友達や努力の大切さ", "特に何も教えてくれません", "歴史の知識"],
+            "answerIndex": 1,
+            "explanation": "The text states: '友達や努力の大切さを学ぶことができます'."
           }
         },
         {
-          "text": "登場人物<rt>とうじょうじんぶつ</rt>の熱<rt>あつ</rt>いセリフや心情<rt>しんじょう</rt>の描写<rt>びょうしゃ</rt>は、多くの視聴者<rt>しちょうしゃ</rt>の心<rt>こころ</rt>を揺<rt>ゆ</rt>さぶります。",
-          "translation": "The passionate dialogues and emotional depictions of the characters stir the hearts of many viewers.",
+          "text": "主<rt>しゅ</rt>人<rt>じん</rt>公<rt>こう</rt>の言葉<rt>ことば</rt>や行動<rt>こうどう</rt>は、私<rt>わたし</rt>たちの心<rt>こころ</rt>を元<rt>げん</rt>気<rt>き</rt>にします。",
+          "translation": "The words and actions of the protagonist make our hearts energetic.",
           "question": {
-            "question": "何が視聴者の心を揺さぶりますか。",
-            "options": ["登場人物の熱いセリフや心情の描写", "アニメのBGMだけ", "番組の長さ", "分かりません"],
+            "question": "主人公の言葉や行動は、私たちの心をどうしますか。",
+            "options": ["元気にします", "悲しくします", "怒らせます", "分かりません"],
             "answerIndex": 0,
-            "explanation": "The text states: '登場人物の熱いセリフや心情 of 描写は、多くの視聴者の心を揺さぶります'."
+            "explanation": "The text states: '私たちの心を元気にします'."
           }
         }
       ],
       "conclusions": [
         {
-          "text": "将来<rt>しょうらい</rt>、私は日本へ行って、お気に入りのアニメのフィギュアをたくさん買<rt>か</rt>いたいと願<rt>ねが</rt>っています。",
-          "translation": "In the future, I hope to go to Japan and buy many figures of my favorite anime.",
+          "text": "将<rt>しょう</rt>来<rt>らい</rt>、私<rt>わたし</rt>は日本<rt>にほん</rt>へ行<rt>い</rt>って、大好<rt>だいす</rt>きなアニメのグッズをたくさん買<rt>か</rt>いたいです。",
+          "translation": "In the future, I want to go to Japan and buy many goods of my favorite anime.",
           "question": {
-            "question": "将来日本で何をしたいですか。",
-            "options": ["アニメのフィギュアを買いたいです", "仕事をしたいです", "車を売りたいです", "何もしません"],
-            "answerIndex": 0,
-            "explanation": "The text states: 'お気に入りのアニメのフィギュアをたくさん買いたいと願っています'."
+            "question": "将来日本へ行って、何をしたいですか。",
+            "options": ["何もしません", "車を売りたいです", "大好きなアニメのグッズを買いたいです", "仕事をしたいです"],
+            "answerIndex": 2,
+            "explanation": "The text states: '大好きなアニメのグッズをたくさん買いたいです'."
           }
         },
         {
-          "text": "私も彼らのように強<rt>つよ</rt>い意志<rt>いし</rt>を持って、自分の夢<rt>ゆめ</rt>に向かって進<rt>すす</rt>みたいです。",
-          "translation": "I also want to have a strong will like them and move forward toward my own dreams.",
+          "text": "私<rt>わたし</rt>も彼<rt>かれ</rt>らのように強<rt>つよ</rt>い心<rt>こころ</rt>を持<rt>も</rt>って、自分<rt>じぶん</rt>の夢<rt>ゆめ</rt>に向<rt>む</rt>かって進<rt>すす</rt>みたいです。",
+          "translation": "I also want to have a strong heart like them and move forward toward my dream.",
           "question": {
             "question": "この人は彼らのようにどうしたいですか。",
-            "options": ["強い意志を持って夢に向かって進みたい", "諦めたい", "何もしたくない", "家で寝たい"],
-            "answerIndex": 0,
-            "explanation": "The text states: '強い意志を持って、自分の夢に向かって進みたいです'."
+            "options": ["何もしたくない", "家で寝たい", "強い心を持って夢に向かって進みたい", "諦めたい"],
+            "answerIndex": 2,
+            "explanation": "The text states: '強い心を持って、自分の夢に向かって進みたいです'."
           }
         }
       ]
@@ -455,43 +455,43 @@ const storyPools = {
     "movies": {
       "intros": [
         {
-          "text": "昨日<rt>きのう</rt>、私は友達と映画館へ行って[movie_title]を観<rt>み</rt>ました。この映画は[movie_genre]として有名<rt>ゆうめい</rt>です。",
+          "text": "昨<rt>きのう</rt>日、私<rt>わたし</rt>は友<rt>とも</rt>達<rt>だち</rt>と映<rt>えい</rt>画<rt>が</rt>館<rt>かん</rt>へ行<rt>い</rt>って[movie_title]を観<rt>み</rt>ました。この映<rt>えい</rt>画<rt>が</rt>は[movie_genre]として有<rt>ゆう</rt>名<rt>めい</rt>です。",
           "translation": "Yesterday, I went to the movie theater with my friend and watched [movie_title_en]. This movie is famous as a [movie_genre_en].",
           "question": {
             "question": "昨日映画館で何を観ましたか。",
-            "options": ["[movie_title]を観ました", "本を読みました", "寝ました", "ゲームをしました"],
+            "options": ["[movie_title]を観ました", "寝ました", "ゲームをしました", "本を読みました"],
             "answerIndex": 0,
             "explanation": "The text states: '映画館へ行って[movie_title]を観ました'."
           }
         },
         {
-          "text": "週末<rt>しゅうまつ</rt>に大画面<rt>だいがいめん</rt>で映画を観<rt>み</rt>ることは、私にとって最高<rt>さいこう</rt>の娯楽<rt>ごらく</rt>です。今回は特に話題<rt>わだい</rt>の[movie_title]を選<rt>えら</rt>びました。",
-          "translation": "Watching a movie on a big screen over the weekend is the best entertainment for me. This time, I chose [movie_title_en], which is a particularly hot topic.",
+          "text": "週<rt>しゅう</rt>末<rt>まつ</rt>に大<rt>おお</rt>きい画面<rt>がめん</rt>で映画<rt>えいが</rt>を観<rt>み</rt>ることは、とても楽<rt>たの</rt>しいです。今回は[movie_title]を選<rt>えら</rt>びました。",
+          "translation": "Watching a movie on a big screen over the weekend is very fun. This time, I chose [movie_title_en].",
           "question": {
-            "question": "週末のこの人にとって最高の娯楽は何ですか。",
-            "options": ["大画面で映画を観ること", "本を読むこと", "ゲームをすること", "寝ること"],
-            "answerIndex": 0,
-            "explanation": "The text states: '大画面で映画を観ることは、私にとって最高の娯楽です'."
+            "question": "週末に大きい画面で映画を観ることはどうですか。",
+            "options": ["疲れます", "つまらないです", "嫌いです", "て楽しいです"],
+            "answerIndex": 3,
+            "explanation": "The text says: '週末に大きい画面で映画を観ることは、とても楽しいです'."
           }
         }
       ],
       "actions": [
         {
-          "text": "館内<rt>かんない</rt>は暗<rt>くら</rt>く、音響<rt>おんきょう</rt>も素晴らしくて、まるで物語の中にいるような感覚<rt>かんかく</rt>でした。",
-          "translation": "The theater was dark, and the sound system was wonderful, making me feel as if I were inside the story.",
+          "text": "部<rt>へ</rt>屋<rt>や</rt>は暗<rt>くら</rt>くて、音<rt>おと</rt>も大<rt>おお</rt>きくて、とてもびっくりしました。",
+          "translation": "The room was dark and the sound was loud, which surprised me very much.",
           "question": {
-            "question": "館内はどうでしたか。",
-            "options": ["暗く音響も素晴らしかった", "明るくてうるさかった", "静かすぎた", "寒すぎた"],
-            "answerIndex": 0,
-            "explanation": "The text states: '館内は暗く、音響も素晴らしくて'."
+            "question": "部屋はどうでしたか。",
+            "options": ["明るくて静かだった", "寒すぎた", "暗くて音も大きかった", "狭かった"],
+            "answerIndex": 2,
+            "explanation": "The text states: '部屋は暗くて、音も大きくて、とてもびっくりしました'."
           }
         },
         {
-          "text": "ポップコーンを食べながら、映像<rt>えいぞう</rt>の美しさに終始<rt>しゅうし</rt>圧倒<rt>あっとう</rt>され続けました。",
-          "translation": "While eating popcorn, I was completely overwhelmed by the beauty of the visuals from start to finish.",
+          "text": "ポップコーンを食<rt>た</rt>べながら、きれいで迫<rt>はくりょく</rt>力のある映<rt>えい</rt>像<rt>ぞう</rt>を楽<rt>たの</rt>しみました。",
+          "translation": "While eating popcorn, I enjoyed the beautiful and powerful video.",
           "question": {
-            "question": "何を食べながら映画を観ましたか。",
-            "options": ["ポップコーン", "ラーメン", "お寿司", "何も食べませんでした"],
+            "question": "何を食べながら映像を楽しみましたか。",
+            "options": ["ポップコーン", "お寿司", "ラーメン", "何も食べませんでした"],
             "answerIndex": 0,
             "explanation": "The text states: 'ポップコーンを食べながら'."
           }
@@ -499,45 +499,45 @@ const storyPools = {
       ],
       "descriptions": [
         {
-          "text": "監督<rt>かんとく</rt>の独創的<rt>どくそうてき</rt>な演出<rt>えんしゅつ</rt>と俳優<rt>はいゆう</rt>の演技<rt>えんぎ</rt>が完璧<rt>かんぺき</rt>に調和<rt>ちょうわ</rt>していました。",
-          "translation": "The director's creative staging and the actors' performances were in perfect harmony.",
+          "text": "映<rt>えい</rt>画<rt>が</rt>の音<rt>おと</rt>と映<rt>えい</rt>像<rt>ぞう</rt>がとても綺麗<rt>きれい</rt>で、感<rt>かん</rt>動<rt>どう</rt>しました。",
+          "translation": "The sound and images of the movie were very beautiful, and I was moved.",
           "question": {
-            "question": "何が完璧に調和していましたか。",
-            "options": ["監督の演出と俳優の演技", "音楽と照明", "ストーリーと価格", "分かりません"],
-            "answerIndex": 0,
-            "explanation": "The text says: '監督の独創的な演出と俳優の演技が完璧に調和していました'."
+            "question": "何がとても綺麗でしたか。",
+            "options": ["ポップコーンの箱", "チケット", "映画の音と映像", "劇場の椅子"],
+            "answerIndex": 2,
+            "explanation": "The text states: '映画の音と映像がとても綺麗で'."
           }
         },
         {
-          "text": "このストーリーには深いメッセージが込められており、人生について考えさせられます。",
-          "translation": "A deep message is embedded in this story, making us think about life.",
+          "text": "この話<rt>はなし</rt>には大切<rt>たいせつ</rt>な意味<rt>いみ</rt>があって、人<rt>ひと</rt>の生<rt>い</rt>き方<rt>かた</rt>について考<rt>かんが</rt>えました。",
+          "translation": "This story has an important meaning, and I thought about the way of people's lives.",
           "question": {
-            "question": "ストーリーには何が込められていますか。",
-            "options": ["深いメッセージ", "ジョークだけ", "宣伝", "何もありません"],
+            "question": "この話には何がありますか。",
+            "options": ["大切な意味", "面白いギャグだけ", "宣伝", "何もありません"],
             "answerIndex": 0,
-            "explanation": "The text says: 'このストーリーには深いメッセージが込められており'."
+            "explanation": "The text says: 'この話には大切な意味があって'."
           }
         }
       ],
       "conclusions": [
         {
-          "text": "上映<rt>じょうえい</rt>が終わった後、心<rt>こころ</rt>が温<rt>あたた</rt>かくなり、非常に満足<rt>まんぞく</rt>しました。また来週も新しい映画を観たいです。",
-          "translation": "After the screening ended, my heart felt warm and I was very satisfied. I want to watch a new movie next week too.",
+          "text": "映<rt>えい</rt>画<rt>が</rt>が終<rt>お</rt>わった後<rt>あと</rt>、とても嬉<rt>うれ</rt>しい気<rt>き</rt>持<rt>もち</rt>になりました。また来<rt>らい</rt>週<rt>しゅう</rt>も新しい映画を観たいです。",
+          "translation": "After the movie ended, I felt very happy. I want to watch a new movie next week too.",
           "question": {
-            "question": "上映が終わった後どうなりましたか。",
-            "options": ["心が温かくなり非常に満足した", "悲しくなった", "腹が立った", "眠くなった"],
-            "answerIndex": 0,
-            "explanation": "The text states: '上映が終わった後、心が温かくなり、非常に満足しました'."
+            "question": "映画が終わった後、どうなりましたか。",
+            "options": ["悲しくなった", "眠くなった", "とても嬉しい気持ちになった", "怒りを感じた"],
+            "answerIndex": 2,
+            "explanation": "The text states: '映画が終わった後、とても嬉しい気持ちになりました'."
           }
         },
         {
-          "text": "感動<rt>かんどう</rt>で涙<rt>なみだ</rt>が出そうになりました。この素晴らしい体験をみんなに勧めたいです。",
-          "translation": "I almost cried from emotion. I want to recommend this wonderful experience to everyone.",
+          "text": "とても感<rt>かん</rt>動<rt>どう</rt>して、泣<rt>な</rt>きそうになりました。この楽しい体験<rt>たいけん</rt>をみんなに話<rt>はな</rt>したいです。",
+          "translation": "I was very moved and almost cried. I want to tell everyone about this fun experience.",
           "question": {
-            "question": "この体験についてどうしたいですか。",
-            "options": ["みんなに勧めたいです", "忘れたいです", "誰にも言いたくないです", "分かりません"],
+            "question": "この楽しい体験についてどうしたいですか。",
+            "options": ["みんなに話したいです", "分かりません", "誰にも言いたくないです", "忘れたいです"],
             "answerIndex": 0,
-            "explanation": "The text states: 'この素晴らしい体験をみんなに勧めたいです'."
+            "explanation": "The text states: 'この楽しい体験をみんなに話したいです'."
           }
         }
       ]
@@ -545,21 +545,21 @@ const storyPools = {
     "series": {
       "intros": [
         {
-          "text": "最近<rt>さいきん</rt>、私は家で日本のテレビドラマ[series_title]を観<rt>み</rt>るのにはまっています。ストーリーが非常に面白<rt>おもしろ</rt>いです。",
-          "translation": "Recently, I am hooked on watching the Japanese TV drama [series_title_en] at home. The story is extremely interesting.",
+          "text": "最<rt>さい</rt>近<rt>きん</rt>、私<rt>わたし</rt>は家<rt>うち</rt>で日本<rt>にほん</rt>のドラマ[series_title]をよく観<rt>み</rt>ています。話<rt>はなし</rt>がとても面白いです。",
+          "translation": "Recently, I watch Japanese drama [series_title_en] a lot at home. The story is very interesting.",
           "question": {
-            "question": "最近家で何を観ていますか。",
-            "options": ["ドラマ[series_title]を観ています", "ニュースを観ています", "アニメだけです", "何も観ていません"],
-            "answerIndex": 0,
+            "question": "最近家で何をよく観ていますか。",
+            "options": ["何も観ていません", "ニュースを観ています", "ドラマ[series_title]を観ています", "アニメだけです"],
+            "answerIndex": 2,
             "explanation": "The text says they are hooked on watching the drama [series_title_en]."
           }
         },
         {
-          "text": "夜<rt>よる</rt>、仕事が終わった後にテレビの前でドラマ[series_title]を観るのが、毎日の楽しみです。",
+          "text": "夜<rt>よる</rt>、仕事<rt>しごと</rt>が終<rt>お</rt>わった後<rt>あと</rt>にテレビの前<rt>まえ</rt>でドラマ[series_title]を観<rt>み</rt>るのが、毎<rt>まい</rt>日<rt>にち</rt>の楽<rt>たの</rt>しみです。",
           "translation": "In the evening, after work is over, watching the drama [series_title_en] in front of the TV is my daily pleasure.",
           "question": {
             "question": "いつドラマを観ていますか。",
-            "options": ["夜、仕事が終わった後", "朝起きてすぐ", "昼休みの間", "仕事中"],
+            "options": ["夜、仕事が終わった後", "朝起きてすぐ", "仕事中", "昼休みの間"],
             "answerIndex": 0,
             "explanation": "The text states: '夜、仕事が終わった後に...観るのが、毎日の楽しみです'."
           }
@@ -567,67 +567,67 @@ const storyPools = {
       ],
       "actions": [
         {
-          "text": "毎週新<rt>あたら</rt>しいエピソードが放送<rt>ほうそう</rt>されるのを、待ち遠しく思っています。",
-          "translation": "I look forward eagerly to a new episode being broadcast every week.",
+          "text": "毎<rt>まい</rt>週<rt>しゅう</rt>、新<rt>あたら</rt>しい話<rt>はなし</rt>がテレビに出<rt>で</rt>るのを楽<rt>たの</rt>しみに待<rt>ま</rt>っています。",
+          "translation": "Every week, I look forward to the new story appearing on TV.",
           "question": {
-            "question": "毎週何を待ち遠しく思っていますか。",
-            "options": ["新しいエピソードが放送されること", "映画の公開", "仕事の開始", "特にありません"],
+            "question": "毎週何をすることを楽しみに待っていますか。",
+            "options": ["新しい話がテレビに出ること", "映画 of 公開", "仕事の開始", "特にありません"],
             "answerIndex": 0,
-            "explanation": "The text states: '毎週新しいエピソードが放送されるのを、待ち遠しく思っています'."
+            "explanation": "The text states: '新しい話がテレビに出るのを楽しみに待っています'."
           }
         },
         {
-          "text": "ネットフリックスなどの配信<rt>はいしん</rt>サービスを使って、一気に全話<rt>ぜんわ</rt>観てしまうこともあります。",
-          "translation": "Sometimes I use distribution services like Netflix to watch all episodes at once.",
+          "text": "パソコンやスマホのサービスで、たくさんの話を一<rt>いち</rt>日<rt>にち</rt>で全部<rt>ぜんぶ</rt>観てしまうこともあります。",
+          "translation": "Sometimes I watch many stories all in one day on computer or smartphone services.",
           "question": {
-            "question": "どのように全話を一気に観ることがありますか。",
-            "options": ["配信サービスを使って観る", "テレビの生放送を待つ", "友達の家で観る", "DVDを買う"],
-            "answerIndex": 0,
-            "explanation": "The text states: '配信サービスを使って、一気に全話観てしまうこともあります'."
+            "question": "何を使ってたくさんの話を全部観てしまうこともありますか。",
+            "options": ["友達の家で観る", "DVDを買う", "テレビの生放送を待つ", "パソコンやスマホのサービスを使って観る"],
+            "answerIndex": 3,
+            "explanation": "The text states: 'パソコンやスマホのサービスで...'"
           }
         }
       ],
       "descriptions": [
         {
-          "text": "登場人物たちの複雑<rt>ふくざつ</rt>な人間関係と予測<rt>よそく</rt>できない展開<rt>てんかい</rt>から目が離せません。",
-          "translation": "I cannot take my eyes off the complex human relationships of the characters and the unpredictable developments.",
+          "text": "いろいろな人<rt>ひと</rt>が出てきて、話<rt>はなし</rt>がどうなるか分<rt>わ</rt>からないので、とても面白いです。",
+          "translation": "Since many different people appear and I don't know what will happen to the story, it is very interesting.",
           "question": {
-            "question": "なぜ目が離せないのですか。",
-            "options": ["複雑な人間関係と予測できない展開だから", "つまらない内容だから", "英語の吹き替えだから", "分かりません"],
-            "answerIndex": 0,
-            "explanation": "The text states: '複雑な人間関係と予測できない展開から目が離せません'."
+            "question": "なぜドラマがとても面白いですか。",
+            "options": ["分かりません", "いろいろな人が出てきて話がどうなるか分からないから", "英語の吹き替えだから", "つまらない内容だから"],
+            "answerIndex": 1,
+            "explanation": "The text says: 'いろいろな人が出てきて、話がどうなるか分からないので...'"
           }
         },
         {
-          "text": "毎回の劇的なクライマックスやエンディング曲の選定<rt>せんてい</rt>が非常に素晴らしいです。",
-          "translation": "The dramatic climax each time and the selection of the ending theme song are extremely wonderful.",
+          "text": "毎<rt>まい</rt>回<rt>かい</rt>の終<rt>お</rt>わり方<rt>かた</rt>や、終<rt>お</rt>わりの歌<rt>うた</rt>がとても素<rt>す</rt>晴<rt>ば</rt>らしいです。",
+          "translation": "The ending style of each time and the ending song are very wonderful.",
           "question": {
-            "question": "何が非常に素晴らしいですか。",
-            "options": ["劇的なクライマックスやエンディング曲の選定", "テレビの画質", "出演者の服の値段", "分かりません"],
-            "answerIndex": 0,
-            "explanation": "The text says: '毎回の劇的なクライマックスやエンディング曲の選定が非常に素晴らしいです'."
+            "question": "何がとても素晴らしいですか。",
+            "options": ["出演者の服の値段", "テレビの画質", "終わりの方や終わりの歌", "分かりません"],
+            "answerIndex": 2,
+            "explanation": "The text says: '毎回終わりの方や、終わりの歌がとても素晴らしいです'"
           }
         }
       ],
       "conclusions": [
         {
-          "text": "このドラマを観ると、また明日から仕事を頑張<rt>がんば</rt>ろうというエネルギーをもらえます。",
-          "translation": "Watching this drama gives me energy to work hard again starting tomorrow.",
+          "text": "このドラマを観<rt>み</rt>ると、明日<rt>あした</rt>からまた仕事<rt>しごと</rt>や勉強<rt>べんきょう</rt>を頑張<rt>がんば</rt>ることができます。",
+          "translation": "When I watch this drama, I can do my best at work and study again from tomorrow.",
           "question": {
-            "question": "ドラマを観るとどんな効果がありますか。",
-            "options": ["明日から頑張ろうというエネルギーをもらえる", "疲れて眠くなる", "仕事が嫌になる", "特にありません"],
-            "answerIndex": 0,
-            "explanation": "The text states: 'また明日から仕事を頑張ろうというエネルギーをもらえます'."
+            "question": "ドラマを観ると、どうなりますか。",
+            "options": ["特にありません", "明日からまた仕事や勉強を頑張ることができる", "仕事が嫌になる", "疲れて眠くなる"],
+            "answerIndex": 1,
+            "explanation": "The text states: '明日からまた仕事や勉強を頑張ることができます'"
           }
         },
         {
-          "text": "早く来週の放送日<rt>ほうそうび</rt>になってほしいと、心から願っています。",
-          "translation": "I sincerely hope that next week's broadcast date comes quickly.",
+          "text": "早<rt>はや</rt>く来<rt>らい</rt>週<rt>しゅう</rt>の放送<rt>ほうそう</rt>の日<rt>ひ</rt>になってほしいと、いつも思<rt>おも</rt>っています。",
+          "translation": "I always wish that next week's broadcast day would come quickly.",
           "question": {
-            "question": "この人は何を願っていますか。",
-            "options": ["早く来週の放送日になってほしいこと", "テレビが壊れること", "仕事が休みに変わること", "何も願っていません"],
+            "question": "この人はどう思っていますか。",
+            "options": ["早く来週の放送の日になってほしい", "何も思っていません", "仕事が休みになってほしい", "テレビが壊れてほしい"],
             "answerIndex": 0,
-            "explanation": "The text says: '早く来週の放送日になってほしいと、心から願っています'."
+            "explanation": "The text says: '早く来週の放送の日になってほしいと、いつも思っています'"
           }
         }
       ]
@@ -641,7 +641,7 @@ const storyPools = {
           "translation": "For my health, I recently started a new lifestyle habit.",
           "question": {
             "question": "なぜ新しい習慣を始めましたか。",
-            "options": ["健康のためです", "仕事のためです", "友達に言われたからです", "なんとなくです"],
+            "options": ["健康のためです", "友達に言われたからです", "なんとなくです", "仕事のためです"],
             "answerIndex": 0,
             "explanation": "The passage starts with '健康のために...習慣を始めました'."
           }
@@ -653,8 +653,8 @@ const storyPools = {
           "translation": "Every day, I make it a rule to wake up early and [activity_en]. As a result, my body has become [adjective_en].",
           "question": {
             "question": "毎朝何をすることにしていますか。",
-            "options": ["早く起きて[activity]", "テレビを遅くまで見ること", "朝ご飯を食べないこと", "お酒を飲むこと"],
-            "answerIndex": 0,
+            "options": ["朝ご飯を食べないこと", "お酒を飲むこと", "テレビを遅くまで見ること", "早く起きて[activity]"],
+            "answerIndex": 3,
             "explanation": "The text says: '毎日、朝早く起きて[activity]することにしています'."
           }
         }
@@ -665,7 +665,7 @@ const storyPools = {
           "translation": "Previously I was often late, but now I have become able to [improvement_en].",
           "question": {
             "question": "以前と比べて今何ができるようになりましたか。",
-            "options": ["[improvement]できるようになりました", "もっと遅刻するようになりました", "眠れなくなりました", "分かりません"],
+            "options": ["[improvement]できるようになりました", "もっと遅刻するようになりました", "分かりません", "眠れなくなりました"],
             "answerIndex": 0,
             "explanation": "The text states: '今は[improvement]できるようになりました'."
           }
@@ -691,8 +691,8 @@ const storyPools = {
           "translation": "Since coming to Japan, it has been decided that I will go to [destination_en] in Japan for the first time.",
           "question": {
             "question": "日本に来てからどこへ行くことになりましたか。",
-            "options": ["[destination]に行くことになりました", "母国に帰ることになりました", "会社を辞めることになりました", "分かりません"],
-            "answerIndex": 0,
+            "options": ["会社を辞めることになりました", "母国に帰ることになりました", "分かりません", "[destination]に行くことになりました"],
+            "answerIndex": 3,
             "explanation": "The text states: '初めて日本の[destination]へ行くことになりました'."
           }
         }
@@ -703,7 +703,7 @@ const storyPools = {
           "translation": "The preparation was very tough, but a kind [helper_en] helped me.",
           "question": {
             "question": "準備はどうでしたか。",
-            "options": ["大変でしたが[helper]が手伝ってくれました", "とても簡単でした", "手伝ってくれる人は誰もいませんでした", "辞めました"],
+            "options": ["大変でしたが[helper]が手伝ってくれました", "手伝ってくれる人は誰もいませんでした", "とても簡単でした", "辞めました"],
             "answerIndex": 0,
             "explanation": "The text states: '準備はとても大変でしたが、親切な[helper]が手伝ってくれました'."
           }
@@ -715,8 +715,8 @@ const storyPools = {
           "translation": "I heard that the destination is a very [adjective_en] place, so I am expecting a lot.",
           "question": {
             "question": "目的地はどんな場所だと言われていますか。",
-            "options": ["とても[adjective]な場所です", "退屈な場所です", "危険な場所です", "うるさい場所です"],
-            "answerIndex": 0,
+            "options": ["うるさい場所です", "とても[adjective]な場所です", "危険な場所です", "退屈な場所です"],
+            "answerIndex": 1,
             "explanation": "The text says: '目的地はとても[adjective]な場所だそうなので'."
           }
         }
@@ -727,8 +727,8 @@ const storyPools = {
           "translation": "After the trip is over, I plan to hand over [gift_en] to [helper_en] who helped me.",
           "question": {
             "question": "旅行の後、誰に何を渡すつもりですか。",
-            "options": ["[helper]に[gift]を渡します", "家族にお金を送ります", "誰にも何も渡しません", "店に返します"],
-            "answerIndex": 0,
+            "options": ["家族にお金を送ります", "[helper]に[gift]を渡します", "店に返します", "誰にも何も渡しません"],
+            "answerIndex": 1,
             "explanation": "The text says: '[helper]に[gift]を渡すつもりです'."
           }
         }
@@ -741,8 +741,8 @@ const storyPools = {
           "translation": "Japanese anime is loved all over the world, and [anime_character_en] especially attracts many fans.",
           "question": {
             "question": "特に誰が多くのファンを魅力していますか。",
-            "options": ["[anime_character]です", "古いキャラクターです", "外国人です", "誰もいません"],
-            "answerIndex": 0,
+            "options": ["外国人です", "古いキャラクターです", "誰もいません", "[anime_character]です"],
+            "answerIndex": 3,
             "explanation": "The text says [anime_character] attracts many fans ('特に[anime_character]は多くのファンを魅力しています')."
           }
         },
@@ -751,8 +751,8 @@ const storyPools = {
           "translation": "The reason I became interested in Japanese anime was the active role of [anime_character_en] that I watched when I was young.",
           "question": {
             "question": "アニメに関心を持ったきっかけは何ですか。",
-            "options": ["幼い頃に観た[anime_character]の活躍です", "友達の勧めです", "旅行で行ったからです", "学校の授業です"],
-            "answerIndex": 0,
+            "options": ["友達の勧めです", "旅行で行ったからです", "学校の授業です", "幼い頃に観た[anime_character]の活躍です"],
+            "answerIndex": 3,
             "explanation": "The text states: '幼い頃に観た[anime_character]の活躍でした'."
           }
         }
@@ -763,7 +763,7 @@ const storyPools = {
           "translation": "The scene in the play where [anime_character_en] faces a strong enemy and unleashes [anime_power_en] is full of impact.",
           "question": {
             "question": "[anime_character]が何をするシーンが迫力満点ですか。",
-            "options": ["[anime_power]を繰り出すシーン", "ご飯を食べるシーン", "寝ているシーン", "逃げるシーン"],
+            "options": ["[anime_power]を繰り出すシーン", "逃げるシーン", "ご飯を食べるシーン", "寝ているシーン"],
             "answerIndex": 0,
             "explanation": "The text states: '[anime_character]が強敵に立ち向かい、[anime_power]を繰り出すシーンは迫力満点です'."
           }
@@ -773,8 +773,8 @@ const storyPools = {
           "translation": "Even in difficult situations, they do not give up and cooperate with their allies to overcome obstacles.",
           "question": {
             "question": "困難な状況で彼らはどうしますか。",
-            "options": ["諦めずに仲間と協力して壁を乗り越える", "すぐに諦める", "一人で逃げる", "何もしない"],
-            "answerIndex": 0,
+            "options": ["一人で逃げる", "何もしない", "諦めずに仲間と協力して壁を乗り越える", "すぐに諦める"],
+            "answerIndex": 2,
             "explanation": "The text states: '諦めずに、仲間と協力して壁を乗り越えていきます'."
           }
         }
@@ -785,8 +785,8 @@ const storyPools = {
           "translation": "These works depict a human drama so deep that you wouldn't think they are simply for children.",
           "question": {
             "question": "作品についてどのように説明されていますか。",
-            "options": ["深い人間ドラマが描かれている", "子供向けで単純である", "内容がない", "難しすぎて理解できない"],
-            "answerIndex": 0,
+            "options": ["難しすぎて理解できない", "子供向けで単純である", "深い人間ドラマが描かれている", "内容がない"],
+            "answerIndex": 2,
             "explanation": "The passage says a deep human drama is depicted ('深い人間ドラマが描かれています')."
           }
         },
@@ -795,8 +795,8 @@ const storyPools = {
           "translation": "Beautiful drawing and touching music further enhance the emotion of the story.",
           "question": {
             "question": "何が物語の感動を引き立てていますか。",
-            "options": ["美しい作画や心を打つ音楽", "広告の多さ", "上映時間の長さ", "チケットの安さ"],
-            "answerIndex": 0,
+            "options": ["広告の多さ", "美しい作画や心を打つ音楽", "チケットの安さ", "上映時間の長さ"],
+            "answerIndex": 1,
             "explanation": "The text says: '美しい作画や心を打つ音楽が物語の感動をさらに引き立てています'."
           }
         }
@@ -807,8 +807,8 @@ const storyPools = {
           "translation": "My goal is to study Japanese language and culture through anime, and visit the real-life locations ('anime pilgrimage') someday.",
           "question": {
             "question": "この人の目標は何ですか。",
-            "options": ["日本語を学び、聖地巡礼をすること", "アニメの制作会社で働くこと", "日本へ行かないこと", "漫画を全部売ること"],
-            "answerIndex": 0,
+            "options": ["漫画を全部売ること", "日本語を学び、聖地巡礼をすること", "アニメの制作会社で働くこと", "日本へ行かないこと"],
+            "answerIndex": 1,
             "explanation": "The text states: '日本語や日本文化を学び、いつか聖地巡礼をするのが私の目標です'."
           }
         },
@@ -817,8 +817,8 @@ const storyPools = {
           "translation": "I also want to look forward and keep making efforts like the main characters.",
           "question": {
             "question": "この人は誰のように努力を続けたいですか。",
-            "options": ["アニメの主人公たちのように", "現実の先生のように", "悪者たちのように", "分かりません"],
-            "answerIndex": 0,
+            "options": ["現実の先生のように", "アニメの主人公たちのように", "悪者たちのように", "分かりません"],
+            "answerIndex": 1,
             "explanation": "The text states: '私も主人公たちのように、前を向いて努力を続けたいと思います'."
           }
         }
@@ -831,7 +831,7 @@ const storyPools = {
           "translation": "Yesterday, I went to the theater and watched [movie_title_en], which has been a hot topic recently. This film is said to be the masterpiece of [movie_genre_en].",
           "question": {
             "question": "昨日観た映画は何ですか。",
-            "options": ["[movie_title]です", "古いアニメです", "テレビ番組です", "ニュースです"],
+            "options": ["[movie_title]です", "ニュースです", "古いアニメです", "テレビ番組です"],
             "answerIndex": 0,
             "explanation": "The text says they watched [movie_title_en] ('[movie_title]を観ました')."
           }
@@ -841,8 +841,8 @@ const storyPools = {
           "translation": "Recommended by a friend, I appreciated the very popular movie [movie_title_en] on the big screen over the weekend.",
           "question": {
             "question": "誰から映画を勧められましたか。",
-            "options": ["友達からです", "先生からです", "親からです", "テレビの広告からです"],
-            "answerIndex": 0,
+            "options": ["親からです", "テレビの広告からです", "先生からです", "友達からです"],
+            "answerIndex": 3,
             "explanation": "The text says: '友達から勧められて'."
           }
         }
@@ -853,8 +853,8 @@ const storyPools = {
           "translation": "Thanks to the theater's giant screen and 3D sound, I felt as if I had become a part of the story.",
           "question": {
             "question": "劇場の何のおかげで物語の一部になったように感じられましたか。",
-            "options": ["巨大なスクリーンと立体音響", "美味しい食べ物", "安い入場料", "座席の広さ"],
-            "answerIndex": 0,
+            "options": ["安い入場料", "座席の広さ", "巨大なスクリーンと立体音響", "美味しい食べ物"],
+            "answerIndex": 2,
             "explanation": "The passage states: '劇場の巨大なスクリーンと立体音響のおかげで'."
           }
         },
@@ -863,8 +863,8 @@ const storyPools = {
           "translation": "While drinking my favorite beverage, my heart was completely captured by the beauty of the visuals from start to finish.",
           "question": {
             "question": "この人は映像の何に心を奪われていましたか。",
-            "options": ["美しさです", "長さです", "つまらなさです", "暗さです"],
-            "answerIndex": 0,
+            "options": ["長さです", "暗さです", "つまらなさです", "美しさです"],
+            "answerIndex": 3,
             "explanation": "The text states: '映像の美しさに終始心を奪われ続けていました'."
           }
         }
@@ -875,8 +875,8 @@ const storyPools = {
           "translation": "The director's unique ideas and the superb acting of the entire cast came together to create a wonderful atmosphere.",
           "question": {
             "question": "何が素晴らしい雰囲気を作っていましたか。",
-            "options": ["監督のアイデアとキャストの演技", "劇場の明るさ", "チケットの価格", "観客の多さ"],
-            "answerIndex": 0,
+            "options": ["劇場の明るさ", "チケットの価格", "監督のアイデアとキャストの演技", "観客の多さ"],
+            "answerIndex": 2,
             "explanation": "The text says: '監督のユニークなアイデアとキャスト全員の見事な演技が噛み合い'."
           }
         },
@@ -885,8 +885,8 @@ const storyPools = {
           "translation": "This story embeds a strong message about the 'kindness' that we tend to forget.",
           "question": {
             "question": "物語にはどのようなメッセージが込められていますか。",
-            "options": ["「優しさ」についての強いメッセージ", "「お金」についてのメッセージ", "「仕事」をサボるメッセージ", "特にありません"],
-            "answerIndex": 0,
+            "options": ["「お金」についてのメッセージ", "「仕事」をサボるメッセージ", "「優しさ」についての強いメッセージ", "特にありません"],
+            "answerIndex": 2,
             "explanation": "The text says: '「優しさ」についての強いメッセージが込められています'."
           }
         }
@@ -897,8 +897,8 @@ const storyPools = {
           "translation": "Even after the screening ended, the emotional lingering remained for a while, and I truly felt glad that I came to the theater.",
           "question": {
             "question": "上映が終わった後どうなりましたか。",
-            "options": ["感動の余韻がしばらく残った", "すぐに忘れてしまった", "怒りが湧いてきた", "眠くなって寝た"],
-            "answerIndex": 0,
+            "options": ["眠くなって寝た", "感動の余韻がしばらく残った", "怒りが湧いてきた", "すぐに忘れてしまった"],
+            "answerIndex": 1,
             "explanation": "The passage states: '上映が終わった後もしばらく感動の余韻が残り'."
           }
         },
@@ -907,8 +907,8 @@ const storyPools = {
           "translation": "To convey this emotion to my family and other friends, I intend to write a recommended review on SNS.",
           "question": {
             "question": "この人は感動を伝えるために何をしますか。",
-            "options": ["SNSでおすすめのレビューを書く", "映画館をもう一度買う", "誰にも話さない", "静かに眠る"],
-            "answerIndex": 0,
+            "options": ["静かに眠る", "SNSでおすすめのレビューを書く", "誰にも話さない", "映画館をもう一度買う"],
+            "answerIndex": 1,
             "explanation": "The text states: 'SNSでおすすめのレビューを書くつもりです'."
           }
         }
@@ -921,7 +921,7 @@ const storyPools = {
           "translation": "Recently, I am hooked on the Japanese TV drama [series_title_en], and I return home immediately after work to watch it.",
           "question": {
             "question": "この人は仕事が終わるとすぐに帰宅して何をしますか。",
-            "options": ["ドラマ[series_title]を視聴する", "遊びに行く", "もう一度働く", "寝る"],
+            "options": ["ドラマ[series_title]を視聴する", "寝る", "遊びに行く", "もう一度働く"],
             "answerIndex": 0,
             "explanation": "The text says: '帰宅して視聴しています'."
           }
@@ -931,8 +931,8 @@ const storyPools = {
           "translation": "To study the life of Japanese working adults and daily conversation, I decided to watch the drama [series_title_en].",
           "question": {
             "question": "なぜドラマ[series_title]を観ることにしましたか。",
-            "options": ["日本の社会人の生活や日常会話を勉強するため", "友達に強制されたから", "暇潰しのためだけ", "分かりません"],
-            "answerIndex": 0,
+            "options": ["暇潰しのためだけ", "日本の社会人の生活や日常会話を勉強するため", "分かりません", "友達に強制されたから"],
+            "answerIndex": 1,
             "explanation": "The text states: '日本の社会人の生活や日常の会話を勉強するために'."
           }
         }
@@ -953,8 +953,8 @@ const storyPools = {
           "translation": "On the weekend, I use video streaming services to enjoy past seasons all at once.",
           "question": {
             "question": "週末に動画配信サービスを使って何をしますか。",
-            "options": ["過去のシーズンをまとめて一気に楽しむ", "新しい映画を買う", "アニメだけを検索する", "特に何もしない"],
-            "answerIndex": 0,
+            "options": ["アニメだけを検索する", "新しい映画を買う", "特に何もしない", "過去のシーズンをまとめて一気に楽しむ"],
+            "answerIndex": 3,
             "explanation": "The text states: '過去のシーズンをまとめて一気に楽しんでいます'."
           }
         }
@@ -965,8 +965,8 @@ const storyPools = {
           "translation": "This drama depicts the realistic human relationships of characters, and there are heart-pounding developments every time.",
           "question": {
             "question": "このドラマの展開はどうですか。",
-            "options": ["毎回ハラハラする展開がある", "とても退屈である", "全くストーリーが動かない", "分かりません"],
-            "answerIndex": 0,
+            "options": ["分かりません", "全くストーリーが動かない", "毎回ハラハラする展開がある", "とても退屈である"],
+            "answerIndex": 2,
             "explanation": "The text says: '毎回ハラハラする展開があります'."
           }
         },
@@ -975,8 +975,8 @@ const storyPools = {
           "translation": "The drama's theme song is also extremely popular, and just listening to the melody lifts my mood.",
           "question": {
             "question": "主題歌を聴くとどうなりますか。",
-            "options": ["気分が盛り上がります", "悲しくなります", "眠くなります", "イライラします"],
-            "answerIndex": 0,
+            "options": ["眠くなります", "気分が盛り上がります", "イライラします", "悲しくなります"],
+            "answerIndex": 1,
             "explanation": "The text states: 'メロディーを聴くだけで気分が盛り上がります'."
           }
         }
@@ -987,8 +987,8 @@ const storyPools = {
           "translation": "Since I can learn many daily expressions and idioms through the drama, it is the best study method for me.",
           "question": {
             "question": "この人にとってドラマを観ることはどのような勉強法ですか。",
-            "options": ["多くの日常表現や慣用句を学ぶことができる最高の勉強法", "あまり効果がない勉強法", "最も難しい勉強法", "分かりません"],
-            "answerIndex": 0,
+            "options": ["あまり効果がない勉強法", "分かりません", "最も難しい勉強法", "多くの日常表現や慣用句を学ぶことができる最高の勉強法"],
+            "answerIndex": 3,
             "explanation": "The text states: '日常表現や慣用句を学ぶことができるので、私にとって最高の勉強法です'."
           }
         },
@@ -997,8 +997,8 @@ const storyPools = {
           "translation": "I sincerely hope that the next season will be produced, and I am already looking forward to the sequel.",
           "question": {
             "question": "この人は何を心から願っていますか。",
-            "options": ["次のシーズンが制作されること", "ドラマが打ち切られること", "テレビが安くなること", "特に何も願っていません"],
-            "answerIndex": 0,
+            "options": ["ドラマが打ち切られること", "特に何も願っていません", "次のシーズンが制作されること", "テレビが安くなること"],
+            "answerIndex": 2,
             "explanation": "The text states: '次のシーズンが制作されることを心から願っており'."
           }
         }
@@ -1013,7 +1013,7 @@ const storyPools = {
           "translation": "Food waste, in which perfectly edible food is discarded, has become a societal issue.",
           "question": {
             "question": "どのようなことが社会的な問題になっていますか。",
-            "options": ["食べられる食品が廃棄されること（食品ロス）", "食べ物が少なすぎること", "スーパーが少なすぎること", "価格が安すぎること"],
+            "options": ["食べられる食品が廃棄されること（食品ロス）", "スーパーが少なすぎること", "食べ物が少なすぎること", "価格が安すぎること"],
             "answerIndex": 0,
             "explanation": "The text starts by identifying '食品ロス' (food waste) as the societal issue."
           }
@@ -1025,8 +1025,8 @@ const storyPools = {
           "translation": "When shopping, we tend to choose products with [date_en] best-before dates, which is one cause of increasing waste.",
           "question": {
             "question": "買い物をする際、どのような商品を選びがちですか。",
-            "options": ["賞味期限が[date]商品", "一番安い商品", "量が多い商品", "外国産の商品"],
-            "answerIndex": 0,
+            "options": ["外国産の商品", "一番安い商品", "賞味期限が[date]商品", "量が多い商品"],
+            "answerIndex": 2,
             "explanation": "The passage says we tend to choose items with [date_en] dates ('賞味期限が[date]商品を選びがち')."
           }
         }
@@ -1037,8 +1037,8 @@ const storyPools = {
           "translation": "The government and local authorities are calling on people to [policy_en], but changing consumer behavior is not simple.",
           "question": {
             "question": "自治体は消費者にどのように呼びかけていますか。",
-            "options": ["[policy]ように呼びかけています", "もっと多く買うように呼びかけています", "何も呼びかけていません", "自給自足を呼びかけています"],
-            "answerIndex": 0,
+            "options": ["自給自足を呼びかけています", "[policy]ように呼びかけています", "もっと多く買うように呼びかけています", "何も呼びかけていません"],
+            "answerIndex": 1,
             "explanation": "The text states: '[policy]ように呼びかけています'."
           }
         }
@@ -1049,8 +1049,8 @@ const storyPools = {
           "translation": "Each individual is required to be aware of the environmental impact and take action starting with what they can do.",
           "question": {
             "question": "今後、消費者には何が求められていますか。",
-            "options": ["環境への影響を自覚し行動すること", "もっと安い店を探すこと", "スーパーに行かないこと", "政府の対策を待つこと"],
-            "answerIndex": 0,
+            "options": ["政府の対策を待つこと", "もっと安い店を探すこと", "環境への影響を自覚し行動すること", "スーパーに行かないこと"],
+            "answerIndex": 2,
             "explanation": "The text states: '一人ひとりが環境への影響を自覚し、できることから行動を起こすことが求められています'."
           }
         }
@@ -1063,8 +1063,8 @@ const storyPools = {
           "translation": "Currently, the Japanese anime industry is expanding rapidly in overseas markets, and works like [anime_character_en] exert a tremendous influence.",
           "question": {
             "question": "アニメ産業は海外市場でどうなっていますか。",
-            "options": ["急速に拡大している", "縮小している", "変化がない", "衰退している"],
-            "answerIndex": 0,
+            "options": ["衰退している", "縮小している", "変化がない", "急速に拡大している"],
+            "answerIndex": 3,
             "explanation": "The passage states: '海外市場において急速に拡大しており'."
           }
         },
@@ -1073,8 +1073,8 @@ const storyPools = {
           "translation": "The charm of Japanese anime lies in the complex human relationships that go beyond simple poetic justice, and the depiction of conflict that [anime_character_en] harbors.",
           "question": {
             "question": "日本アニメの魅力はどこにあると説明されていますか。",
-            "options": ["複雑な人間関係やキャラクターの葛藤の描写", "単純なストーリー構成", "白黒の映像", "声優の少なさ"],
-            "answerIndex": 0,
+            "options": ["声優の少なさ", "白黒の映像", "複雑な人間関係やキャラクターの葛藤の描写", "単純なストーリー構成"],
+            "answerIndex": 2,
             "explanation": "The text states: '勧善懲悪に留まらない複雑な人間関係や、[anime_character]が抱える葛藤の描写にあります'."
           }
         }
@@ -1085,8 +1085,8 @@ const storyPools = {
           "translation": "In particular, the battle scene where [anime_character_en] stakes their own beliefs and makes full use of [anime_power_en] has the power to draw viewers in.",
           "question": {
             "question": "[anime_character]が何を使う戦闘シーンが視聴者を引き込みますか。",
-            "options": ["[anime_power]を駆使する戦闘シーン", "日常の会話シーン", "料理 of シーン", "睡眠のシーン"],
-            "answerIndex": 0,
+            "options": ["日常の会話シーン", "睡眠のシーン", "[anime_power]を駆使する戦闘シーン", "料理 of シーン"],
+            "answerIndex": 2,
             "explanation": "The text states: '[anime_character]が自らの信念を賭けて[anime_power]を駆使する戦闘シーンは、視聴者を引き込む力を持っています'."
           }
         },
@@ -1095,8 +1095,8 @@ const storyPools = {
           "translation": "Rather than simply defeating enemies, the psychological obstacles the main character faces and their bonds with others are depicted in detail.",
           "question": {
             "question": "戦闘以外にどのような要素が詳細に描かれていますか。",
-            "options": ["心理的な壁や他者との絆", "商品の販売価格", "旅行の旅程", "特にありません"],
-            "answerIndex": 0,
+            "options": ["特にありません", "心理的な壁や他者との絆", "商品の販売価格", "旅行の旅程"],
+            "answerIndex": 1,
             "explanation": "The text says: '心理的な壁や他者との絆が詳細に描かれます'."
           }
         }
@@ -1107,8 +1107,8 @@ const storyPools = {
           "translation": "Scenarios that encompass social issues and ethical inquiries boast a quality that can fully withstand appreciation by adults.",
           "question": {
             "question": "シナリオにはどのような内容が含まれていますか。",
-            "options": ["社会問題や倫理的な問いかけ", "お笑いのネタだけ", "天気予報", "分かりません"],
-            "answerIndex": 0,
+            "options": ["分かりません", "お笑いのネタだけ", "社会問題や倫理的な問いかけ", "天気予報"],
+            "answerIndex": 2,
             "explanation": "The text states: '社会問題や倫理的な問いかけを内包したシナリオ'."
           }
         },
@@ -1117,8 +1117,8 @@ const storyPools = {
           "translation": "It is precisely because of such deep thematic qualities that it is supported by a wide range of people across generations and borders.",
           "question": {
             "question": "なぜ国境を越えて支持されているのですか。",
-            "options": ["奥深いテーマ性があるから", "価格が無料だから", "子供向けだから", "特に理由はありません"],
-            "answerIndex": 0,
+            "options": ["特に理由はありません", "価格が無料だから", "子供向けだから", "奥深いテーマ性があるから"],
+            "answerIndex": 3,
             "explanation": "The text says: 'こうした奥深いテーマ性があるからこそ...支持されているのです'."
           }
         }
@@ -1129,8 +1129,8 @@ const storyPools = {
           "translation": "In the future, I would like to play a role in disseminating Japanese anime culture more deeply through translation and introduction activities.",
           "question": {
             "question": "この人は将来どのような役割を担いたいと考えていますか。",
-            "options": ["翻訳や紹介活動を通じて文化を発信する役割", "声優として出演する役割", "フィギュアを作る役割", "何もしない"],
-            "answerIndex": 0,
+            "options": ["フィギュアを作る役割", "何もしない", "声優として出演する役割", "翻訳や紹介活動を通じて文化を発信する役割"],
+            "answerIndex": 3,
             "explanation": "The text says: '翻訳や紹介活動を通じて、日本のアニメ文化をより深く発信する役割を担いたい'."
           }
         },
@@ -1139,8 +1139,8 @@ const storyPools = {
           "translation": "Aiming to be able to understand anime without subtitles, I spend my days striving to acquire vocabulary.",
           "question": {
             "question": "この人は何を目指して勉強していますか。",
-            "options": ["アニメを字幕なしで理解できるようになること", "日本に旅行すること", "学校を卒業すること", "漫画を捨てること"],
-            "answerIndex": 0,
+            "options": ["漫画を捨てること", "学校を卒業すること", "日本に旅行すること", "アニメを字幕なしで理解できるようになること"],
+            "answerIndex": 3,
             "explanation": "The text states: 'アニメを字幕なしで理解できるようになることを目指し、語彙の習得に励む日々です'."
           }
         }
@@ -1153,8 +1153,8 @@ const storyPools = {
           "translation": "In recent years, amid the birth of diverse film expressions, [movie_title_en] is highly evaluated as a new milestone in [movie_genre_en].",
           "question": {
             "question": "[movie_title]はどのように評価されていますか。",
-            "options": ["新たな金字塔として高く評価されている", "評価が非常に低い", "普通である", "誰からも無視されている"],
-            "answerIndex": 0,
+            "options": ["誰からも無視されている", "普通である", "新たな金字塔として高く評価されている", "評価が非常に低い"],
+            "answerIndex": 2,
             "explanation": "The text states: '[movie_title]は[movie_genre]の新たな金字塔として高く評価されています'."
           }
         },
@@ -1163,8 +1163,8 @@ const storyPools = {
           "translation": "The movie [movie_title_en] that I appreciated today goes beyond the bounds of a mere entertainment film, and is an ambitious work that throws deep questions to the audience.",
           "question": {
             "question": "[movie_title]はどのような映画だと説明されていますか。",
-            "options": ["観客に深い問いを投げかける意欲作", "単純な娯楽映画に過ぎないもの", "子供向けのアニメーション", "非常に退屈な作品"],
-            "answerIndex": 0,
+            "options": ["単純な娯楽映画に過ぎないもの", "非常に退屈な作品", "子供向けのアニメーション", "観客に深い問いを投げかける意欲作"],
+            "answerIndex": 3,
             "explanation": "The text states: '観客に深い問いを投げかける意欲作です'."
           }
         }
@@ -1175,8 +1175,8 @@ const storyPools = {
           "translation": "The synchronization rate of visuals and music was extremely high, and I experienced a sense of presence as if pinned in front of the screen.",
           "question": {
             "question": "この人はどのような体験をしましたか。",
-            "options": ["スクリーンの前に釘付けにされるような臨場感", "途中で映画館を出たくなる退屈さ", "頭痛を伴う不快感", "特になし"],
-            "answerIndex": 0,
+            "options": ["特になし", "スクリーンの前に釘付けにされるような臨場感", "頭痛を伴う不快感", "途中で映画館を出たくなる退屈さ"],
+            "answerIndex": 1,
             "explanation": "The text says: 'スクリーンの前に釘付けにされるかのような臨場感を体験しました'."
           }
         },
@@ -1185,8 +1185,8 @@ const storyPools = {
           "translation": "As the story progressed, the conflicts and growth of the characters were realistically expressed, and my heart was violently stirred.",
           "question": {
             "question": "物語の進行とともに何がリアルに表現されましたか。",
-            "options": ["登場人物たちの葛藤や成長", "チケットの価格の変動", "背景の色の劣化", "登場人物の衣装の少なさ"],
-            "answerIndex": 0,
+            "options": ["登場人物の衣装の少なさ", "登場人物たちの葛藤や成長", "チケットの価格の変動", "背景の色の劣化"],
+            "answerIndex": 1,
             "explanation": "The text states: '登場人物たちの葛藤や成長がリアルに表現され'."
           }
         }
@@ -1197,7 +1197,7 @@ const storyPools = {
           "translation": "The precisely calculated direction and the overwhelming acting skills of the cast that respond to it raise the charm of this work many times over.",
           "question": {
             "question": "何が作品の魅力を何倍にも引き上げていますか。",
-            "options": ["緻密な演出と俳優陣の圧倒的な演技力", "劇場の音響機器のブランド", "広告代理店の宣伝方法", "特に関係ない"],
+            "options": ["緻密な演出と俳優陣の圧倒的な演技力", "特に関係ない", "広告代理店の宣伝方法", "劇場の音響機器のブランド"],
             "answerIndex": 0,
             "explanation": "The text states: '緻密に計算された演出と、それに応える俳優陣の圧倒的な演技力'."
           }
@@ -1207,8 +1207,8 @@ const storyPools = {
           "translation": "Social themes such as the superficiality of human relations and loneliness that modern people harbor run through the undercurrent of the story.",
           "question": {
             "question": "ストーリーの底流にはどのようなテーマが流れていますか。",
-            "options": ["人間関係の希薄さや孤独といった社会的テーマ", "簡単なスポーツのルール", "美味しい料理の作り方", "特にありません"],
-            "answerIndex": 0,
+            "options": ["簡単なスポーツのルール", "人間関係の希薄さや孤独といった社会的テーマ", "特にありません", "美味しい料理の作り方"],
+            "answerIndex": 1,
             "explanation": "The text states: '人間関係の希薄さや孤独といった社会的テーマがストーリーの底流に流れています'."
           }
         }
@@ -1219,8 +1219,8 @@ const storyPools = {
           "translation": "It became a valuable opportunity to rethink the power of the film medium to shake people's values.",
           "question": {
             "question": "この人は何について改めて考えさせられましたか。",
-            "options": ["映画というメディアが持つ、人々の価値観を揺さぶる力", "映画のチケット代金の返金方法", "ポップコーンの栄養価", "分かりません"],
-            "answerIndex": 0,
+            "options": ["分かりません", "ポップコーンの栄養価", "映画のチケット代金の返金方法", "映画というメディアが持つ、人々の価値観を揺さぶる力"],
+            "answerIndex": 3,
             "explanation": "The text says: '映画というメディアが持つ、人々の価値観を揺さぶる力について、改めて考えさせられる'."
           }
         },
@@ -1229,8 +1229,8 @@ const storyPools = {
           "translation": "I hope to have a thorough discussion with my friend later about the issue raised by this work.",
           "question": {
             "question": "この人は後で友人と何をしたいと考えていますか。",
-            "options": ["作品が投げかける問題提起について議論を交わす", "一緒に別の映画を観に行く", "何も話さない", "買い物に出かける"],
-            "answerIndex": 0,
+            "options": ["一緒に別の映画を観に行く", "買い物に出かける", "作品が投げかける問題提起について議論を交わす", "何も話さない"],
+            "answerIndex": 2,
             "explanation": "The text states: '問題提起について、後で友人とじっくり議論を交わしたいと思っています'."
           }
         }
@@ -1243,7 +1243,7 @@ const storyPools = {
           "translation": "Since TV dramas progress week-by-week, works like [series_title_en] have the characteristic of easily raising social interest.",
           "question": {
             "question": "テレビドラマにはどのような特徴がありますか。",
-            "options": ["社会的な関心を呼び起こしやすい", "すぐに飽きられやすい", "制作費が安すぎる", "特にありません"],
+            "options": ["社会的な関心を呼び起こしやすい", "制作費が安すぎる", "すぐに飽きられやすい", "特にありません"],
             "answerIndex": 0,
             "explanation": "The text states: '社会的な関心を呼び起こしやすいという特徴があります'."
           }
@@ -1253,8 +1253,8 @@ const storyPools = {
           "translation": "With the spread of streaming services in recent years, the Japanese serial drama [series_title_en] is widely viewed both domestically and internationally.",
           "question": {
             "question": "[series_title]が国内外で幅広く視聴されている理由は何ですか。",
-            "options": ["配信サービスの普及によるもの", "チケットが無料だから", "放送時間が短いから", "特に理由はありません"],
-            "answerIndex": 0,
+            "options": ["放送時間が短いから", "チケットが無料だから", "特に理由はありません", "配信サービスの普及によるもの"],
+            "answerIndex": 3,
             "explanation": "The text states: '昨今の配信サービスの普及により、...幅広く視聴されています'."
           }
         }
@@ -1265,8 +1265,8 @@ const storyPools = {
           "translation": "Immediately after each broadcast, one can see viewers enthusiastically exchanging thoughts and analyses of foreshadowing on SNS.",
           "question": {
             "question": "放送直後、視聴者はSNS上で何をしていますか。",
-            "options": ["伏線の考察や感想のやり取りを熱心に行っている", "テレビ番組の批判ばかりしている", "買い物を行っている", "特になし"],
-            "answerIndex": 0,
+            "options": ["買い物を行っている", "テレビ番組の批判ばかりしている", "特になし", "伏線の考察や感想のやり取りを熱心に行っている"],
+            "answerIndex": 3,
             "explanation": "The text says: 'SNS上で伏線の考察や感想のやり取りを熱心に行っている'."
           }
         },
@@ -1275,8 +1275,8 @@ const storyPools = {
           "translation": "As episodes stack up, the complex plot and emotional interweaving deepen, showing ingenious efforts to prevent viewers from getting bored.",
           "question": {
             "question": "エピソードが重なるにつれて何が深まりますか。",
-            "options": ["複雑なプロットと感情の交錯", "番組のCMの多さ", "退屈な会話", "分かりません"],
-            "answerIndex": 0,
+            "options": ["番組のCMの多さ", "分かりません", "退屈な会話", "複雑なプロットと感情の交錯"],
+            "answerIndex": 3,
             "explanation": "The text states: '複雑なプロットと感情の交錯が深まり'."
           }
         }
@@ -1287,8 +1287,8 @@ const storyPools = {
           "translation": "The personal stories in each character's background are carefully dug into, raising the reality of the overall narrative.",
           "question": {
             "question": "何が物語全体のリアリティを高めていますか。",
-            "options": ["各キャラクターの背景にある個人的なストーリーの丁寧な掘り下げ", "高価な機材を使った撮影方法", "有名人のカメオ出演", "分かりません"],
-            "answerIndex": 0,
+            "options": ["有名人のカメオ出演", "高価な機材を使った撮影方法", "各キャラクターの背景にある個人的なストーリーの丁寧な掘り下げ", "分かりません"],
+            "answerIndex": 2,
             "explanation": "The text states: '各キャラクターの背景にある個人的なストーリーが丁寧に掘り下げられており'."
           }
         },
@@ -1297,8 +1297,8 @@ const storyPools = {
           "translation": "Diverse human relationships, which could be called a microcosm of society, are drawn distinctly in a way both serious and comical.",
           "question": {
             "question": "人間模様はどのように描き分けられていますか。",
-            "options": ["シリアスかつコミカルに", "単純かつ退屈に", "英語でのみ", "特に関係ありません"],
-            "answerIndex": 0,
+            "options": ["単純かつ退屈に", "シリアスかつコミカルに", "特に関係ありません", "英語でのみ"],
+            "answerIndex": 1,
             "explanation": "The text states: '多様な人間模様が、シリアスかつコミカルに描き分けられています'."
           }
         }
@@ -1309,8 +1309,8 @@ const storyPools = {
           "translation": "Going beyond mere temporary entertainment, it provides an opportunity to reflect on empathy for others and how communication should be.",
           "question": {
             "question": "このドラマは観客に何を提供してくれますか。",
-            "options": ["他者への共感やコミュニケーションについて考える契機", "退屈な時間つぶし", "無料の商品", "特になし"],
-            "answerIndex": 0,
+            "options": ["退屈な時間つぶし", "他者への共感やコミュニケーションについて考える契機", "特になし", "無料の商品"],
+            "answerIndex": 1,
             "explanation": "The text says: '他者への共感やコミュニケーションの在り方について考えさせる契機を提供してくれます'."
           }
         },
@@ -1319,8 +1319,8 @@ const storyPools = {
           "translation": "How the conclusion of this drama will turn out keeps us increasingly unable to take our eyes off the upcoming story development.",
           "question": {
             "question": "この人は何から目が離せないと言っていますか。",
-            "options": ["今後のストーリー展開から", "テレビの故障から", "他人の会話から", "特になし"],
-            "answerIndex": 0,
+            "options": ["他人の会話から", "特になし", "今後のストーリー展開から", "テレビの故障から"],
+            "answerIndex": 2,
             "explanation": "The text states: '今後のストーリー展開からますます目が離せません'."
           }
         }
@@ -1347,8 +1347,8 @@ const storyPools = {
           "translation": "Many corporations are rapidly moving forward with initiatives aimed at reducing [target_en] in their manufacturing processes.",
           "question": {
             "question": "企業は製造工程で何を削減しようとしていますか。",
-            "options": ["[target]の削減です", "従業員の給与の削減です", "製品品質の削減です", "広告宣伝費の削減です"],
-            "answerIndex": 0,
+            "options": ["従業員の給与の削減です", "広告宣伝費の削減です", "[target]の削減です", "製品品質の削減です"],
+            "answerIndex": 2,
             "explanation": "The text states: '製造工程における[target]の削減を目指す取り組み'."
           }
         }
@@ -1359,8 +1359,8 @@ const storyPools = {
           "translation": "However, capital investments accompanying environmental measures lead to cost increases, presenting companies with the dilemma that [difficulty_en].",
           "question": {
             "question": "企業はどのようなジレンマに直面していますか。",
-            "options": ["環境対策の投資で[difficulty]こと", "従業員の採用ができないこと", "株価が下落すること", "新製品が作れないこと"],
-            "answerIndex": 0,
+            "options": ["従業員の採用ができないこと", "新製品が作れないこと", "環境対策の投資で[difficulty]こと", "株価が下落すること"],
+            "answerIndex": 2,
             "explanation": "The passage says companies face the dilemma that [difficulty_en] ('[difficulty]というジレンマがあります')."
           }
         }
@@ -1371,8 +1371,8 @@ const storyPools = {
           "translation": "Toward achieving the Sustainable Development Goals (SDGs), careful business management from a long-term perspective is now more indispensable than ever.",
           "question": {
             "question": "SDGs達成に向けて今何が欠かせませんか。",
-            "options": ["長期的視野に立った慎重な事業経営", "コスト削減のみに集中すること", "短期的な売上の最大化", "事業の即時停止"],
-            "answerIndex": 0,
+            "options": ["短期的な売上の最大化", "長期的視野に立った慎重な事業経営", "事業の即時停止", "コスト削減のみに集中すること"],
+            "answerIndex": 1,
             "explanation": "The text states: '長期的視野に立った慎重な事業経営が今こそ欠かせません'."
           }
         }
@@ -1385,8 +1385,8 @@ const storyPools = {
           "translation": "The anime culture Japan boasts goes beyond the framework of a mere subculture and functions as an important cultural diplomacy tool in modern society, and works like [anime_character_en] especially trigger a global social phenomenon.",
           "question": {
             "question": "日本のアニメ文化は現代社会でどのように機能していますか。",
-            "options": ["重要な文化外交のツールとして機能している", "単なる娯楽に留まっている", "衰退の傾向にある", "国内でのみ消費されている"],
-            "answerIndex": 0,
+            "options": ["衰退の傾向にある", "重要な文化外交のツールとして機能している", "単なる娯楽に留まっている", "国内でのみ消費されている"],
+            "answerIndex": 1,
             "explanation": "The text states: '現代社会における重要な文化外交のツールとして機能しており'."
           }
         },
@@ -1395,8 +1395,8 @@ const storyPools = {
           "translation": "In many anime works, universal themes such as the search for self-identity and conflict with others are handled, and the trials [anime_character_en] faces evoke deep empathy from viewers.",
           "question": {
             "question": "多くのアニメ作品でどのような普遍的なテーマが扱われていますか。",
-            "options": ["自己アイデンティティの模索や他者との葛藤", "利益の追求のみ", "製品の物理的特徴", "天候の推移"],
-            "answerIndex": 0,
+            "options": ["製品の物理的特徴", "自己アイデンティティの模索や他者との葛藤", "天候の推移", "利益の追求のみ"],
+            "answerIndex": 1,
             "explanation": "The text states: '自己アイデンティティの模索や他者との葛藤といった普遍的なテーマが扱われており'."
           }
         }
@@ -1407,8 +1407,8 @@ const storyPools = {
           "translation": "The depiction in the work of [anime_character_en] using [anime_power_en] to challenge their own limits goes beyond mere visual staging and symbolizes the psychological growth process of humans.",
           "question": {
             "question": "[anime_character]が限界に挑む描写は何を象徴していますか。",
-            "options": ["人間の精神的な成長プロセス", "商業的な宣伝効果", "物語の破綻", "特にありません"],
-            "answerIndex": 0,
+            "options": ["特にありません", "物語の破綻", "商業的な宣伝効果", "人間の精神的な成長プロセス"],
+            "answerIndex": 3,
             "explanation": "The text states: '人間の精神的な成長プロセスを象徴しています'."
           }
         },
@@ -1417,8 +1417,8 @@ const storyPools = {
           "translation": "The figure of the main character resolving conflict between social contradictions and personal ethics while making decisions of their own free will is drawn with high precision.",
           "question": {
             "question": "主人公はどのような間で葛藤しますか。",
-            "options": ["社会的な矛盾や個人の倫理観の間", "勉強と遊びの間", "金銭の有無の間", "他人の評判の間"],
-            "answerIndex": 0,
+            "options": ["勉強と遊びの間", "社会的な矛盾や個人の倫理観の間", "他人の評判の間", "金銭の有無の間"],
+            "answerIndex": 1,
             "explanation": "The passage states: '社会的な矛盾や個人の倫理観の間で葛藤しつつ'."
           }
         }
@@ -1429,8 +1429,8 @@ const storyPools = {
           "translation": "Not stopping at refined visual beauty and audio design, the story composition, which heavily reflects historical backgrounds and ideological backbones, lends an extraordinary depth to the work.",
           "question": {
             "question": "ストーリー構成には何が反映されていますか。",
-            "options": ["時代背景や思想的バックボーン", "単なる娯楽要素だけ", "他国の作品のコピー", "企業の財務情報"],
-            "answerIndex": 0,
+            "options": ["単なる娯楽要素だけ", "時代背景や思想的バックボーン", "他国の作品のコピー", "企業の財務情報"],
+            "answerIndex": 1,
             "explanation": "The passage mentions: '時代背景や思想的バックボーンを色濃く反映したストーリー構成'."
           }
         },
@@ -1439,8 +1439,8 @@ const storyPools = {
           "translation": "It is precisely such a multilayered approach that enables diverse interpretations and makes the work withstand analysis as an academic subject.",
           "question": {
             "question": "重層的なアプローチは何を可能にしていますか。",
-            "options": ["多様な読解や学術的な分析", "販売店の売上の増加", "子供たちの学習の妨げ", "特に関係ありません"],
-            "answerIndex": 0,
+            "options": ["特に関係ありません", "子供たちの学習の妨げ", "多様な読解や学術的な分析", "販売店の売上の増加"],
+            "answerIndex": 2,
             "explanation": "The text states: '多様な読解を可能にし、学術的な分析の対象としても耐えうるものにしている'."
           }
         }
@@ -1451,7 +1451,7 @@ const storyPools = {
           "translation": "In the future, I hope to study the potential of Japanese anime as a medium and clarify its role in global cultural interaction.",
           "question": {
             "question": "この人は将来どのような研究をしたいと念願していますか。",
-            "options": ["アニメが持つ可能性やグローバルな文化相互作用の役割", "アニメの製作費用の削減方法", "漫画の電子化の歴史", "何も研究したくありません"],
+            "options": ["アニメが持つ可能性やグローバルな文化相互作用の役割", "アニメの製作費用の削減方法", "何も研究したくありません", "漫画の電子化の歴史"],
             "answerIndex": 0,
             "explanation": "The text states: 'アニメが持つメディアとしての可能性を研究し、グローバルな文化相互作用における役割を解明したい'."
           }
@@ -1461,8 +1461,8 @@ const storyPools = {
           "translation": "I plan to devote myself to intellectual exploration that unravels the thoughts at the root of the work through anime criticism and literary approaches.",
           "question": {
             "question": "この人はどのような探求に身を投じるつもりですか。",
-            "options": ["作品の根底にある思想を解き明かす知的な探求", "単なるアニメの鑑賞", "アニメのグッズ集め", "特にありません"],
-            "answerIndex": 0,
+            "options": ["アニメのグッズ集め", "特にありません", "単なるアニメの鑑賞", "作品の根底にある思想を解き明かす知的な探求"],
+            "answerIndex": 3,
             "explanation": "The text states: '作品の根底にある思想を解き明かす知的な探求に身を投じるつもりです'."
           }
         }
@@ -1475,8 +1475,8 @@ const storyPools = {
           "translation": "The movie [movie_title_en] breaks the traditional context in the genre of [movie_genre_en] and is a epoch-making work that brought revolutionary progress to video art.",
           "question": {
             "question": "[movie_title]は映像芸術に何をもたらしたと書かれていますか。",
-            "options": ["革命的な進歩をもたらした", "衰退をもたらした", "混乱をもたらした", "特に何ももたらさなかった"],
-            "answerIndex": 0,
+            "options": ["混乱をもたらした", "特に何ももたらさなかった", "革命的な進歩をもたらした", "衰退をもたらした"],
+            "answerIndex": 2,
             "explanation": "The passage notes: '映像芸術に革命的な進歩をもたらした'."
           }
         },
@@ -1485,7 +1485,7 @@ const storyPools = {
           "translation": "An excellent video work does not stop at mere superficial entertainment but reflects the historical background and the deep psychology of society, and [movie_title_en] is precisely one such example.",
           "question": {
             "question": "優れた映像作品はエンターテインメントの枠を超えて何を反映していますか。",
-            "options": ["時代背景や社会の深層心理", "企業の販売戦略", "原作者の個人的な日記", "特にありません"],
+            "options": ["時代背景や社会の深層心理", "原作者の個人的な日記", "特にありません", "企業の販売戦略"],
             "answerIndex": 0,
             "explanation": "The text states: '時代背景や社会の深層心理を反映しており'."
           }
@@ -1497,7 +1497,7 @@ const storyPools = {
           "translation": "By the clever contrast of light and shadow and the audio direction linked with psychological descriptions, I felt an immersive sense of being drawn into the screen from start to finish.",
           "question": {
             "question": "この人は何によってスクリーンへの没入感を覚えましたか。",
-            "options": ["巧妙な光と影のコントラストや心理描写と連動した音響演出", "劇場の冷暖房の温度設定", "他の観客の私語", "劇場のスクリーンの傷"],
+            "options": ["巧妙な光と影のコントラストや心理描写と連動した音響演出", "他の観客の私語", "劇場のスクリーンの傷", "劇場の冷暖房の温度設定"],
             "answerIndex": 0,
             "explanation": "The text states: '巧妙な光と影のコントラストや、心理描写と連動した音響演出によって'."
           }
@@ -1507,8 +1507,8 @@ const storyPools = {
           "translation": "The storytelling, which allows no assumptions by the audience, builds tension toward the climax where multiple foreshadows are gathered.",
           "question": {
             "question": "ストーリーテリングはクライマックスに向けてどうしますか。",
-            "options": ["伏線が回収されるに向けて緊張感を高める", "コメディ要素を増やす", "ストーリーを途中で放棄する", "観客を退屈にさせる"],
-            "answerIndex": 0,
+            "options": ["ストーリーを途中で放棄する", "コメディ要素を増やす", "伏線が回収されるに向けて緊張感を高める", "観客を退屈にさせる"],
+            "answerIndex": 2,
             "explanation": "The text states: '幾重もの伏線が回収されるクライマックスに向けて緊張感を高めていきます'."
           }
         }
@@ -1519,8 +1519,8 @@ const storyPools = {
           "translation": "Based on the director's clear aesthetic sense, the visuals, meticulously calculated frame-by-frame, are filled with painterly beauty.",
           "question": {
             "question": "ワンカットごとの映像はどのような美しさを湛えていますか。",
-            "options": ["絵画的な美しさ", "安っぽい美しさ", "現代の広告のような美しさ", "特に美しくない"],
-            "answerIndex": 0,
+            "options": ["特に美しくない", "安っぽい美しさ", "絵画的な美しさ", "現代の広告のような美しさ"],
+            "answerIndex": 2,
             "explanation": "The passage notes: '絵画的な美しさを湛えています'."
           }
         },
@@ -1529,8 +1529,8 @@ const storyPools = {
           "translation": "The philosophical inquiry running at the root of the work encompasses profound themes such as human absurdity and the difficulty of coexisting.",
           "question": {
             "question": "作品の根底に流れる問いかけはどのようなテーマを内包していますか。",
-            "options": ["人間の不条理さや共生の難しさといった深遠なテーマ", "効率的な時間の管理方法", "単純な勧善懲悪のストーリー", "特になし"],
-            "answerIndex": 0,
+            "options": ["特になし", "単純な勧善懲悪のストーリー", "人間の不条理さや共生の難しさといった深遠なテーマ", "効率的な時間の管理方法"],
+            "answerIndex": 2,
             "explanation": "The text states: '人間の不条理さや共生の難しさといった深遠なテーマを内包しています'."
           }
         }
@@ -1541,8 +1541,8 @@ const storyPools = {
           "translation": "After viewing, our traditional perspectives on self and others are shaken, and we fall into a sensation of having our daily awareness reconstructed.",
           "question": {
             "question": "鑑賞後、私たちはどのような感覚に陥りますか。",
-            "options": ["自己や他者に対する視点を揺さぶられ、日常の認識を再構成させられる感覚", "怒りや不満が募る感覚", "即座にすべてを忘れてしまう感覚", "全く何も感じない状態"],
-            "answerIndex": 0,
+            "options": ["怒りや不満が募る感覚", "全く何も感じない状態", "即座にすべてを忘れてしまう感覚", "自己や他者に対する視点を揺さぶられ、日常の認識を再構成させられる感覚"],
+            "answerIndex": 3,
             "explanation": "The text states: '従来の視点を揺さぶられ、日常の認識を再構成させられる感覚に陥ります'."
           }
         },
@@ -1551,7 +1551,7 @@ const storyPools = {
           "translation": "This extremely artistic work does not end as a mere trend and can be evaluated as a masterpiece that leaves a permanent footprint in film history.",
           "question": {
             "question": "この作品はどのように評価できますか。",
-            "options": ["映画史に永続的な足跡を残す傑作", "一過性の流行品", "失敗作", "娯楽作品に過ぎないもの"],
+            "options": ["映画史に永続的な足跡を残す傑作", "一過性の流行品", "娯楽作品に過ぎないもの", "失敗作"],
             "answerIndex": 0,
             "explanation": "The text states: '映画史に永続的な足跡を残す傑作と評価できます'."
           }
@@ -1565,7 +1565,7 @@ const storyPools = {
           "translation": "[series_title_en] goes beyond the framework of entertainment that conventional TV dramas had, and has acquired absolute support as a social drama that sharply depicts the distortions of modern society and deep human psychology.",
           "question": {
             "question": "[series_title]はどのようなドラマとして絶大な支持を獲得していますか。",
-            "options": ["社会の歪みや人間の深層心理を痛烈に描き出す社会派ドラマ", "単純なコメディドラマ", "日常を映すだけのドキュメンタリー", "特に支持されていません"],
+            "options": ["社会の歪みや人間の深層心理を痛烈に描き出す社会派ドラマ", "日常を映すだけのドキュメンタリー", "単純なコメディドラマ", "特に支持されていません"],
             "answerIndex": 0,
             "explanation": "The text states: '現代社会の歪みや人間の深層心理を痛烈に描き出す社会派ドラマとして、絶大な支持を獲得しています'."
           }
@@ -1575,8 +1575,8 @@ const storyPools = {
           "translation": "The format of serial drama, which has a temporal span, is extremely suited for minutely depicting characters' mental trajectories and changes in relationships, and [series_title_en] maximizes this strength.",
           "question": {
             "question": "連続ドラマのフォーマットは何に適していますか。",
-            "options": ["登場人物の精神的な軌跡や人間関係の変容をきめ細かく描き出すこと", "短時間でニュースを伝えること", "即座に商品の販売を行うこと", "特に適していません"],
-            "answerIndex": 0,
+            "options": ["特に適していません", "短時間でニュースを伝えること", "即座に商品の販売を行うこと", "登場人物の精神的な軌跡や人間関係の変容をきめ細かく描き出すこと"],
+            "answerIndex": 3,
             "explanation": "The text notes: '登場人物の精神的な軌跡や人間関係 of 変容をきめ細かく描き出すのに極めて適しており'." // Let's make it '人間関係の変容'
           }
         }
@@ -1587,8 +1587,8 @@ const storyPools = {
           "translation": "Viewers are drawn into the precise composition of each episode and overwhelmed by developments where scattered clues are recovered in an amazing fashion.",
           "question": {
             "question": "視聴者は各エピソードのどのような展開に圧倒されますか。",
-            "options": ["散りばめられた伏線が驚くべき形で回収される展開", "単純で退屈なプロットの展開", "途中で番組が中断される展開", "登場人物の交代"],
-            "answerIndex": 0,
+            "options": ["途中で番組が中断される展開", "登場人物の交代", "散りばめられた伏線が驚くべき形で回収される展開", "単純で退屈なプロットの展開"],
+            "answerIndex": 2,
             "explanation": "The passage notes: '散りばめられた伏線が驚くべき形で回収される展開に圧倒されます'."
           }
         },
@@ -1597,8 +1597,8 @@ const storyPools = {
           "translation": "The actions of characters conflicting between social norms and individual conscience, and sometimes forced to make self-sacrificing choices, are depicted with a tension-filled touch.",
           "question": {
             "question": "登場人物たちはどのような間で葛藤しますか。",
-            "options": ["社会的な規範と個人の良心の間", "テレビのサイズと価格の間", "服装の色と形の選択の間", "特に葛藤はありません"],
-            "answerIndex": 0,
+            "options": ["特に葛藤はありません", "服装の色と形の選択の間", "社会的な規範と個人の良心の間", "テレビのサイズと価格の間"],
+            "answerIndex": 2,
             "explanation": "The passage notes: '社会的な規範と個人の良心の間で葛藤し'."
           }
         }
@@ -1609,8 +1609,8 @@ const storyPools = {
           "translation": "The screenplay's excellent dialogues and the subtleties of complex emotions hidden behind the words are expressed three-dimensionally through the actors' acting skill.",
           "question": {
             "question": "役者の演技力を通じて何が立体的に表現されていますか。",
-            "options": ["セリフ回しや言葉の裏に隠された複雑な感情の機微", "劇中のセットの豪華さ", "音楽の音量の調整", "分かりません"],
-            "answerIndex": 0,
+            "options": ["劇中のセットの豪華さ", "セリフ回しや言葉の裏に隠された複雑な感情の機微", "分かりません", "音楽の音量の調整"],
+            "answerIndex": 1,
             "explanation": "The text says: '脚本の卓越したセリフ回しや、言葉の裏に隠された複雑な感情の機微が...表現されています'."
           }
         },
@@ -1619,8 +1619,8 @@ const storyPools = {
           "translation": "By sharply carving out the structural issues of modern society, it has the power to force viewers to re-examine their own ethics.",
           "question": {
             "question": "このドラマは視聴者に何を迫る力を持っていますか。",
-            "options": ["自己の倫理観を見つめ直すこと", "動画の月額会員の登録を増やすこと", "家族との連絡を断つこと", "分かりません"],
-            "answerIndex": 0,
+            "options": ["動画の月額会員の登録を増やすこと", "自己の倫理観を見つめ直すこと", "分かりません", "家族との連絡を断つこと"],
+            "answerIndex": 1,
             "explanation": "The text states: '視聴者に自己の倫理観を見つめ直すよう迫る力を持っています'."
           }
         }
@@ -1631,8 +1631,8 @@ const storyPools = {
           "translation": "It can be said to be a work that leaves a strong impact, to the extent that after viewing, one cannot help but think about the ethical antinomy presented by the story.",
           "question": {
             "question": "視聴後、どのような状態になると言われていますか。",
-            "options": ["倫理的な二律背反について思考を巡らせずにはいられない", "即座に退屈して眠ってしまう", "内容に怒りを感じて批判する", "特に影響を受けない"],
-            "answerIndex": 0,
+            "options": ["即座に退屈して眠ってしまう", "倫理的な二律背反について思考を巡らせずにはいられない", "内容に怒りを感じて批判する", "特に影響を受けない"],
+            "answerIndex": 1,
             "explanation": "The passage states: '倫理的な二律背反について思考を巡らせずにはいられないほど、強いインパクトを残す作品'."
           }
         },
@@ -1641,8 +1641,8 @@ const storyPools = {
           "translation": "This work goes beyond a mere passing boom and is a monumental masterpiece demonstrating the infinite possibilities that the expression style of TV drama has.",
           "question": {
             "question": "この作品は表現様式に関して何を示したと評価されていますか。",
-            "options": ["テレビドラマという表現様式が持つ無限の可能性", "広告の重要性", "撮影技術の限界", "特に何も示していません"],
-            "answerIndex": 0,
+            "options": ["撮影技術の限界", "テレビドラマという表現様式が持つ無限の可能性", "広告の重要性", "特に何も示していません"],
+            "answerIndex": 1,
             "explanation": "The text states: 'テレビドラマという表現様式が持つ無限の可能性を示した'."
           }
         }
@@ -1661,8 +1661,8 @@ const backupPools = {
       "questions": [
         {
           "question": "何時に起きましたか。",
-          "options": ["[time]に起きました", "九時に起きました", "昼に起きました", "起きませんでした"],
-          "answerIndex": 0,
+          "options": ["起きませんでした", "昼に起きました", "[time]に起きました", "九時に起きました"],
+            "answerIndex": 2,
           "explanation": "The text says they woke up at [time_en]."
         }
       ]
@@ -1676,8 +1676,8 @@ const backupPools = {
       "questions": [
         {
           "question": "誰と旅行に行きますか。",
-          "options": ["家族と一緒に行きます", "友達と行きます", "一人で行きます", "先生と行きます"],
-          "answerIndex": 0,
+          "options": ["一人で行きます", "先生と行きます", "家族と一緒に行きます", "友達と行きます"],
+            "answerIndex": 2,
           "explanation": "The text states: '家族と一緒に[destination]へ旅行に行きます'."
         }
       ]
@@ -1691,8 +1691,8 @@ const backupPools = {
       "questions": [
         {
           "question": "何を食べに行きましたか。",
-          "options": ["[food]を食べに行きました", "パンを食べに行きました", "ピザを食べに行きました", "何も食べませんでした"],
-          "answerIndex": 0,
+          "options": ["[food]を食べに行きました", "ピザを食べに行きました", "パンを食べに行きました", "何も食べませんでした"],
+            "answerIndex": 0,
           "explanation": "The text states: '[food]を食べるために...へ行きました'."
         }
       ]
@@ -1706,8 +1706,8 @@ const backupPools = {
       "questions": [
         {
           "question": "買ったものの価格はいくらでしたか。",
-          "options": ["[price]円でした", "千円でした", "五万円でした", "分かりません"],
-          "answerIndex": 0,
+          "options": ["[price]円でした", "千円でした", "分かりません", "五万円でした"],
+            "answerIndex": 0,
           "explanation": "The text says: '価格は[price]円でした'."
         }
       ]
@@ -1721,8 +1721,8 @@ const backupPools = {
       "questions": [
         {
           "question": "趣味は何ですか。",
-          "options": ["[hobby]です", "勉強です", "仕事です", "掃除です"],
-          "answerIndex": 0,
+          "options": ["[hobby]です", "仕事です", "勉強です", "掃除です"],
+            "answerIndex": 0,
           "explanation": "The text states: '私の主な趣味は[hobby]です'."
         }
       ]
@@ -1736,8 +1736,8 @@ const backupPools = {
       "questions": [
         {
           "question": "今日の天気は少しどうですか。",
-          "options": ["[weather]天気です", "晴れです", "大雨です", "雪です"],
-          "answerIndex": 0,
+          "options": ["[weather]天気です", "雪です", "大雨です", "晴れです"],
+            "answerIndex": 0,
           "explanation": "The text says: '今日の天気は少し[weather]ですね'."
         }
       ]
@@ -1750,8 +1750,8 @@ const backupPools = {
         "translation": "I love Japanese anime. Especially, [anime_character_en] is my number one hero.",
         "question": {
           "question": "この人の一番のヒーローは誰ですか。",
-          "options": ["[anime_character]です", "ドラえもんです", "アンパンマンです", "誰も好きではありません"],
-          "answerIndex": 0,
+          "options": ["アンパンマンです", "ドラえもんです", "[anime_character]です", "誰も好きではありません"],
+            "answerIndex": 2,
           "explanation": "The text states that [anime_character_en] is their number one hero."
         }
       },
@@ -1760,8 +1760,8 @@ const backupPools = {
         "translation": "Recently, the number of people enjoying Japanese anime around the world is increasing. Among them, [anime_character_en]'s popularity is overwhelming.",
         "question": {
           "question": "最近どのような人が増えていますか。",
-          "options": ["日本のアニメを楽しむ人", "テレビを見ない人", "本を読まない人", "運動をしない人"],
-          "answerIndex": 0,
+          "options": ["本を読まない人", "日本のアニメを楽しむ人", "運動をしない人", "テレビを見ない人"],
+            "answerIndex": 1,
           "explanation": "The text states: '日本のアニメを楽しむ人が増えています'."
         }
       }
@@ -1772,8 +1772,8 @@ const backupPools = {
         "translation": "In the anime, the scene where [anime_character_en] uses [anime_power_en] is extremely cool and exciting.",
         "question": {
           "question": "[anime_character]が何を使う場面がかっこいいですか。",
-          "options": ["[anime_power]です", "お金です", "道具です", "魔法の杖です"],
-          "answerIndex": 0,
+          "options": ["魔法の杖です", "道具です", "[anime_power]です", "お金です"],
+            "answerIndex": 2,
           "explanation": "The text states: '[anime_character]が[anime_power]を使う場面はとてもかっこいい'."
         }
       },
@@ -1782,8 +1782,8 @@ const backupPools = {
         "translation": "They train day and night in order to cooperate with their allies and defeat strong enemies.",
         "question": {
           "question": "なぜ修行を重ねていますか。",
-          "options": ["強い敵を倒すため", "遊ぶため", "お金を稼ぐため", "健康のため"],
-          "answerIndex": 0,
+          "options": ["強い敵を倒すため", "遊ぶため", "健康のため", "お金を稼ぐため"],
+            "answerIndex": 0,
           "explanation": "The text states: '強い敵を倒すために、日夜修行を重ねています'."
         }
       }
@@ -1795,7 +1795,7 @@ const backupPools = {
         "question": {
           "question": "彼らの物語は何を教えてくれますか。",
           "options": ["友情や努力の大切さ", "お金の稼ぎ方", "歴史の知識", "特に何も教えてくれません"],
-          "answerIndex": 0,
+            "answerIndex": 0,
           "explanation": "The text says their stories teach the importance of friendship and effort ('友情や努力の大切さを教えてくれます')."
         }
       },
@@ -1804,8 +1804,8 @@ const backupPools = {
         "translation": "The passionate dialogues and emotional depictions of the characters stir the hearts of many viewers.",
         "question": {
           "question": "何が視聴者の心を揺さぶりますか。",
-          "options": ["登場人物の熱いセリフや心情の描写", "アニメのBGMだけ", "番組の長さ", "分かりません"],
-          "answerIndex": 0,
+          "options": ["番組の長さ", "分かりません", "登場人物の熱いセリフや心情の描写", "アニメのBGMだけ"],
+            "answerIndex": 2,
           "explanation": "The text states: '登場人物の熱いセリフや心情の描写は、多くの視聴者の心を揺さぶります'."
         }
       }
@@ -1816,8 +1816,8 @@ const backupPools = {
         "translation": "In the future, I hope to go to Japan and buy many figures of my favorite anime.",
         "question": {
           "question": "将来日本で何をしたいですか。",
-          "options": ["アニメのフィギュアを買いたいです", "仕事をしたいです", "車を売りたいです", "何もしません"],
-          "answerIndex": 0,
+          "options": ["何もしません", "仕事をしたいです", "アニメのフィギュアを買いたいです", "車を売りたいです"],
+            "answerIndex": 2,
           "explanation": "The text states: 'お気に入りのアニメ of フィギュアをたくさん買いたいと願っています'." // Note: wait, it should be 'お気に入りのアニメのフィギュア', let's write it correctly
         }
       },
@@ -1826,8 +1826,8 @@ const backupPools = {
         "translation": "I also want to have a strong will like them and move forward toward my own dreams.",
         "question": {
           "question": "この人は彼らのようにどうしたいですか。",
-          "options": ["強い意志を持って夢に向かって進みたい", "諦めたい", "何もしたくない", "家で寝たい"],
-          "answerIndex": 0,
+          "options": ["家で寝たい", "諦めたい", "強い意志を持って夢に向かって進みたい", "何もしたくない"],
+            "answerIndex": 2,
           "explanation": "The text states: '強い意志を持って、自分の夢に向かって進みたいです'."
         }
       }
@@ -1840,8 +1840,8 @@ const backupPools = {
         "translation": "Yesterday, I went to the movie theater with my friend and watched [movie_title_en]. This movie is famous as a [movie_genre_en].",
         "question": {
           "question": "昨日映画館で何を観ましたか。",
-          "options": ["[movie_title]を観ました", "本を読みました", "寝ました", "ゲームをしました"],
-          "answerIndex": 0,
+          "options": ["本を読みました", "寝ました", "ゲームをしました", "[movie_title]を観ました"],
+            "answerIndex": 3,
           "explanation": "The text states: '映画館へ行って[movie_title]を観ました'."
         }
       },
@@ -1850,8 +1850,8 @@ const backupPools = {
         "translation": "Watching a movie on a big screen over the weekend is the best entertainment for me. This time, I chose [movie_title_en], which is a particularly hot topic.",
         "question": {
           "question": "週末のこの人にとって最高の娯楽は何ですか。",
-          "options": ["大画面で映画を観ること", "本を読むこと", "ゲームをすること", "寝ること"],
-          "answerIndex": 0,
+          "options": ["大画面で映画を観ること", "本を読むこと", "寝ること", "ゲームをすること"],
+            "answerIndex": 0,
           "explanation": "The text states: '大画面で映画を観ることは、私にとって最高の娯楽です'."
         }
       }
@@ -1862,8 +1862,8 @@ const backupPools = {
         "translation": "The theater was dark, and the sound system was wonderful, making me feel as if I were inside the story.",
         "question": {
           "question": "館内はどうでしたか。",
-          "options": ["暗く音響も素晴らしかった", "明るくてうるさかった", "静かすぎた", "寒すぎた"],
-          "answerIndex": 0,
+          "options": ["静かすぎた", "寒すぎた", "明るくてうるさかった", "暗く音響も素晴らしかった"],
+            "answerIndex": 3,
           "explanation": "The text states: '館内は暗く、音響も素晴らしくて'."
         }
       },
@@ -1872,8 +1872,8 @@ const backupPools = {
         "translation": "While eating popcorn, I was completely overwhelmed by the beauty of the visuals from start to finish.",
         "question": {
           "question": "何を食べながら映画を観ましたか。",
-          "options": ["ポップコーン", "ラーメン", "お寿司", "何も食べませんでした"],
-          "answerIndex": 0,
+          "options": ["お寿司", "ラーメン", "何も食べませんでした", "ポップコーン"],
+            "answerIndex": 3,
           "explanation": "The text states: 'ポップコーンを食べながら'."
         }
       }
@@ -1884,8 +1884,8 @@ const backupPools = {
         "translation": "The director's creative staging and the actors' performances were in perfect harmony.",
         "question": {
           "question": "何が完璧に調成していましたか。 (Note: typo correction: '調和していましたか。')",
-          "options": ["監督の演出と俳優の演技", "音楽と照明", "ストーリーと価格", "分かりません"],
-          "answerIndex": 0,
+          "options": ["ストーリーと価格", "監督の演出と俳優の演技", "分かりません", "音楽と照明"],
+            "answerIndex": 1,
           "explanation": "The text says: '監督の独創的な演出と俳優の演技が完璧に調和していました'."
         }
       },
@@ -1894,8 +1894,8 @@ const backupPools = {
         "translation": "A deep message is embedded in this story, making us think about life.",
         "question": {
           "question": "ストーリーには何が込められていますか。",
-          "options": ["深いメッセージ", "ジョークだけ", "宣伝", "何もありません"],
-          "answerIndex": 0,
+          "options": ["何もありません", "深いメッセージ", "ジョークだけ", "宣伝"],
+            "answerIndex": 1,
           "explanation": "The text says: 'このストーリーには深いメッセージが込められており'."
         }
       }
@@ -1906,8 +1906,8 @@ const backupPools = {
         "translation": "After the screening ended, my heart felt warm and I was very satisfied. I want to watch a new movie next week too.",
         "question": {
           "question": "上映が終わった後どうなりましたか。",
-          "options": ["心が温かくなり非常に満足した", "悲しくなった", "腹が立った", "眠くなった"],
-          "answerIndex": 0,
+          "options": ["腹が立った", "心が温かくなり非常に満足した", "悲しくなった", "眠くなった"],
+            "answerIndex": 1,
           "explanation": "The text states: '上映が終わった後、心が温かくなり、非常に満足しました'."
         }
       },
@@ -1916,8 +1916,8 @@ const backupPools = {
         "translation": "I almost cried from emotion. I want to recommend this wonderful experience to everyone.",
         "question": {
           "question": "この体験についてどうしたいですか。",
-          "options": ["みんなに勧めたいです", "忘れたいです", "誰にも言いたくないです", "分かりません"],
-          "answerIndex": 0,
+          "options": ["分かりません", "みんなに勧めたいです", "誰にも言いたくないです", "忘れたいです"],
+            "answerIndex": 1,
           "explanation": "The text states: 'この素晴らしい体験をみんなに勧めたいです'."
         }
       }
@@ -1930,8 +1930,8 @@ const backupPools = {
         "translation": "Recently, I am hooked on watching the Japanese TV drama [series_title_en] at home. The story is extremely interesting.",
         "question": {
           "question": "最近家で何を観ていますか。",
-          "options": ["ドラマ[series_title]を観ています", "ニュースを観ています", "アニメだけです", "何も観ていません"],
-          "answerIndex": 0,
+          "options": ["ドラマ[series_title]を観ています", "何も観ていません", "アニメだけです", "ニュースを観ています"],
+            "answerIndex": 0,
           "explanation": "The text says they are hooked on watching the drama [series_title_en]."
         }
       },
@@ -1940,8 +1940,8 @@ const backupPools = {
         "translation": "In the evening, after work is over, watching the drama [series_title_en] in front of the TV is my daily pleasure.",
         "question": {
           "question": "いつドラマを観ていますか。",
-          "options": ["夜、仕事が終わった後", "朝起きてすぐ", "昼休みの間", "仕事中"],
-          "answerIndex": 0,
+          "options": ["仕事中", "朝起きてすぐ", "昼休みの間", "夜、仕事が終わった後"],
+            "answerIndex": 3,
           "explanation": "The text states: '夜、仕事が終わった後に...観るのが、毎日の楽しみです'."
         }
       }
@@ -1952,8 +1952,8 @@ const backupPools = {
         "translation": "I look forward eagerly to a new episode being broadcast every week.",
         "question": {
           "question": "毎週何を待ち遠しく思っていますか。",
-          "options": ["新しいエピソードが放送されること", "映画の公開", "仕事の開始", "特にありません"],
-          "answerIndex": 0,
+          "options": ["新しいエピソードが放送されること", "特にありません", "仕事の開始", "映画の公開"],
+            "answerIndex": 0,
           "explanation": "The text states: '毎週新しいエピソードが放送されるのを、待ち遠しく思っています'."
         }
       },
@@ -1962,8 +1962,8 @@ const backupPools = {
         "translation": "Sometimes I use distribution services like Netflix to watch all episodes at once.",
         "question": {
           "question": "どのように全話を一気に観ることがありますか。",
-          "options": ["配信サービスを使って観る", "テレビの生放送を待つ", "友達の家で観る", "DVDを買う"],
-          "answerIndex": 0,
+          "options": ["配信サービスを使って観る", "DVDを買う", "友達の家で観る", "テレビの生放送を待つ"],
+            "answerIndex": 0,
           "explanation": "The text states: '配信サービスを使って、一気に全話観てしまうこともあります'."
         }
       }
@@ -1974,8 +1974,8 @@ const backupPools = {
         "translation": "I cannot take my eyes off the complex human relationships of the characters and the unpredictable developments.",
         "question": {
           "question": "なぜ目が離せないのですか。",
-          "options": ["複雑な人間関係と予測できない展開だから", "つまらない内容だから", "英語の吹き替えだから", "分かりません"],
-          "answerIndex": 0,
+          "options": ["複雑な人間関係と予測できない展開だから", "分かりません", "英語の吹き替えだから", "つまらない内容だから"],
+            "answerIndex": 0,
           "explanation": "The text states: '複雑な人間関係と予測できない展開から目が離せません'."
         }
       },
@@ -1984,8 +1984,8 @@ const backupPools = {
         "translation": "The dramatic climax each time and the selection of the ending theme song are extremely wonderful.",
         "question": {
           "question": "何が非常に素晴らしいですか。",
-          "options": ["劇的なクライマックスやエンディング曲の選定", "テレビの画質", "出演者の服の値段", "分かりません"],
-          "answerIndex": 0,
+          "options": ["出演者の服の値段", "分かりません", "劇的なクライマックスやエンディング曲の選定", "テレビの画質"],
+            "answerIndex": 2,
           "explanation": "The text says: '毎回の劇的なクライマックスやエンディング曲の選定が非常に素晴らしいです'."
         }
       }
@@ -1996,8 +1996,8 @@ const backupPools = {
         "translation": "Watching this drama gives me energy to work hard again starting tomorrow.",
         "question": {
           "question": "ドラマを観るとどんな効果がありますか。",
-          "options": ["明日から頑張ろうというエネルギーをもらえる", "疲れて眠くなる", "仕事が嫌になる", "特にありません"],
-          "answerIndex": 0,
+          "options": ["疲れて眠くなる", "明日から頑張ろうというエネルギーをもらえる", "特にありません", "仕事が嫌になる"],
+            "answerIndex": 1,
           "explanation": "The text states: 'また明日から仕事を頑張ろうというエネルギーをもらえます'."
         }
       },
@@ -2006,8 +2006,8 @@ const backupPools = {
         "translation": "I sincerely hope that next week's broadcast date comes quickly.",
         "question": {
           "question": "この人は何を願っていますか。",
-          "options": ["早く来週の放送日になってほしいこと", "テレビが壊れること", "仕事が休みに変わること", "何も願っていません"],
-          "answerIndex": 0,
+          "options": ["何も願っていません", "仕事が休みに変わること", "早く来週の放送日になってほしいこと", "テレビが壊れること"],
+            "answerIndex": 2,
           "explanation": "The text says: '早く来週の放送日になってほしいと、心から願っています'."
         }
       }
@@ -2017,6 +2017,134 @@ const backupPools = {
 
 // Global variables dictionary to draw from for substitutions
 const globalVariables = {
+  // N5 Overrides to ensure only N5 vocabulary/kanji with proper furigana are used
+  "[N5_time]": ["六時<rt>ろくじ</rt>", "七時<rt>しちじ</rt>", "八時<rt>はちじ</rt>", "九時<rt>くじ</rt>"],
+  "[N5_time_en]": ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"],
+  "[N5_breakfast]": ["朝<rt>あさ</rt>御<rt>ご</rt>飯<rt>はん</rt>", "パンと卵<rt>たまご</rt>", "お粥<rt>かゆ</rt>", "シリアル"],
+  "[N5_breakfast_en]": ["breakfast", "bread and eggs", "rice porridge", "cereal"],
+  "[N5_transport]": ["電<rt>でん</rt>車<rt>しゃ</rt>", "自<rt>じ</rt>転<rt>てん</rt>車<rt>しゃ</rt>", "バス", "タクシー"],
+  "[N5_transport_en]": ["train", "bicycle", "bus", "taxi"],
+  "[N5_destination]": ["学<rt>がっ</rt>校<rt>こう</rt>", "大<rt>だい</rt>学<rt>がく</rt>", "会<rt>かい</rt>社<rt>しゃ</rt>", "駅<rt>えき</rt>"],
+  "[N5_destination_en]": ["school", "university", "company", "station"],
+  "[N5_night_activity]": ["テレビを見<rt>み</rt>ます", "お茶<rt>ちゃ</rt>を飲<rt>の</rt>みます", "本<rt>ほん</rt>を読<rt>よ</rt>みます", "お風呂<rt>ふろ</rt>に入<rt>はい</rt>ります"],
+  "[N5_night_activity_en]": ["watch TV", "drink green tea", "read a book", "take a bath"],
+  "[N5_sleep_time]": ["十時<rt>じゅうじ</rt>", "十一時<rt>じゅういちじ</rt>", "十二時<rt>じゅうにじ</rt>", "十時半<rt>じゅうじはん</rt>"],
+  "[N5_sleep_time_en]": ["10:00 PM", "11:00 PM", "12:00 AM", "10:30 PM"],
+  "[N5_adjective]": ["面白<rt>おもしろ</rt>い", "易<rt>やさ</rt>しい", "難<rt>むずか</rt>しい", "楽<rt>たの</rt>しい"],
+  "[N5_adjective_en]": ["interesting", "easy", "difficult", "fun"],
+  "[N5_people]": ["親切<rt>しんせつ</rt>", "優<rt>やさ</rt>しい", "元気<rt>げんき</rt>"],
+  "[N5_people_en]": ["kind", "friendly", "energetic"],
+  "[N5_activity]": ["公<rt>こう</rt>園<rt>えん</rt>を走<rt>はし</rt>る", "散歩<rt>さんぽ</rt>をする", "日本<rt>にほん</rt>語<rt>ご</rt>を勉<rt>べん</rt>強<rt>きょう</rt>する", "歌<rt>うた</rt>を歌<rt>うた</rt>う"],
+  "[N5_activity_en]": ["run in the park", "take a walk", "study Japanese", "sing a song"],
+  "[N5_location]": ["静<rt>しず</rt>かな町<rt>まち</rt>", "駅<rt>えき</rt>の近<rt>ちか</rt>く", "公<rt>こう</rt>園<rt>えん</rt>の隣<rt>となり</rt>"],
+  "[N5_location_en]": ["in a quiet town", "near the station", "next to the park"],
+  "[N5_helper]": ["日本<rt>にほん</rt>語<rt>ご</rt>の先<rt>せん</rt>生<rt>せい</rt>", "クラスメート", "日本の友<rt>とも</rt>達<rt>だち</rt>"],
+  "[N5_helper_en]": ["my Japanese teacher", "my classmate", "my Japanese friend"],
+  "[N5_gift]": ["お菓子<rt>かし</rt>", "美味しいお茶<rt>ちゃ</rt>", "果物<rt>くだもの</rt>"],
+  "[N5_gift_en]": ["sweets", "delicious tea", "fruits"],
+  "[N5_person]": ["日本の友<rt>とも</rt>達<rt>だち</rt>", "先<rt>せん</rt>生<rt>せい</rt>", "家<rt>か</rt>族<rt>ぞく</rt>", "クラスメート"],
+  "[N5_person_en]": ["my Japanese friend", "my teacher", "my family", "my classmate"],
+  "[N5_drink]": ["お茶<rt>ちゃ</rt>", "水<rt>みず</rt>", "ジュース"],
+  "[N5_drink_en]": ["green tea", "cold water", "fruit juice"],
+  "[N5_food]": ["寿司<rt>すし</rt>", "天<rt>てん</rt>ぷら", "ラーメン", "うどん"],
+  "[N5_food_en]": ["sushi", "tempura", "ramen", "udon"],
+  "[N5_place]": ["食堂<rt>しょくどう</rt>", "レストラン", "喫茶<rt>きっさ</rt>店<rt>てん</rt>"],
+  "[N5_place_en]": ["cafeteria", "restaurant", "cafe"],
+  "[N5_store]": ["デパート", "スーパー", "本<rt>ほん</rt>屋<rt>や</rt>"],
+  "[N5_store_en]": ["department store", "supermarket", "bookstore"],
+  "[N5_item]": ["シャツ", "靴<rt>くつ</rt>", "本<rt>ほん</rt>", "傘<rt>かさ</rt>"],
+  "[N5_item_en]": ["shirt", "shoes", "book", "umbrella"],
+  "[N5_price]": ["五千<rt>ごせん</rt>", "三千<rt>さんぜん</rt>", "二千<rt>にせん</rt>", "千<rt>せん</rt>"],
+  "[N5_price_en]": ["5,000", "3,000", "2,000", "1,000"],
+  "[N5_hobby]": ["写真<rt>しゃしん</rt>を撮<rt>と</rt>ること", "テニス", "音<rt>おん</rt>楽<rt>がく</rt>を聞<rt>き</rt>くこと", "読書<rt>どくしょ</rt>"],
+  "[N5_hobby_en]": ["taking photos", "tennis", "listening to music", "reading books"],
+  "[N5_weather]": ["いい", "曇<rt>くも</rt>り", "雨<rt>あめ</rt>"],
+  "[N5_weather_en]": ["nice", "cloudy", "rainy"],
+  "[N5_temp]": ["二十五<rt>にじゅうご</rt>", "十五<rt>じゅうご</rt>", "三十<rt>さんじゅう</rt>"],
+  "[N5_temp_en]": ["25", "15", "30"],
+  "[N5_change]": ["風<rt>かぜ</rt>が強<rt>つよ</rt>くなる", "晴<rt>は</rt>れる", "雨<rt>あめ</rt>が降<rt>ふ</rt>る"],
+  "[N5_change_en]": ["become windy", "become sunny", "rain"],
+  "[N5_action]": ["公<rt>こう</rt>園<rt>えん</rt>を散歩<rt>さんぽ</rt>する", "家<rt>うち</rt>でゆっくりする", "買い物<rt>かいもの</rt>をする", "カフェで勉強<rt>べんきょう</rt>する"],
+  "[N5_action_en]": ["walk in the park", "relax at home", "go shopping", "study at a cafe"],
+
+  // N4 Overrides to ensure N4-appropriate vocabulary/kanji with proper furigana
+  "[N4_time]": ["六時<rt>ろくじ</rt>", "七時<rt>しちじ</rt>", "八時<rt>はちじ</rt>", "九時<rt>くじ</rt>"],
+  "[N4_time_en]": ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"],
+  "[N4_breakfast]": ["朝<rt>あさ</rt>御<rt>ご</rt>飯<rt>はん</rt>", "パンと卵<rt>たまご</rt>", "お粥<rt>かゆ</rt>", "シリアル"],
+  "[N4_breakfast_en]": ["breakfast", "bread and eggs", "rice porridge", "cereal"],
+  "[N4_transport]": ["電<rt>でん</rt>車<rt>しゃ</rt>", "自<rt>じ</rt>転<rt>てん</rt>車<rt>しゃ</rt>", "バス", "地下鉄<rt>ちかてつ</rt>"],
+  "[N4_transport_en]": ["train", "bicycle", "bus", "subway"],
+  "[N4_destination]": ["学<rt>がっ</rt>校<rt>こう</rt>", "大<rt>だい</rt>学<rt>がく</rt>", "会<rt>かい</rt>社<rt>しゃ</rt>", "空港<rt>くうこう</rt>"],
+  "[N4_destination_en]": ["school", "university", "company", "airport"],
+  "[N4_night_activity]": ["テレビを見<rt>み</rt>ます", "お茶<rt>ちゃ</rt>を飲<rt>の</rt>みます", "本<rt>ほん</rt>を読<rt>よ</rt>みます", "お風呂<rt>ふろ</rt>に入<rt>はい</rt>ります"],
+  "[N4_night_activity_en]": ["watch TV", "drink green tea", "read a book", "take a bath"],
+  "[N4_sleep_time]": ["十時<rt>じゅうじ</rt>", "十一時<rt>じゅういちじ</rt>", "十二時<rt>じゅうにじ</rt>", "十時半<rt>じゅうじはん</rt>"],
+  "[N4_sleep_time_en]": ["10:00 PM", "11:00 PM", "12:00 AM", "10:30 PM"],
+  "[N4_adjective]": ["面白<rt>おもしろ</rt>い", "簡単<rt>かんたん</rt>", "難<rt>むずか</rt>しい", "楽<rt>たの</rt>しい"],
+  "[N4_adjective_en]": ["interesting", "easy", "difficult", "fun"],
+  "[N4_people]": ["親切<rt>しんせつ</rt>", "優<rt>やさ</rt>しい", "丁寧<rt>ていねい</rt>", "元気<rt>げんき</rt>"],
+  "[N4_people_en]": ["kind", "friendly", "polite", "energetic"],
+  "[N4_activity]": ["近所<rt>きんじょ</rt>の公園<rt>こうえん</rt>を走<rt>はし</rt>る", "ヨガの練習<rt>れんしゅう</rt>をする", "英語<rt>えいご</rt>の勉強<rt>べんきょう</rt>をする", "ラジオ体操<rt>たいそう</rt>をする"],
+  "[N4_activity_en]": ["run in the neighborhood park", "practice yoga", "study English", "do radio gymnastics"],
+  "[N4_location]": ["静<rt>しず</rt>な郊外<rt>こうがい</rt>", "賑<rt>にぎ</rt>やかな駅の近く", "緑<rt>みどり</rt>が多い公園の隣<rt>となり</rt>"],
+  "[N4_location_en]": ["in a quiet suburb", "near a busy station", "next to a green park"],
+  "[N4_helper]": ["大学の友達<rt>ともだち</rt>", "会社<rt>かいしゃ</rt>の先輩<rt>せんぱい</rt>", "親切な隣人<rt>りんじん</rt>"],
+  "[N4_helper_en]": ["my university friend", "my company senior", "a kind neighbor"],
+  "[N4_gift]": ["お菓子<rt>かし</rt>", "美味しいお茶<rt>ちゃ</rt>", "果物<rt>くだもの</rt>"],
+  "[N4_gift_en]": ["sweets", "delicious tea", "fruits"],
+  "[N4_person]": ["日本の友達<rt>ともだち</rt>", "先生<rt>せんせい</rt>", "家族<rt>かぞく</rt>", "クラスメート"],
+  "[N4_person_en]": ["my Japanese friend", "my teacher", "my family", "my classmate"],
+  "[N4_drink]": ["お茶<rt>ちゃ</rt>", "ビール", "冷たい水<rt>みず</rt>", "ジュース"],
+  "[N4_drink_en]": ["green tea", "beer", "cold water", "fruit juice"],
+  "[N4_food]": ["寿司<rt>すし</rt>", "天ぷら<rt>てんぷら</rt>", "ラーメン", "うどん"],
+  "[N4_food_en]": ["sushi", "tempura", "ramen", "udon"],
+  "[N4_place]": ["食堂<rt>しょくどう</rt>", "居酒屋<rt>いざかや</rt>", "レストラン"],
+  "[N4_place_en]": ["cafeteria", "izakaya pub", "restaurant"],
+  "[N4_store]": ["デパート", "ショッピングモール", "スーパー"],
+  "[N4_store_en]": ["department store", "shopping mall", "supermarket"],
+  "[N4_item]": ["シャツ", "靴<rt>くつ</rt>", "鞄<rt>かばん</rt>", "帽子<rt>ぼうし</rt>"],
+  "[N4_item_en]": ["shirt", "shoes", "bag", "hat"],
+  "[N4_price]": ["五千<rt>ごせん</rt>", "八千<rt>はっせん</rt>", "一万<rt>いちまん</rt>", "三千<rt>さんぜん</rt>"],
+  "[N4_price_en]": ["5,000", "8,000", "10,000", "3,000"],
+  "[N4_hobby]": ["写真<rt>しゃしん</rt>を撮<rt>と</rt>ること", "テニス", "ギターを弾<rt>ひ</rt>くこと", "読書<rt>どくしょ</rt>"],
+  "[N4_hobby_en]": ["taking photos", "tennis", "playing the guitar", "reading books"],
+  "[N4_weather]": ["いい", "曇<rt>くも</rt>った", "雨<rt>あめ</rt>の"],
+  "[N4_weather_en]": ["nice", "cloudy", "rainy"],
+  "[N4_temp]": ["二十五<rt>にじゅうご</rt>", "十五<rt>じゅうご</rt>", "三十<rt>さんじゅう</rt>"],
+  "[N4_temp_en]": ["25", "15", "30"],
+  "[N4_change]": ["風<rt>かぜ</rt>が強<rt>つよ</rt>く吹<rt>ふ</rt>く", "晴<rt>は</rt>れて暖かくなる", "雨が降<rt>ふ</rt>り始める"],
+  "[N4_change_en]": ["become windy", "become sunny and warm", "start to rain"],
+  "[N4_action]": ["公園<rt>こうえん</rt>を散歩<rt>さんぽ</rt>する", "家でゆっくり読書<rt>どくしょ</rt>する", "デパートで買い物<rt>かいもの</rt>する", "カフェで勉強<rt>べんきょう</rt>する"],
+  "[N4_action_en]": ["take a walk in the park", "read at ease at home", "shop at the department store", "study at a cafe"],
+  "[N4_improvement]": ["時間に遅れずに会社<rt>かいしゃ</rt>に行く", "毎朝集中<rt>しゅうちゅう</rt>して仕事<rt>しごと</rt>をする", "授業<rt>じゅぎょう</rt>の準備<rt>じゅんび</rt>を早く終わらせる"],
+  "[N4_improvement_en]": ["go to the office on time", "concentrate on work every morning", "finish preparing classes early"],
+  // N5 & N4 overrides to simplify Anime/Manga/Series/Movies content
+  "[N5_anime_character]": ["ルフィ", "トトロ", "ピカチュウ", "コナン"],
+  "[N5_anime_character_en]": ["Luffy", "Totoro", "Pikachu", "Conan"],
+  "[N5_anime_power]": ["かめはめ波<rt>は</rt>", "１０万<rt>まん</rt>ボルト", "ゴムゴムの風<rt>ふう</rt>船<rt>せん</rt>"],
+  "[N5_anime_power_en]": ["Kamehameha", "100,000 Volts", "Gum-Gum Balloon"],
+  "[N5_movie_title]": ["「トトロ」", "「ポニョ」", "「コナン」"],
+  "[N5_movie_title_en]": ["My Neighbor Totoro", "Ponyo", "Detective Conan"],
+  "[N5_movie_genre]": ["アニメ", "コメディ", "アクション"],
+  "[N5_movie_genre_en]": ["anime", "comedy", "action"],
+  "[N5_series_title]": ["「ヒーロー」", "「相棒<rt>あいぼう</rt>」"],
+  "[N5_series_title_en]": ["HERO", "Aibou (Partners)"],
+  "[N5_helper]": ["日本語<rt>にほんご</rt>の先生<rt>せんせい</rt>", "クラスメート", "日本の友達<rt>ともだち</rt>"],
+  "[N5_helper_en]": ["my Japanese teacher", "my classmate", "my Japanese friend"],
+  
+  "[N4_anime_character]": ["ルフィ", "トトロ", "ピカチュウ", "コナン"],
+  "[N4_anime_character_en]": ["Luffy", "Totoro", "Pikachu", "Conan"],
+  "[N4_anime_power]": ["かめはめ波<rt>は</rt>", "１０万<rt>まん</rt>ボルト", "ゴムゴムの風<rt>ふう</rt>船<rt>せん</rt>"],
+  "[N4_anime_power_en]": ["Kamehameha", "100,000 Volts", "Gum-Gum Balloon"],
+  "[N4_movie_title]": ["「トトロ」", "「ポニョ」", "「コナン」"],
+  "[N4_movie_title_en]": ["My Neighbor Totoro", "Ponyo", "Detective Conan"],
+  "[N4_movie_genre]": ["アニメ", "コメディ", "アクション"],
+  "[N4_movie_genre_en]": ["anime", "comedy", "action"],
+  "[N4_series_title]": ["「ヒーロー」", "「相棒<rt>あいぼう</rt>」"],
+  "[N4_series_title_en]": ["HERO", "Aibou (Partners)"],
+  "[N4_helper]": ["日本語<rt>にほんご</rt>の先生<rt>せんせい</rt>", "クラスメート", "日本の友達<rt>ともだち</rt>"],
+  "[N4_helper_en]": ["my Japanese teacher", "my classmate", "my Japanese friend"],
+
   "[anime_character]": ["悟空<rt>ごくう</rt>（ドラゴンボール）", "ナルト（NARUTO）", "五条<rt>ごじょう</rt>悟<rt>さとる</rt>（呪術廻戦）", "水<rt>みず</rt>篠<rt>しの</rt>旬<rt>しゅん</rt>（俺だけレベルアップな件）"],
   "[anime_character_en]": ["Goku (Dragon Ball)", "Naruto (NARUTO)", "Gojo Satoru (Jujutsu Kaisen)", "Sung Jinwoo (Solo Leveling)"],
   "[anime_power]": ["かめはめ波<rt>は</rt>", "螺旋丸<rt>らせんがん</rt>", "無下限呪術<rt>むかげんじゅじゅつ</rt>", "影<rt>かげ</rt>の兵士<rt>へいし</rt>を召喚<rt>しょうかん</rt>する力"],
@@ -2172,18 +2300,28 @@ function buildProceduralPassage(level, topic) {
   
   placeholders.forEach(placeholder => {
     const groupName = placeholder.replace('[', '').replace(']', '').replace('_en', '');
-    const variablesPool = globalVariables[placeholder] || globalVariables[`[${groupName}]`] || [];
+    
+    // Check if there is a level-specific override in globalVariables, e.g. [N5_anime_character]
+    const targetKey = placeholder.endsWith('_en]') ? `[${level}_${groupName}_en]` : `[${level}_${groupName}]`;
+    const hasOverride = globalVariables[targetKey] !== undefined;
+    
+    const poolKey = hasOverride ? targetKey : placeholder;
+    const variablesPool = globalVariables[poolKey] || [];
     
     if (variablesPool.length > 0) {
       if (!(groupName in groupIndices)) {
         groupIndices[groupName] = Math.floor(Math.random() * variablesPool.length);
       }
-      const idx = groupIndices[groupName];
-      replacements[placeholder] = globalVariables[placeholder][idx];
+      const idx = groupIndices[groupName] % variablesPool.length;
+      replacements[placeholder] = variablesPool[idx];
       
       const enPlaceholder = `[${groupName}_en]`;
-      if (globalVariables[enPlaceholder]) {
-        replacements[enPlaceholder] = globalVariables[enPlaceholder][idx];
+      const targetEnKey = `[${level}_${groupName}_en]`;
+      const hasEnOverride = globalVariables[targetEnKey] !== undefined;
+      const enPoolKey = hasEnOverride ? targetEnKey : `[${groupName}_en]`;
+      
+      if (globalVariables[enPoolKey]) {
+        replacements[enPlaceholder] = globalVariables[enPoolKey][idx];
       }
     }
   });
@@ -2217,10 +2355,24 @@ function buildProceduralPassage(level, topic) {
     });
     explanation = explanation.replace(/<rt>.*?<\/rt>/g, '').replace(/<\/?[^>]+(>|$)/g, "");
     
+    // Shuffle the options and adjust the answerIndex
+    const originalAnswerIndex = q.answerIndex;
+    const indexedOptions = options.map((opt, idx) => ({ opt, isCorrect: idx === originalAnswerIndex }));
+    
+    for (let i = indexedOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = indexedOptions[i];
+      indexedOptions[i] = indexedOptions[j];
+      indexedOptions[j] = temp;
+    }
+    
+    const shuffledOptions = indexedOptions.map(item => item.opt);
+    const newAnswerIndex = indexedOptions.findIndex(item => item.isCorrect);
+    
     return {
       question: qText.replace(/<rt>.*?<\/rt>/g, '').replace(/<\/?[^>]+(>|$)/g, ""),
-      options: options,
-      answerIndex: q.answerIndex,
+      options: shuffledOptions,
+      answerIndex: newAnswerIndex,
       explanation: explanation
     };
   });
